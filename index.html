@@ -76,9 +76,7 @@
         }
 
         @media (max-width: 880px) {
-            .main-grid {
-                grid-template-columns: 1fr;
-            }
+            .main-grid { grid-template-columns: 1fr; }
         }
 
         .card {
@@ -156,25 +154,9 @@
             transition: 0.15s;
         }
 
-        .btn-start {
-            background: var(--green);
-            color: #000;
-            flex: 1;
-        }
-
-        .btn-stop {
-            background: var(--red);
-            color: #fff;
-            flex: 1;
-            display: none;
-        }
-
-        .btn-clear {
-            background: #1e293b;
-            color: var(--text);
-            padding: 5px 10px;
-            font-size: 11px;
-        }
+        .btn-start { background: var(--green); color: #000; flex: 1; }
+        .btn-stop { background: var(--red); color: #fff; flex: 1; display: none; }
+        .btn-clear { background: #1e293b; color: var(--text); padding: 5px 10px; font-size: 11px; }
 
         .file-list {
             background: #070b14;
@@ -213,18 +195,17 @@
     <div class="header">
         <div>
             <h1>⚡ DARKX CUSTOM BOT HOSTING PANEL</h1>
-            <div style="font-size: 12px; color: var(--muted); margin-top: 3px;">Upload or Paste Custom Bot Code (.py) &amp; Requirements/Data (.txt) • By Ashif</div>
+            <div style="font-size: 12px; color: var(--muted); margin-top: 3px;">Advanced Python Bot Runtime • By Ashif</div>
         </div>
         <div class="status-badge" id="statusBadge">● BOT STOPPED</div>
     </div>
 
     <div class="main-grid">
-        <!-- Left Configuration & File Upload Panel -->
         <div class="card">
             <div class="card-title">1. Bot Setup &amp; Files</div>
 
             <div>
-                <label>Telegram Bot Token (Optional if inside code):</label>
+                <label>Telegram Bot Token:</label>
                 <input type="password" id="tokenInput" placeholder="Auto-detected from code or paste here...">
             </div>
 
@@ -234,13 +215,8 @@
             </div>
 
             <div>
-                <label>Upload Data / Requirements (.txt) Files:</label>
+                <label>Upload Data / Workspace Files (.txt, .json):</label>
                 <input type="file" id="txtFileUpload" accept=".txt,.json,.csv" multiple onchange="handleTxtUpload(this)">
-            </div>
-
-            <div>
-                <label>Requirements / Packages (`requirements.txt`):</label>
-                <textarea class="txt-box" id="reqInput" placeholder="requests&#10;pyTelegramBotAPI&#10;pyrogram&#10;aiohttp">requests</textarea>
             </div>
 
             <div>
@@ -261,7 +237,6 @@
             </div>
         </div>
 
-        <!-- Right Custom Code Editor & Console Panel -->
         <div class="card">
             <div class="card-title">
                 <span>2. Custom Bot Code Editor (`main.py`)</span>
@@ -289,7 +264,7 @@ bot.infinity_polling()</textarea>
                 <button class="btn btn-clear" onclick="clearTerminal()">Clear Logs</button>
             </div>
 
-            <div class="console" id="terminalBox">[*] Ready. Paste your custom Python bot code or upload your .py and .txt files, then click 'Host & Start Bot'.</div>
+            <div class="console" id="terminalBox">[*] Ready. Paste your custom Python bot code and click 'Host & Start Bot'.</div>
         </div>
     </div>
 
@@ -327,11 +302,8 @@ function handleTxtUpload(input) {
     Array.from(input.files).forEach(file => {
         file.text().then(content => {
             virtualFiles.set(file.name, content);
-            if (file.name.toLowerCase() === "requirements.txt") {
-                document.getElementById("reqInput").value = content;
-            }
             renderFileList();
-            logTerm(`📁 Uploaded file to workspace: ${file.name} (${content.length} bytes)`);
+            logTerm(`📁 Uploaded workspace file: ${file.name}`);
         });
     });
 }
@@ -341,7 +313,7 @@ function renderFileList() {
     box.innerHTML = `<div class="file-item"><span>📄 main.py</span><span>Editor</span></div>`;
     virtualFiles.forEach((val, key) => {
         const d = document.createElement("div");
-        d.className = "file-item";
+        d.className = 'file-item';
         d.innerHTML = `<span>📁 ${key}</span><span>${val.length} B</span>`;
         box.appendChild(d);
     });
@@ -384,7 +356,7 @@ async function tgApi(token, method, payload = {}) {
 
 async function initPythonEngine() {
     if (pyodideInstance) return pyodideInstance;
-    logTerm("⏳ Initializing Python 3.11 Runtime Engine (First run takes 3-5s)...");
+    logTerm("⏳ Initializing Python 3.11 Runtime Engine...");
     pyodideInstance = await loadPyodide({
         stdout: (msg) => logTerm(`🐍 ${msg}`),
         stderr: (err) => logTerm(`⚠️ ${err}`)
@@ -394,14 +366,13 @@ async function initPythonEngine() {
     return pyodideInstance;
 }
 
-// Inject Browser-Compatible Telebot & Pyrogram Bridge into Python Runtime
-const PYTHON_TG_BRIDGE = `
+const ADVANCED_TG_BRIDGE = `
 import sys
 import types
 import json
 import js
 
-_handlers = []
+_message_handlers = []
 
 class ChatObj:
     def __init__(self, d):
@@ -416,25 +387,15 @@ class UserObj:
         self.username = d.get("username", "")
 
 class MessageObj:
-    def __init__(self, d, bot_ref=None):
-        self.id = d.get("message_id", 0)
-        self.message_id = self.id
+    def __init__(self, d):
+        self.json = d
+        self.message_id = d.get("message_id", 0)
         self.text = d.get("text", "")
+        self.caption = d.get("caption", "")
         self.chat = ChatObj(d.get("chat", {}))
         self.from_user = UserObj(d.get("from", {}))
-        self.sender_chat = None
-        self._bot = bot_ref
-
-    async def reply_text(self, text, **kwargs):
-        js.sendTelegramReply(self.chat.id, str(text), self.message_id)
-
-    async def reply_document(self, doc_path, caption="", **kwargs):
-        try:
-            with open(doc_path, "r", encoding="utf-8", errors="ignore") as f:
-                content = f.read()
-            js.sendTelegramDocument(self.chat.id, doc_path, content, str(caption), self.message_id)
-        except Exception as e:
-            js.sendTelegramReply(self.chat.id, f"File Error: {e}", self.message_id)
+        self.document = d.get("document", None)
+        self.video = d.get("video", None)
 
 class TeleBotShim:
     def __init__(self, token=None, **kwargs):
@@ -444,19 +405,15 @@ class TeleBotShim:
 
     def message_handler(self, commands=None, func=None, **kwargs):
         def decorator(fn):
-            _handlers.append({"type": "telebot", "commands": commands, "func": func, "fn": fn, "bot": self})
+            _message_handlers.append({"commands": commands, "func": func, "fn": fn})
             return fn
         return decorator
 
     def channel_post_handler(self, **kwargs):
-        def decorator(fn):
-            return fn
-        return decorator
+        return lambda fn: fn
 
     def callback_query_handler(self, **kwargs):
-        def decorator(fn):
-            return fn
-        return decorator
+        return lambda fn: fn
 
     def reply_to(self, message, text, **kwargs):
         js.sendTelegramReply(message.chat.id, str(text), message.message_id)
@@ -464,13 +421,20 @@ class TeleBotShim:
     def send_message(self, chat_id, text, **kwargs):
         js.sendTelegramReply(chat_id, str(text), 0)
 
+    def send_document(self, chat_id, data, caption=None, **kwargs):
+        doc_name = "file.txt"
+        content = str(data)
+        if hasattr(data, "read"):
+            try: content = data.read().decode("utf-8", errors="ignore")
+            except: pass
+        js.sendTelegramDocument(chat_id, doc_name, content, str(caption or ""), 0)
+
     def infinity_polling(self, **kwargs):
-        print("TeleBot infinity_polling() hooked to DarkX Web Engine.")
+        print("TeleBot polling active.")
 
     def polling(self, **kwargs):
-        print("TeleBot polling() hooked to DarkX Web Engine.")
+        print("TeleBot polling active.")
 
-# Create telebot module
 telebot_mod = types.ModuleType("telebot")
 telebot_mod.TeleBot = TeleBotShim
 types_mod = types.ModuleType("telebot.types")
@@ -486,90 +450,39 @@ telebot_mod.types = types_mod
 sys.modules["telebot"] = telebot_mod
 sys.modules["telebot.types"] = types_mod
 
-# Create pyrogram module shim
-pyro_mod = types.ModuleType("pyrogram")
-class PyroClientShim:
-    def __init__(self, name, api_id=None, api_hash=None, bot_token=None, **kwargs):
-        self.bot_token = bot_token
-        if bot_token and ":" in str(bot_token):
-            js.setDetectedToken(str(bot_token))
-    def on_message(self, filters_obj=None):
-        def decorator(fn):
-            _handlers.append({"type": "pyrogram", "filters": filters_obj, "fn": fn, "client": self})
-            return fn
-        return decorator
-    def run(self):
-        print("Pyrogram Client.run() hooked to DarkX Web Engine.")
-
-class FilterChain:
-    def __init__(self, cmd=None):
-        self.cmd = cmd
-    def __and__(self, other):
-        return FilterChain(self.cmd or getattr(other, 'cmd', None))
-    def __or__(self, other):
-        return FilterChain(self.cmd or getattr(other, 'cmd', None))
-
-class FiltersShim:
-    @staticmethod
-    def command(cmd):
-        if isinstance(cmd, str):
-            return FilterChain([cmd])
-        return FilterChain(list(cmd))
-    private = FilterChain()
-    group = FilterChain()
-    text = FilterChain()
-    document = FilterChain()
-
-pyro_mod.Client = PyroClientShim
-pyro_mod.filters = FiltersShim
-sys.modules["pyrogram"] = pyro_mod
-
-pyro_enums = types.ModuleType("pyrogram.enums")
-pyro_enums.ChatType = DummyMarkup
-sys.modules["pyrogram.enums"] = pyro_enums
-
-pyro_types = types.ModuleType("pyrogram.types")
-pyro_types.ReplyKeyboardMarkup = DummyMarkup
-pyro_types.KeyboardButton = DummyMarkup
-pyro_types.Message = MessageObj
-sys.modules["pyrogram.types"] = pyro_types
-
-pyro_errors = types.ModuleType("pyrogram.errors")
-pyro_errors.FloodWait = Exception
-pyro_errors.RPCError = Exception
-sys.modules["pyrogram.errors"] = pyro_errors
-
 async def _dispatch_update(raw_json):
     d = json.loads(raw_json)
     msg = MessageObj(d)
-    text = msg.text or ""
-    for h in _handlers:
-        try:
-            if h["type"] == "telebot":
-                cmds = h["commands"]
-                if cmds:
-                    matched = any(text.startswith("/" + c) for c in cmds)
-                    if not matched:
-                        continue
-                elif h["func"]:
-                    if not h["func"](msg):
-                        continue
+    text = (msg.text or msg.caption or "").strip()
+    
+    for h in _message_handlers:
+        matched = False
+        cmds = h["commands"]
+        func = h["func"]
+        
+        if cmds:
+            for c in cmds:
+                clean_c = c.strip().lower()
+                if text.lower() == "/" + clean_c or text.lower().startswith("/" + clean_c + " ") or text.lower().startswith("/" + clean_c + "@"):
+                    matched = True
+                    break
+        elif func:
+            try:
+                if func(msg):
+                    matched = True
+            except:
+                pass
+        else:
+            matched = True
+
+        if matched:
+            try:
                 res = h["fn"](msg)
                 if hasattr(res, "__await__"):
                     await res
-                break
-            elif h["type"] == "pyrogram":
-                f_obj = h["filters"]
-                if f_obj and getattr(f_obj, "cmd", None):
-                    matched = any(text.startswith("/" + c) for c in f_obj.cmd)
-                    if not matched:
-                        continue
-                res = h["fn"](h["client"], msg)
-                if hasattr(res, "__await__"):
-                    await res
-                break
-        except Exception as e:
-            print(f"Handler Error: {e}")
+            except Exception as ex:
+                print(f"Bot Handler Exception: {ex}")
+            break
 `;
 
 window.setDetectedToken = function(tok) {
@@ -582,10 +495,10 @@ window.setDetectedToken = function(tok) {
 window.sendTelegramReply = async function(chatId, text, replyId) {
     if (!activeToken) return;
     try {
-        const payload = { chat_id: chatId, text: text };
+        const payload = { chat_id: chatId, text: text, parse_mode: "Markdown" };
         if (replyId) payload.reply_to_message_id = replyId;
         await tgApi(activeToken, "sendMessage", payload);
-        logTerm(`📤 Sent reply to ${chatId}`);
+        logTerm(`📤 Sent reply to chat ${chatId}`);
     } catch (e) {
         logTerm(`❌ Send Error: ${e.message}`);
     }
@@ -599,14 +512,11 @@ window.sendTelegramDocument = async function(chatId, filename, content, caption,
         if (caption) form.append("caption", caption);
         if (replyId) form.append("reply_to_message_id", replyId);
         const blob = new Blob([content], { type: "text/plain" });
-        form.append("document", blob, filename.split("/").pop());
-        await fetch(`https://api.telegram.org/bot${activeToken}/sendDocument`, {
-            method: "POST",
-            body: form
-        });
-        logTerm(`📎 Sent document '${filename}' to ${chatId}`);
+        form.append("document", blob, filename);
+        await fetch(`https://api.telegram.org/bot${activeToken}/sendDocument`, { method: "POST", body: form });
+        logTerm(`📎 Sent document to ${chatId}`);
     } catch (e) {
-        logTerm(`❌ Document Send Error: ${e.message}`);
+        logTerm(`❌ Document Error: ${e.message}`);
     }
 };
 
@@ -616,18 +526,18 @@ async function startCustomBot() {
     activeToken = document.getElementById("tokenInput").value.trim();
 
     if (!activeToken || activeToken === "YOUR_BOT_TOKEN_HERE") {
-        logTerm("❌ Error: Bot Token nahi mila! Ya to Box mein Bot Token daalein ya apne code mein BOT_TOKEN set karein.");
+        logTerm("❌ Error: Bot Token nahi mila! Code mein BOT_TOKEN set karein.");
         return;
     }
 
     try {
         const me = await tgApi(activeToken, "getMe");
         if (!me.ok) {
-            logTerm(`❌ Invalid Bot Token: ${me.description}`);
+            logTerm(`❌ Invalid Token: ${me.description}`);
             return;
         }
         document.getElementById("botUserLabel").innerText = `@${me.result.username}`;
-        logTerm(`✅ Connected to Telegram Bot: @${me.result.username}`);
+        logTerm(`✅ Connected to Bot: @${me.result.username}`);
     } catch (e) {
         logTerm(`❌ Connection Error: ${e.message}`);
         return;
@@ -635,19 +545,17 @@ async function startCustomBot() {
 
     const py = await initPythonEngine();
 
-    // Write uploaded .txt files into Python Virtual Filesystem
     virtualFiles.forEach((content, name) => {
         py.FS.writeFile(name, content);
     });
 
-    // Reset handlers and load bridge
-    await py.runPythonAsync(PYTHON_TG_BRIDGE);
+    await py.runPythonAsync(ADVANCED_TG_BRIDGE);
 
-    logTerm("🚀 Executing your custom Python code (`main.py`)...");
+    logTerm("🚀 Executing custom bot code...");
     try {
         await py.runPythonAsync(code);
     } catch (err) {
-        logTerm(`⚠️ Python Execution Note: ${err.message}`);
+        logTerm(`⚠️ Python Init Note: ${err.message}`);
     }
 
     await tgApi(activeToken, "deleteWebhook", { drop_pending_updates: false });
@@ -659,7 +567,7 @@ async function startCustomBot() {
     badge.innerText = "● BOT ONLINE & HOSTED";
     badge.classList.add("online");
 
-    logTerm("🔥 Bot is now LIVE! Send a message to your bot on Telegram.");
+    logTerm("🔥 Bot is LIVE! Send /start to your bot on Telegram.");
     pollLoop();
 }
 
@@ -676,10 +584,7 @@ function stopCustomBot() {
 async function pollLoop() {
     while (isBotRunning) {
         try {
-            const res = await tgApi(activeToken, "getUpdates", {
-                offset: pollOffset,
-                timeout: 15
-            });
+            const res = await tgApi(activeToken, "getUpdates", { offset: pollOffset, timeout: 15 });
             if (res.ok && Array.isArray(res.result)) {
                 for (const u of res.result) {
                     pollOffset = u.update_id + 1;
@@ -696,10 +601,10 @@ async function pollLoop() {
                 }
             }
         } catch (e) {
-            await new Promise(r => setTimeout(r, 2500));
+            await new Promise(r => setTimeout(r, 2000));
         }
     }
 }
 </script>
 </body>
-  </html>
+</html>
