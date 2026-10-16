@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DarkX Custom Bot Hosting Panel</title>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js"></script>
+    <style>
+        :root {
+            --bg: #060911;
+            --panel: #0d1322;
+            --border: #1e293b;
+            --accent: #00f0ff;
+            --green: #00ff88;
+            --red: #ff3366;
+            --text: #e2e8f0;
+            --muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Consolas', 'Courier New', monospace;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            padding: 14px;
+            min-height: 100vh;
+        }
+
+        .header {
+            max-width: 1280px;
+            margin: 0 auto 14px auto;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--accent);
+            border-radius: 8px;
+            padding: 14px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .header h1 {
+            font-size: 18px;
+            color: var(--accent);
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: bold;
+            background: rgba(255, 51, 102, 0.15);
+            color: var(--red);
+            border: 1px solid var(--red);
+        }
+
+        .status-badge.online {
+            background: rgba(0, 255, 136, 0.15);
+            color: var(--green);
+            border-color: var(--green);
+        }
+
+        .main-grid {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 360px 1fr;
+            gap: 14px;
+        }
+
+        @media (max-width: 880px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .card-title {
+            font-size: 13px;
+            color: var(--accent);
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        label {
+            font-size: 12px;
+            color: var(--muted);
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"], input[type="password"], input[type="file"], textarea {
+            width: 100%;
+            background: #070b14;
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 9px 11px;
+            border-radius: 6px;
+            font-size: 12.5px;
+            outline: none;
+        }
+
+        input:focus, textarea:focus {
+            border-color: var(--accent);
+        }
+
+        .code-box {
+            min-height: 290px;
+            color: #00ff88;
+            line-height: 1.45;
+            resize: vertical;
+            white-space: pre;
+            overflow-x: auto;
+        }
+
+        .txt-box {
+            min-height: 90px;
+            color: #f8fafc;
+            line-height: 1.4;
+            resize: vertical;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 12.5px;
+            transition: 0.15s;
+        }
+
+        .btn-start {
+            background: var(--green);
+            color: #000;
+            flex: 1;
+        }
+
+        .btn-stop {
+            background: var(--red);
+            color: #fff;
+            flex: 1;
+            display: none;
+        }
+
+        .btn-clear {
+            background: #1e293b;
+            color: var(--text);
+            padding: 5px 10px;
+            font-size: 11px;
+        }
+
+        .file-list {
+            background: #070b14;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 8px;
+            font-size: 12px;
+            max-height: 110px;
+            overflow-y: auto;
+        }
+
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 6px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--green);
+        }
+
+        .console {
+            background: #04060b;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 12px;
+            height: 230px;
+            overflow-y: auto;
+            font-size: 12.5px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            color: #cbd5e1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div>
+            <h1>⚡ DARKX CUSTOM BOT HOSTING PANEL</h1>
+            <div style="font-size: 12px; color: var(--muted); margin-top: 3px;">Upload or Paste Custom Bot Code (.py) &amp; Requirements/Data (.txt) • By Ashif</div>
+        </div>
+        <div class="status-badge" id="statusBadge">● BOT STOPPED</div>
+    </div>
+
+    <div class="main-grid">
+        <!-- Left Configuration & File Upload Panel -->
+        <div class="card">
+            <div class="card-title">1. Bot Setup &amp; Files</div>
+
+            <div>
+                <label>Telegram Bot Token (Optional if inside code):</label>
+                <input type="password" id="tokenInput" placeholder="Auto-detected from code or paste here...">
+            </div>
+
+            <div>
+                <label>Upload Bot Code File (.py):</label>
+                <input type="file" id="pyFileUpload" accept=".py,.txt" onchange="handlePyUpload(this)">
+            </div>
+
+            <div>
+                <label>Upload Data / Requirements (.txt) Files:</label>
+                <input type="file" id="txtFileUpload" accept=".txt,.json,.csv" multiple onchange="handleTxtUpload(this)">
+            </div>
+
+            <div>
+                <label>Requirements / Packages (`requirements.txt`):</label>
+                <textarea class="txt-box" id="reqInput" placeholder="requests&#10;pyTelegramBotAPI&#10;pyrogram&#10;aiohttp">requests</textarea>
+            </div>
+
+            <div>
+                <label>Uploaded Workspace Files:</label>
+                <div class="file-list" id="fileListBox">
+                    <div style="color: var(--muted);">main.py (Active Editor)</div>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-start" id="startBtn" onclick="startCustomBot()">🚀 Host &amp; Start Bot</button>
+                <button class="btn btn-stop" id="stopBtn" onclick="stopCustomBot()">🛑 Stop Bot</button>
+            </div>
+
+            <div style="font-size: 12px; color: var(--muted); line-height: 1.7;">
+                <div>Bot Username: <b id="botUserLabel" style="color: var(--accent);">Not Connected</b></div>
+                <div>Processed Updates: <b id="msgCountLabel" style="color: var(--green);">0</b></div>
+            </div>
+        </div>
+
+        <!-- Right Custom Code Editor & Console Panel -->
+        <div class="card">
+            <div class="card-title">
+                <span>2. Custom Bot Code Editor (`main.py`)</span>
+                <button class="btn btn-clear" onclick="loadSampleBot()">Load Sample Bot</button>
+            </div>
+
+            <textarea class="code-box" id="codeEditor" spellcheck="false">import telebot
+
+BOT_TOKEN = "YOUR_BOT_TOKEN_HERE"
+bot = telebot.TeleBot(BOT_TOKEN)
+
+@bot.message_handler(commands=['start'])
+def start_cmd(message):
+    bot.reply_to(message, "🔥 Custom Bot is Live and Hosted on DarkX Panel!")
+
+@bot.message_handler(func=lambda m: True)
+def echo_all(message):
+    bot.reply_to(message, f"You sent: {message.text}")
+
+print("Bot is polling...")
+bot.infinity_polling()</textarea>
+
+            <div class="card-title">
+                <span>3. Live Hosting Terminal Logs</span>
+                <button class="btn btn-clear" onclick="clearTerminal()">Clear Logs</button>
+            </div>
+
+            <div class="console" id="terminalBox">[*] Ready. Paste your custom Python bot code or upload your .py and .txt files, then click 'Host & Start Bot'.</div>
+        </div>
+    </div>
+
+<script>
+let pyodideInstance = null;
+let isBotRunning = false;
+let pollOffset = 0;
+let processedCount = 0;
+let activeToken = "";
+const virtualFiles = new Map();
+
+function logTerm(text) {
+    const box = document.getElementById("terminalBox");
+    const t = new Date().toLocaleTimeString();
+    box.textContent += `\n[${t}] ${text}`;
+    box.scrollTop = box.scrollHeight;
+}
+
+function clearTerminal() {
+    document.getElementById("terminalBox").textContent = "[*] Logs cleared.";
+}
+
+function handlePyUpload(input) {
+    if (!input.files || !input.files[0]) return;
+    const f = input.files[0];
+    f.text().then(content => {
+        document.getElementById("codeEditor").value = content;
+        logTerm(`📄 Loaded code from '${f.name}' into editor.`);
+        autoExtractToken(content);
+    });
+}
+
+function handleTxtUpload(input) {
+    if (!input.files) return;
+    Array.from(input.files).forEach(file => {
+        file.text().then(content => {
+            virtualFiles.set(file.name, content);
+            if (file.name.toLowerCase() === "requirements.txt") {
+                document.getElementById("reqInput").value = content;
+            }
+            renderFileList();
+            logTerm(`📁 Uploaded file to workspace: ${file.name} (${content.length} bytes)`);
+        });
+    });
+}
+
+function renderFileList() {
+    const box = document.getElementById("fileListBox");
+    box.innerHTML = `<div class="file-item"><span>📄 main.py</span><span>Editor</span></div>`;
+    virtualFiles.forEach((val, key) => {
+        const d = document.createElement("div");
+        d.className = "file-item";
+        d.innerHTML = `<span>📁 ${key}</span><span>${val.length} B</span>`;
+        box.appendChild(d);
+    });
+}
+
+function autoExtractToken(code) {
+    const match = code.match(/\b(\d{8,11}:[A-Za-z0-9_-]{33,36})\b/);
+    if (match && match[1]) {
+        document.getElementById("tokenInput").value = match[1];
+        logTerm(`🔑 Auto-detected Bot Token from code.`);
+    }
+}
+
+function loadSampleBot() {
+    const sample = `import telebot
+
+BOT_TOKEN = "YOUR_BOT_TOKEN_HERE"
+bot = telebot.TeleBot(BOT_TOKEN)
+
+@bot.message_handler(commands=['start', 'help'])
+def send_welcome(message):
+    bot.reply_to(message, "🚀 **DarkX Custom Bot Online!**\\nSend any text to test.")
+
+@bot.message_handler(func=lambda message: True)
+def handle_all(message):
+    bot.reply_to(message, f"✅ Received: {message.text}")
+
+bot.infinity_polling()`;
+    document.getElementById("codeEditor").value = sample;
+}
+
+async function tgApi(token, method, payload = {}) {
+    const r = await fetch(`https://api.telegram.org/bot${token}/${method}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+    });
+    return await r.json();
+}
+
+async function initPythonEngine() {
+    if (pyodideInstance) return pyodideInstance;
+    logTerm("⏳ Initializing Python 3.11 Runtime Engine (First run takes 3-5s)...");
+    pyodideInstance = await loadPyodide({
+        stdout: (msg) => logTerm(`🐍 ${msg}`),
+        stderr: (err) => logTerm(`⚠️ ${err}`)
+    });
+    await pyodideInstance.loadPackage("micropip");
+    logTerm("✅ Python 3.11 Runtime Ready.");
+    return pyodideInstance;
+}
+
+// Inject Browser-Compatible Telebot & Pyrogram Bridge into Python Runtime
+const PYTHON_TG_BRIDGE = `
+import sys
+import types
+import json
+import js
+
+_handlers = []
+
+class ChatObj:
+    def __init__(self, d):
+        self.id = d.get("id", 0)
+        self.type = d.get("type", "private")
+        self.title = d.get("title", "")
+
+class UserObj:
+    def __init__(self, d):
+        self.id = d.get("id", 0)
+        self.first_name = d.get("first_name", "User")
+        self.username = d.get("username", "")
+
+class MessageObj:
+    def __init__(self, d, bot_ref=None):
+        self.id = d.get("message_id", 0)
+        self.message_id = self.id
+        self.text = d.get("text", "")
+        self.chat = ChatObj(d.get("chat", {}))
+        self.from_user = UserObj(d.get("from", {}))
+        self.sender_chat = None
+        self._bot = bot_ref
+
+    async def reply_text(self, text, **kwargs):
+        js.sendTelegramReply(self.chat.id, str(text), self.message_id)
+
+    async def reply_document(self, doc_path, caption="", **kwargs):
+        try:
+            with open(doc_path, "r", encoding="utf-8", errors="ignore") as f:
+                content = f.read()
+            js.sendTelegramDocument(self.chat.id, doc_path, content, str(caption), self.message_id)
+        except Exception as e:
+            js.sendTelegramReply(self.chat.id, f"File Error: {e}", self.message_id)
+
+class TeleBotShim:
+    def __init__(self, token=None, **kwargs):
+        self.token = token
+        if token and ":" in str(token) and "YOUR_BOT_TOKEN" not in str(token):
+            js.setDetectedToken(str(token))
+
+    def message_handler(self, commands=None, func=None, **kwargs):
+        def decorator(fn):
+            _handlers.append({"type": "telebot", "commands": commands, "func": func, "fn": fn, "bot": self})
+            return fn
+        return decorator
+
+    def channel_post_handler(self, **kwargs):
+        def decorator(fn):
+            return fn
+        return decorator
+
+    def callback_query_handler(self, **kwargs):
+        def decorator(fn):
+            return fn
+        return decorator
+
+    def reply_to(self, message, text, **kwargs):
+        js.sendTelegramReply(message.chat.id, str(text), message.message_id)
+
+    def send_message(self, chat_id, text, **kwargs):
+        js.sendTelegramReply(chat_id, str(text), 0)
+
+    def infinity_polling(self, **kwargs):
+        print("TeleBot infinity_polling() hooked to DarkX Web Engine.")
+
+    def polling(self, **kwargs):
+        print("TeleBot polling() hooked to DarkX Web Engine.")
+
+# Create telebot module
+telebot_mod = types.ModuleType("telebot")
+telebot_mod.TeleBot = TeleBotShim
+types_mod = types.ModuleType("telebot.types")
+class DummyMarkup:
+    def __init__(self, *a, **kw): pass
+    def add(self, *a, **kw): pass
+types_mod.InlineKeyboardMarkup = DummyMarkup
+types_mod.InlineKeyboardButton = DummyMarkup
+types_mod.ReplyKeyboardMarkup = DummyMarkup
+types_mod.KeyboardButton = DummyMarkup
+types_mod.Message = MessageObj
+telebot_mod.types = types_mod
+sys.modules["telebot"] = telebot_mod
+sys.modules["telebot.types"] = types_mod
+
+# Create pyrogram module shim
+pyro_mod = types.ModuleType("pyrogram")
+class PyroClientShim:
+    def __init__(self, name, api_id=None, api_hash=None, bot_token=None, **kwargs):
+        self.bot_token = bot_token
+        if bot_token and ":" in str(bot_token):
+            js.setDetectedToken(str(bot_token))
+    def on_message(self, filters_obj=None):
+        def decorator(fn):
+            _handlers.append({"type": "pyrogram", "filters": filters_obj, "fn": fn, "client": self})
+            return fn
+        return decorator
+    def run(self):
+        print("Pyrogram Client.run() hooked to DarkX Web Engine.")
+
+class FilterChain:
+    def __init__(self, cmd=None):
+        self.cmd = cmd
+    def __and__(self, other):
+        return FilterChain(self.cmd or getattr(other, 'cmd', None))
+    def __or__(self, other):
+        return FilterChain(self.cmd or getattr(other, 'cmd', None))
+
+class FiltersShim:
+    @staticmethod
+    def command(cmd):
+        if isinstance(cmd, str):
+            return FilterChain([cmd])
+        return FilterChain(list(cmd))
+    private = FilterChain()
+    group = FilterChain()
+    text = FilterChain()
+    document = FilterChain()
+
+pyro_mod.Client = PyroClientShim
+pyro_mod.filters = FiltersShim
+sys.modules["pyrogram"] = pyro_mod
+
+pyro_enums = types.ModuleType("pyrogram.enums")
+pyro_enums.ChatType = DummyMarkup
+sys.modules["pyrogram.enums"] = pyro_enums
+
+pyro_types = types.ModuleType("pyrogram.types")
+pyro_types.ReplyKeyboardMarkup = DummyMarkup
+pyro_types.KeyboardButton = DummyMarkup
+pyro_types.Message = MessageObj
+sys.modules["pyrogram.types"] = pyro_types
+
+pyro_errors = types.ModuleType("pyrogram.errors")
+pyro_errors.FloodWait = Exception
+pyro_errors.RPCError = Exception
+sys.modules["pyrogram.errors"] = pyro_errors
+
+async def _dispatch_update(raw_json):
+    d = json.loads(raw_json)
+    msg = MessageObj(d)
+    text = msg.text or ""
+    for h in _handlers:
+        try:
+            if h["type"] == "telebot":
+                cmds = h["commands"]
+                if cmds:
+                    matched = any(text.startswith("/" + c) for c in cmds)
+                    if not matched:
+                        continue
+                elif h["func"]:
+                    if not h["func"](msg):
+                        continue
+                res = h["fn"](msg)
+                if hasattr(res, "__await__"):
+                    await res
+                break
+            elif h["type"] == "pyrogram":
+                f_obj = h["filters"]
+                if f_obj and getattr(f_obj, "cmd", None):
+                    matched = any(text.startswith("/" + c) for c in f_obj.cmd)
+                    if not matched:
+                        continue
+                res = h["fn"](h["client"], msg)
+                if hasattr(res, "__await__"):
+                    await res
+                break
+        except Exception as e:
+            print(f"Handler Error: {e}")
+`;
+
+window.setDetectedToken = function(tok) {
+    if (!document.getElementById("tokenInput").value.trim()) {
+        document.getElementById("tokenInput").value = tok;
+    }
+    activeToken = tok;
+};
+
+window.sendTelegramReply = async function(chatId, text, replyId) {
+    if (!activeToken) return;
+    try {
+        const payload = { chat_id: chatId, text: text };
+        if (replyId) payload.reply_to_message_id = replyId;
+        await tgApi(activeToken, "sendMessage", payload);
+        logTerm(`📤 Sent reply to ${chatId}`);
+    } catch (e) {
+        logTerm(`❌ Send Error: ${e.message}`);
+    }
+};
+
+window.sendTelegramDocument = async function(chatId, filename, content, caption, replyId) {
+    if (!activeToken) return;
+    try {
+        const form = new FormData();
+        form.append("chat_id", chatId);
+        if (caption) form.append("caption", caption);
+        if (replyId) form.append("reply_to_message_id", replyId);
+        const blob = new Blob([content], { type: "text/plain" });
+        form.append("document", blob, filename.split("/").pop());
+        await fetch(`https://api.telegram.org/bot${activeToken}/sendDocument`, {
+            method: "POST",
+            body: form
+        });
+        logTerm(`📎 Sent document '${filename}' to ${chatId}`);
+    } catch (e) {
+        logTerm(`❌ Document Send Error: ${e.message}`);
+    }
+};
+
+async function startCustomBot() {
+    const code = document.getElementById("codeEditor").value;
+    autoExtractToken(code);
+    activeToken = document.getElementById("tokenInput").value.trim();
+
+    if (!activeToken || activeToken === "YOUR_BOT_TOKEN_HERE") {
+        logTerm("❌ Error: Bot Token nahi mila! Ya to Box mein Bot Token daalein ya apne code mein BOT_TOKEN set karein.");
+        return;
+    }
+
+    try {
+        const me = await tgApi(activeToken, "getMe");
+        if (!me.ok) {
+            logTerm(`❌ Invalid Bot Token: ${me.description}`);
+            return;
+        }
+        document.getElementById("botUserLabel").innerText = `@${me.result.username}`;
+        logTerm(`✅ Connected to Telegram Bot: @${me.result.username}`);
+    } catch (e) {
+        logTerm(`❌ Connection Error: ${e.message}`);
+        return;
+    }
+
+    const py = await initPythonEngine();
+
+    // Write uploaded .txt files into Python Virtual Filesystem
+    virtualFiles.forEach((content, name) => {
+        py.FS.writeFile(name, content);
+    });
+
+    // Reset handlers and load bridge
+    await py.runPythonAsync(PYTHON_TG_BRIDGE);
+
+    logTerm("🚀 Executing your custom Python code (`main.py`)...");
+    try {
+        await py.runPythonAsync(code);
+    } catch (err) {
+        logTerm(`⚠️ Python Execution Note: ${err.message}`);
+    }
+
+    await tgApi(activeToken, "deleteWebhook", { drop_pending_updates: false });
+
+    isBotRunning = true;
+    document.getElementById("startBtn").style.display = "none";
+    document.getElementById("stopBtn").style.display = "inline-block";
+    const badge = document.getElementById("statusBadge");
+    badge.innerText = "● BOT ONLINE & HOSTED";
+    badge.classList.add("online");
+
+    logTerm("🔥 Bot is now LIVE! Send a message to your bot on Telegram.");
+    pollLoop();
+}
+
+function stopCustomBot() {
+    isBotRunning = false;
+    document.getElementById("startBtn").style.display = "inline-block";
+    document.getElementById("stopBtn").style.display = "none";
+    const badge = document.getElementById("statusBadge");
+    badge.innerText = "● BOT STOPPED";
+    badge.classList.remove("online");
+    logTerm("🛑 Bot hosting stopped.");
+}
+
+async function pollLoop() {
+    while (isBotRunning) {
+        try {
+            const res = await tgApi(activeToken, "getUpdates", {
+                offset: pollOffset,
+                timeout: 15
+            });
+            if (res.ok && Array.isArray(res.result)) {
+                for (const u of res.result) {
+                    pollOffset = u.update_id + 1;
+                    if (u.message) {
+                        processedCount++;
+                        document.getElementById("msgCountLabel").innerText = processedCount;
+                        const sender = u.message.from ? (u.message.from.username || u.message.from.first_name) : "User";
+                        logTerm(`📩 [${u.message.chat.id}] ${sender}: ${u.message.text || "[Media]"}`);
+                        if (pyodideInstance) {
+                            pyodideInstance.globals.set("_raw_msg_json", JSON.stringify(u.message));
+                            await pyodideInstance.runPythonAsync(`await _dispatch_update(_raw_msg_json)`);
+                        }
+                    }
+                }
+            }
+        } catch (e) {
+            await new Promise(r => setTimeout(r, 2500));
+        }
+    }
+}
+</script>
+</body>
+  </html>
