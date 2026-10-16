@@ -81,7 +81,6 @@
             border-color: var(--accent);
         }
 
-        /* Uptime & Database Dashboard Cards */
         .uptime-grid {
             max-width: 1380px;
             margin: 0 auto 14px auto;
@@ -133,7 +132,7 @@
             max-width: 1380px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: 360px 1fr;
+            grid-template-columns: 370px 1fr;
             gap: 14px;
         }
 
@@ -148,7 +147,7 @@
             padding: 14px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 11px;
         }
 
         .card-title {
@@ -166,7 +165,7 @@
             font-size: 11.5px;
             color: var(--muted);
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
         }
 
         input[type="text"], input[type="password"], input[type="file"], select, textarea {
@@ -174,7 +173,7 @@
             background: #060a12;
             border: 1px solid var(--border);
             color: var(--text);
-            padding: 9px 11px;
+            padding: 8px 10px;
             border-radius: 6px;
             font-size: 12.5px;
             outline: none;
@@ -185,13 +184,21 @@
         }
 
         .code-box {
-            min-height: 295px;
+            min-height: 310px;
             color: #00ff88;
             line-height: 1.45;
             resize: vertical;
             white-space: pre;
             overflow-x: auto;
             tab-size: 4;
+        }
+
+        .req-box {
+            min-height: 78px;
+            color: #ffaa00;
+            line-height: 1.4;
+            resize: vertical;
+            font-size: 12px;
         }
 
         .btn-group {
@@ -218,16 +225,16 @@
             background: #060a12;
             border: 1px solid var(--border);
             border-radius: 6px;
-            padding: 8px;
+            padding: 7px;
             font-size: 11.5px;
-            max-height: 100px;
+            max-height: 85px;
             overflow-y: auto;
         }
 
         .file-item {
             display: flex;
             justify-content: space-between;
-            padding: 4px 6px;
+            padding: 3px 6px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             color: var(--green);
         }
@@ -237,23 +244,13 @@
             border: 1px solid var(--border);
             border-radius: 6px;
             padding: 12px;
-            height: 250px;
+            height: 255px;
             overflow-y: auto;
             font-size: 12px;
             line-height: 1.5;
             white-space: pre-wrap;
             word-break: break-word;
             color: #cbd5e1;
-        }
-
-        .stats-box {
-            background: #060a12;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            padding: 10px;
-            font-size: 12px;
-            line-height: 1.8;
-            color: var(--muted);
         }
 
         .auto-resume-row {
@@ -274,7 +271,7 @@
     <div class="header">
         <div>
             <h1>⚡ DARKX UNIVERSAL BOT HOSTING ENGINE (DB + AUTO-RESUME)</h1>
-            <div style="font-size: 11.5px; color: var(--muted); margin-top: 3px;">Full File Decryption Support (`get_file` / `download_file`) • Permanent Device DB • By Ashif</div>
+            <div style="font-size: 11.5px; color: var(--muted); margin-top: 3px;">Full File Decryption (`get_file` / `download_file`) • Paste Requirements • Device DB • By Ashif</div>
         </div>
         <div class="badges-wrap">
             <div class="status-badge ready" id="engineBadge">⏳ Loading Python Engine...</div>
@@ -286,13 +283,13 @@
     <div class="uptime-grid">
         <div class="stat-card run-card">
             <div class="stat-label">🟢 Kitna Din Bot Chala Hai (Total Uptime)</div>
-            <div class="stat-val" id="totalRunDisplay" style="color: var(--green);">0d 0h 0m 0s</div>
+            <div class="stat-val" id="totalRunDisplay" style="color: var(--green);">0 Din, 0h 0m 0s</div>
             <div class="stat-sub" id="firstHostedDisplay">First Hosted: Today</div>
         </div>
         <div class="stat-card off-card">
             <div class="stat-label">🔴 Kitna Din Band Raha (Total Offline)</div>
-            <div class="stat-val" id="totalOffDisplay" style="color: var(--red);">0d 0h 0m 0s</div>
-            <div class="stat-sub" id="lastSeenDisplay">Last Active: Just now</div>
+            <div class="stat-val" id="totalOffDisplay" style="color: var(--red);">0 Din, 0h 0m 0s</div>
+            <div class="stat-sub" id="lastSeenDisplay">Status: Waiting</div>
         </div>
         <div class="stat-card ses-card">
             <div class="stat-label">⏱️ Current Live Session &amp; Events</div>
@@ -309,7 +306,7 @@
     <div class="main-grid">
         <!-- Left Setup Panel -->
         <div class="card">
-            <div class="card-title">1. Bot Setup &amp; Device DB</div>
+            <div class="card-title">1. Bot Setup, Requirements &amp; DB</div>
 
             <div class="auto-resume-row">
                 <input type="checkbox" id="autoResumeToggle" checked onchange="saveAllToDeviceDB()">
@@ -337,7 +334,13 @@
             </div>
 
             <div>
-                <label>Upload Extra Data / .txt / .json Files (Saved in DB):</label>
+                <label>📦 Paste Requirements (`requirements.txt`):</label>
+                <textarea class="req-box" id="reqEditor" spellcheck="false" placeholder="pyTelegramBotAPI&#10;requests&#10;pycryptodome&#10;aiohttp" oninput="saveAllToDeviceDB()">pyTelegramBotAPI
+requests</textarea>
+            </div>
+
+            <div>
+                <label>Upload Extra Data / `requirements.txt` Files:</label>
                 <input type="file" id="dataFileUpload" multiple onchange="handleDataUpload(this)">
             </div>
 
@@ -354,7 +357,7 @@
             </div>
 
             <div class="btn-group">
-                <button class="btn btn-small" style="flex:1;" onclick="resetUptimeStats()">🔄 Reset Uptime Counter</button>
+                <button class="btn btn-small" style="flex:1;" onclick="resetUptimeStats()">🔄 Reset Uptime</button>
                 <button class="btn btn-small" style="flex:1; color:var(--red);" onclick="clearDeviceDB()">🗑️ Clear Device DB</button>
             </div>
         </div>
@@ -362,7 +365,7 @@
         <!-- Right Code Editor & Live Console -->
         <div class="card">
             <div class="card-title">
-                <span>2. Bot Code Editor (Auto-Saves Every Change to Device DB)</span>
+                <span>2. Bot Code Editor (Auto-Saves to Device DB)</span>
                 <div style="display:flex; gap:6px;">
                     <button class="btn btn-small" onclick="saveAllToDeviceDB(true)">💾 Save Now</button>
                     <button class="btn btn-small" onclick="loadDemoTemplate()">Load Demo Bot</button>
@@ -372,7 +375,7 @@
             <textarea class="code-box" id="codeEditor" spellcheck="false" oninput="saveAllToDeviceDB()"></textarea>
 
             <div class="card-title">
-                <span>3. Live Hosting Terminal Logs (Saved Across Refreshes)</span>
+                <span>3. Live Hosting Terminal Logs</span>
                 <button class="btn btn-small" onclick="clearTerminal()">Clear Logs</button>
             </div>
 
@@ -380,581 +383,10 @@
         </div>
     </div>
 
-<script>
-// =========================================================
-// 1. PERMANENT DEVICE DATABASE (IndexedDB + LocalStorage)
-// =========================================================
-const DB_NAME = "DarkXBotHostingDeviceDB_v2";
-const DB_STORE = "bot_workspace";
-const STATS_KEY = "darkx_bot_uptime_stats_v2";
-
-let dbInstance = null;
-let pyodideInstance = null;
-let pyodideLoadingPromise = null;
-let isBotRunning = false;
-let pollOffset = 0;
-let activeToken = "";
-let activeLang = "python";
-let wakeLockObj = null;
-let audioKeepAliveCtx = null;
-let workerHeartbeat = null;
-let sessionStartTimestamp = 0;
-
-const virtualFiles = new Map(); // filename -> base64 string
-const tgFileBytesCache = new Map(); // file_path -> base64 string
-const tgFileIdMap = new Map(); // file_id -> { file_path, file_size }
-
-// Load or initialize persistent uptime/downtime stats
-let botStats = JSON.parse(localStorage.getItem(STATS_KEY) || "null") || {
-    firstHostedAt: Date.now(),
-    totalRunSeconds: 0,
-    totalOffSeconds: 0,
-    lastTickAt: Date.now(),
-    wasRunning: false,
-    processedMessages: 0,
-    botUsername: "Not Connected",
-    botId: "N/A"
-};
-
-// Account for time spent while tab was closed
-(function reconcileOfflineGap() {
-    const now = Date.now();
-    const gapSec = Math.max(0, Math.floor((now - (botStats.lastTickAt || now)) / 1000));
-    if (gapSec > 2) {
-        // While browser tab was completely closed, bot was offline
-        botStats.totalOffSeconds = (botStats.totalOffSeconds || 0) + gapSec;
-    }
-    botStats.lastTickAt = now;
-    localStorage.setItem(STATS_KEY, JSON.stringify(botStats));
-})();
-
-function formatDaysHoursMins(totalSecs) {
-    totalSecs = Math.max(0, Math.floor(totalSecs || 0));
-    const days = Math.floor(totalSecs / 86400);
-    const hours = Math.floor((totalSecs % 86400) / 3600);
-    const mins = Math.floor((totalSecs % 3600) / 60);
-    const secs = totalSecs % 60;
-    return `${days} Din, ${hours}h ${mins}m ${secs}s`;
-}
-
-function formatHMS(totalSecs) {
-    totalSecs = Math.max(0, Math.floor(totalSecs || 0));
-    const h = String(Math.floor(totalSecs / 3600)).padStart(2, "0");
-    const m = String(Math.floor((totalSecs % 3600) / 60)).padStart(2, "0");
-    const s = String(totalSecs % 60).padStart(2, "0");
-    return `${h}:${m}:${s}`;
-}
-
-// Every 1 second, update Running vs Offline counters in Device Database
-setInterval(() => {
-    const now = Date.now();
-    const delta = Math.max(1, Math.min(5, Math.round((now - (botStats.lastTickAt || now)) / 1000)));
-    botStats.lastTickAt = now;
-
-    if (isBotRunning) {
-        botStats.totalRunSeconds = (botStats.totalRunSeconds || 0) + delta;
-    } else {
-        botStats.totalOffSeconds = (botStats.totalOffSeconds || 0) + delta;
-    }
-
-    localStorage.setItem(STATS_KEY, JSON.stringify(botStats));
-
-    document.getElementById("totalRunDisplay").innerText = formatDaysHoursMins(botStats.totalRunSeconds);
-    document.getElementById("totalOffDisplay").innerText = formatDaysHoursMins(botStats.totalOffSeconds);
-    document.getElementById("firstHostedDisplay").innerText = "First Hosted: " + new Date(botStats.firstHostedAt).toLocaleDateString();
-    document.getElementById("lastSeenDisplay").innerText = isBotRunning ? "Status: Currently Running 🟢" : "Status: Currently Paused 🔴";
-    document.getElementById("msgCountLabel").innerText = botStats.processedMessages || 0;
-
-    if (isBotRunning && sessionStartTimestamp > 0) {
-        const sesSecs = Math.floor((now - sessionStartTimestamp) / 1000);
-        document.getElementById("currentSessionDisplay").innerText = formatHMS(sesSecs);
-    } else {
-        document.getElementById("currentSessionDisplay").innerText = "00:00:00";
-    }
-}, 1000);
-
-function resetUptimeStats() {
-    botStats.firstHostedAt = Date.now();
-    botStats.totalRunSeconds = 0;
-    botStats.totalOffSeconds = 0;
-    botStats.lastTickAt = Date.now();
-    botStats.processedMessages = 0;
-    sessionStartTimestamp = isBotRunning ? Date.now() : 0;
-    localStorage.setItem(STATS_KEY, JSON.stringify(botStats));
-    logTerm("🔄 Uptime & Offline counters reset to 0.");
-}
-
-function openDeviceIndexedDB() {
-    return new Promise((resolve) => {
-        try {
-            const req = indexedDB.open(DB_NAME, 1);
-            req.onupgradeneeded = (e) => {
-                const db = e.target.result;
-                if (!db.objectStoreNames.contains(DB_STORE)) {
-                    db.createObjectStore(DB_STORE);
-                }
-            };
-            req.onsuccess = (e) => {
-                dbInstance = e.target.result;
-                resolve(dbInstance);
-            };
-            req.onerror = () => resolve(null);
-        } catch (e) {
-            resolve(null);
-        }
-    });
-}
-
-async function dbSaveKey(key, val) {
-    try {
-        localStorage.setItem("darkx_db_" + key, typeof val === "string" ? val : JSON.stringify(val));
-    } catch (e) {}
-    if (!dbInstance) await openDeviceIndexedDB();
-    if (!dbInstance) return;
-    return new Promise((resolve) => {
-        try {
-            const tx = dbInstance.transaction(DB_STORE, "readwrite");
-            tx.objectStore(DB_STORE).put(val, key);
-            tx.oncomplete = () => resolve(true);
-            tx.onerror = () => resolve(false);
-        } catch (e) { resolve(false); }
-    });
-}
-
-async function dbLoadKey(key) {
-    if (!dbInstance) await openDeviceIndexedDB();
-    if (dbInstance) {
-        const val = await new Promise((resolve) => {
-            try {
-                const tx = dbInstance.transaction(DB_STORE, "readonly");
-                const req = tx.objectStore(DB_STORE).get(key);
-                req.onsuccess = () => resolve(req.result);
-                req.onerror = () => resolve(undefined);
-            } catch (e) { resolve(undefined); }
-        });
-        if (val !== undefined) return val;
-    }
-    const ls = localStorage.getItem("darkx_db_" + key);
-    if (ls !== null) {
-        try { return JSON.parse(ls); } catch (e) { return ls; }
-    }
-    return undefined;
-}
-
-async function saveAllToDeviceDB(showLog = false) {
-    const code = document.getElementById("codeEditor").value;
-    const lang = document.getElementById("langSelect").value;
-    const tok = document.getElementById("tokenInput").value.trim();
-    const autoRes = document.getElementById("autoResumeToggle").checked;
-
-    const filesObj = {};
-    virtualFiles.forEach((b64, name) => { filesObj[name] = b64; });
-
-    await dbSaveKey("code", code);
-    await dbSaveKey("lang", lang);
-    await dbSaveKey("token", tok);
-    await dbSaveKey("autoResume", autoRes);
-    await dbSaveKey("files", filesObj);
-
-    const dbBadge = document.getElementById("dbStateDisplay");
-    dbBadge.innerText = "● Saved in Device (" + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ")";
-    if (showLog) logTerm("💾 All code, token, and workspace files saved to Device Database.");
-}
-
-async function clearDeviceDB() {
-    if (!confirm("Clear saved bot code and files from device database?")) return;
-    localStorage.clear();
-    if (dbInstance) {
-        const tx = dbInstance.transaction(DB_STORE, "readwrite");
-        tx.objectStore(DB_STORE).clear();
-    }
-    virtualFiles.clear();
-    renderFileList();
-    logTerm("🗑️ Device Database cleared.");
-}
-
-// =========================================================
-// 2. LOGGING & FILE UPLOAD HANDLERS
-// =========================================================
-const DEFAULT_TEMPLATES = {
-    python: `import telebot
-from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
-from io import BytesIO
-
-TOKEN = "YOUR_BOT_TOKEN_HERE"
-bot = telebot.TeleBot(TOKEN, parse_mode="HTML")
-
-@bot.message_handler(commands=['start', 'help'])
-def start_cmd(message):
-    markup = InlineKeyboardMarkup(row_width=2)
-    markup.add(
-        InlineKeyboardButton("⚡ Generate Config", callback_data="gen_cfg"),
-        InlineKeyboardButton("ℹ️ My Info", callback_data="my_info")
-    )
-    bot.reply_to(
-        message,
-        f"🔥 <b>Welcome {message.from_user.first_name}!</b>\\n\\n"
-        f"✅ Your Python Bot is Live with <b>Device DB & File Decryption Support</b>.",
-        reply_markup=markup
-    )
-
-@bot.message_handler(content_types=['document'])
-def handle_doc(message):
-    file_info = bot.get_file(message.document.file_id)
-    raw_bytes = bot.download_file(file_info.file_path)
-    bot.reply_to(message, f"✅ <b>File Downloaded & Processed!</b>\\nName: <code>{message.document.file_name}</code>\\nSize: <code>{len(raw_bytes)} bytes</code>")
-
-bot.infinity_polling()`,
-    javascript: `const TelegramBot = require('node-telegram-bot-api');
-const token = 'YOUR_BOT_TOKEN_HERE';
-const bot = new TelegramBot(token, { polling: true });
-
-bot.onText(/\\/start/, (msg) => {
-    bot.sendMessage(msg.chat.id, "🔥 *Node.js Bot is Live on DarkX Cloud!*", { parse_mode: "Markdown" });
-});`,
-    php: `<?php
-$BOT_TOKEN = "YOUR_BOT_TOKEN_HERE";
-sendMessage($chat_id, "🔥 <b>PHP Bot is Live on DarkX Cloud!</b>", "HTML");
-?>`,
-    json: `{
-  "/start": "🔥 *JSON Bot is Live!*\\nSend /help or any keyword.",
-  "/help": "📌 Available commands: /start, /help, /ping",
-  "ping": "🏓 Pong! Bot is working fast."
-}`
-};
-
-function logTerm(text) {
-    const box = document.getElementById("terminalBox");
-    const t = new Date().toLocaleTimeString();
-    box.textContent += `\n[${t}] ${text}`;
-    if (box.textContent.length > 25000) {
-        box.textContent = box.textContent.slice(-20000);
-    }
-    box.scrollTop = box.scrollHeight;
-    try { localStorage.setItem("darkx_saved_logs", box.textContent); } catch (e) {}
-}
-
-function clearTerminal() {
-    document.getElementById("terminalBox").textContent = "[*] Console cleared.";
-    localStorage.setItem("darkx_saved_logs", "[*] Console cleared.");
-}
-
-function autoExtractToken(code) {
-    const match = code.match(/\b(\d{8,11}:[A-Za-z0-9_-]{33,36})\b/);
-    if (match && match[1]) {
-        document.getElementById("tokenInput").value = match[1];
-        activeToken = match[1];
-        logTerm(`🔑 Auto-detected Bot Token: ${match[1].slice(0, 12)}...`);
-    }
-}
-
-function uint8ToBase64(uint8) {
-    let binary = "";
-    const len = uint8.byteLength;
-    for (let i = 0; i < len; i++) binary += String.fromCharCode(uint8[i]);
-    return btoa(binary);
-}
-
-function base64ToUint8(b64) {
-    const bin = atob(b64);
-    const arr = new Uint8Array(bin.length);
-    for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
-    return arr;
-}
-
-function handleCodeUpload(input) {
-    if (!input.files || !input.files[0]) return;
-    const f = input.files[0];
-    const ext = f.name.split('.').pop().toLowerCase();
-    if (ext === 'js') document.getElementById("langSelect").value = "javascript";
-    else if (ext === 'php') document.getElementById("langSelect").value = "php";
-    else if (ext === 'json') document.getElementById("langSelect").value = "json";
-    else document.getElementById("langSelect").value = "python";
-
-    activeLang = document.getElementById("langSelect").value;
-
-    f.text().then(async (content) => {
-        document.getElementById("codeEditor").value = content;
-        logTerm(`📄 Loaded '${f.name}' (${content.length} bytes) & saved to Device DB.`);
-        autoExtractToken(content);
-        await saveAllToDeviceDB();
-    });
-}
-
-function handleDataUpload(input) {
-    if (!input.files) return;
-    Array.from(input.files).forEach(file => {
-        const reader = new FileReader();
-        reader.onload = async () => {
-            const uint8 = new Uint8Array(reader.result);
-            const b64 = uint8ToBase64(uint8);
-            virtualFiles.set(file.name, b64);
-            if (pyodideInstance) {
-                try { pyodideInstance.FS.writeFile(file.name, uint8); } catch (e) {}
-            }
-            renderFileList();
-            await saveAllToDeviceDB();
-            logTerm(`📁 Saved file '${file.name}' (${uint8.length} bytes) to Device DB.`);
-        };
-        reader.readAsArrayBuffer(file);
-    });
-}
-
-function renderFileList() {
-    const box = document.getElementById("fileListBox");
-    box.innerHTML = `<div class="file-item"><span>📄 main.${activeLang === 'python' ? 'py' : activeLang}</span><span>Saved in DB</span></div>`;
-    virtualFiles.forEach((b64, key) => {
-        const size = Math.round((b64.length * 3) / 4);
-        const d = document.createElement("div");
-        d.className = "file-item";
-        d.innerHTML = `<span>📁 ${key}</span><span>${size} B</span>`;
-        box.appendChild(d);
-    });
-}
-
-function switchLanguageTemplate() {
-    activeLang = document.getElementById("langSelect").value;
-    const editor = document.getElementById("codeEditor");
-    if (!editor.value.trim()) {
-        editor.value = DEFAULT_TEMPLATES[activeLang];
-    }
-    saveAllToDeviceDB();
-}
-
-function loadDemoTemplate() {
-    activeLang = document.getElementById("langSelect").value;
-    document.getElementById("codeEditor").value = DEFAULT_TEMPLATES[activeLang];
-    saveAllToDeviceDB();
-    logTerm(`📝 Loaded demo template.`);
-}
-
-// =========================================================
-// 3. TELEGRAM API + BINARY FILE DOWNLOADER (CORS-PROOF)
-// =========================================================
-async function tgApiAsync(token, method, payload = {}) {
-    const r = await fetch(`https://api.telegram.org/bot${token}/${method}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-    });
-    const data = await r.json();
-    if (!data.ok && payload.parse_mode && data.description && data.description.includes("parse entities")) {
-        const retryPayload = { ...payload };
-        delete retryPayload.parse_mode;
-        const r2 = await fetch(`https://api.telegram.org/bot${token}/${method}`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(retryPayload)
-        });
-        return await r2.json();
-    }
-    return data;
-}
-
-// Pre-download any incoming Telegram document/media into memory before calling Python handler
-async function preDownloadTelegramFile(fileId) {
-    if (!activeToken || !fileId) return null;
-    try {
-        const gf = await tgApiAsync(activeToken, "getFile", { file_id: fileId });
-        if (!gf.ok || !gf.result || !gf.result.file_path) return null;
-
-        const filePath = gf.result.file_path;
-        const fileSize = gf.result.file_size || 0;
-        tgFileIdMap.set(fileId, { file_path: filePath, file_size: fileSize });
-
-        if (tgFileBytesCache.has(filePath)) return filePath;
-
-        const rawUrl = `https://api.telegram.org/file/bot${activeToken}/${filePath}`;
-        const proxyUrls = [
-            rawUrl,
-            `https://corsproxy.io/?${encodeURIComponent(rawUrl)}`,
-            `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(rawUrl)}`,
-            `https://api.allorigins.win/raw?url=${encodeURIComponent(rawUrl)}`
-        ];
-
-        for (const u of proxyUrls) {
-            try {
-                const resp = await fetch(u);
-                if (resp.ok) {
-                    const buf = await resp.arrayBuffer();
-                    const uint8 = new Uint8Array(buf);
-                    if (uint8.length > 0) {
-                        const b64 = uint8ToBase64(uint8);
-                        tgFileBytesCache.set(filePath, b64);
-                        logTerm(`📥 Downloaded incoming file '${filePath.split('/').pop()}' (${uint8.length} bytes) for processing.`);
-                        return filePath;
-                    }
-                }
-            } catch (e) {}
-        }
-    } catch (e) {
-        logTerm(`⚠️ File Pre-Fetch Note: ${e.message}`);
-    }
-    return null;
-}
-
-// Synchronous File Info getter for Python bot.get_file(file_id)
-window.syncGetFile = function(fileId) {
-    if (tgFileIdMap.has(fileId)) {
-        const info = tgFileIdMap.get(fileId);
-        return JSON.stringify({ ok: true, result: { file_id: fileId, file_unique_id: fileId, file_size: info.file_size, file_path: info.file_path } });
-    }
-    return window.syncTgCall("getFile", JSON.stringify({ file_id: fileId }));
-};
-
-// Synchronous Binary File Downloader for Python bot.download_file(file_path)
-window.syncDownloadFileBase64 = function(filePath) {
-    if (tgFileBytesCache.has(filePath)) {
-        return tgFileBytesCache.get(filePath);
-    }
-    const rawUrl = `https://api.telegram.org/file/bot${activeToken}/${filePath}`;
-    const proxyUrls = [
-        rawUrl,
-        `https://corsproxy.io/?${encodeURIComponent(rawUrl)}`,
-        `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(rawUrl)}`,
-        `https://api.allorigins.win/raw?url=${encodeURIComponent(rawUrl)}`
-    ];
-    for (const u of proxyUrls) {
-        try {
-            const xhr = new XMLHttpRequest();
-            xhr.open("GET", u, false);
-            xhr.overrideMimeType("text/plain; charset=x-user-defined");
-            xhr.send(null);
-            if (xhr.status >= 200 && xhr.status < 300 && xhr.responseText.length > 0) {
-                const rawText = xhr.responseText;
-                const bytes = new Uint8Array(rawText.length);
-                for (let i = 0; i < rawText.length; i++) {
-                    bytes[i] = rawText.charCodeAt(i) & 0xff;
-                }
-                const b64 = uint8ToBase64(bytes);
-                tgFileBytesCache.set(filePath, b64);
-                return b64;
-            }
-        } catch (e) {}
-    }
-    return "";
-};
-
-window.syncTgCall = function(method, payloadJson) {
-    if (!activeToken) return JSON.stringify({ ok: false, description: "No token" });
-    let payload = {};
-    try { payload = JSON.parse(payloadJson); } catch (e) {}
-
-    try {
-        const xhr = new XMLHttpRequest();
-        xhr.open("POST", `https://api.telegram.org/bot${activeToken}/${method}`, false);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.send(JSON.stringify(payload));
-        let resp = JSON.parse(xhr.responseText);
-
-        if (!resp.ok && payload.parse_mode && resp.description && resp.description.includes("parse entities")) {
-            delete payload.parse_mode;
-            const xhr2 = new XMLHttpRequest();
-            xhr2.open("POST", `https://api.telegram.org/bot${activeToken}/${method}`, false);
-            xhr2.setRequestHeader("Content-Type", "application/json");
-            xhr2.send(JSON.stringify(payload));
-            resp = JSON.parse(xhr2.responseText);
-        }
-
-        if (resp.ok) {
-            logTerm(`📤 Telegram API [${method}] -> Success`);
-        } else {
-            logTerm(`⚠️ Telegram API [${method}]: ${resp.description}`);
-        }
-        return JSON.stringify(resp);
-    } catch (err) {
-        tgApiAsync(activeToken, method, payload);
-        return JSON.stringify({
-            ok: true,
-            result: { message_id: Math.floor(Date.now() / 1000), chat: { id: payload.chat_id || 0 }, text: payload.text || "" }
-        });
-    }
-};
-
-window.sendTgMultipartBase64 = async function(fieldType, filename, b64Data, optionsJson) {
-    if (!activeToken) return;
-    try {
-        const opts = JSON.parse(optionsJson || "{}");
-        const byteArray = base64ToUint8(b64Data);
-        const blob = new Blob([byteArray], { type: "application/octet-stream" });
-
-        const buildForm = (includeParseMode) => {
-            const form = new FormData();
-            form.append("chat_id", opts.chat_id);
-            form.append(fieldType, blob, filename || "result.txt");
-            if (opts.caption) form.append("caption", opts.caption);
-            if (includeParseMode && opts.parse_mode) form.append("parse_mode", opts.parse_mode);
-            if (opts.reply_to_message_id) form.append("reply_to_message_id", opts.reply_to_message_id);
-            if (opts.reply_markup) form.append("reply_markup", JSON.stringify(opts.reply_markup));
-            return form;
-        };
-
-        const methodMap = { document: "sendDocument", photo: "sendPhoto", video: "sendVideo", audio: "sendAudio", voice: "sendVoice" };
-        const apiMethod = methodMap[fieldType] || "sendDocument";
-
-        let r = await fetch(`https://api.telegram.org/bot${activeToken}/${apiMethod}`, {
-            method: "POST",
-            body: buildForm(true)
-        });
-        let res = await r.json();
-
-        if (!res.ok && opts.parse_mode && res.description && res.description.includes("parse entities")) {
-            r = await fetch(`https://api.telegram.org/bot${activeToken}/${apiMethod}`, {
-                method: "POST",
-                body: buildForm(false)
-            });
-            res = await r.json();
-        }
-
-        if (res.ok) {
-            logTerm(`📎 Sent ${fieldType} '${filename}' (${byteArray.length} B) to ${opts.chat_id}`);
-        } else {
-            logTerm(`⚠️ File Send Error: ${res.description}`);
-        }
-    } catch (e) {
-        logTerm(`❌ Multipart Error: ${e.message}`);
-    }
-};
-
-window.syncHttpFetch = function(method, url, headersJson, bodyStr) {
-    const tryUrls = [
-        url,
-        `https://corsproxy.io/?${encodeURIComponent(url)}`,
-        `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
-        `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`
-    ];
-    for (const u of tryUrls) {
-        try {
-            const xhr = new XMLHttpRequest();
-            xhr.open(method || "GET", u, false);
-            if (headersJson) {
-                const hdrs = JSON.parse(headersJson);
-                Object.keys(hdrs).forEach(k => {
-                    if (k.toLowerCase() !== "user-agent" && k.toLowerCase() !== "host") {
-                        try { xhr.setRequestHeader(k, hdrs[k]); } catch (e) {}
-                    }
-                });
-            }
-            xhr.send(bodyStr || null);
-            if (xhr.status >= 200 && xhr.status < 500) {
-                return JSON.stringify({ ok: true, status: xhr.status, text: xhr.responseText });
-            }
-        } catch (e) {}
-    }
-    return JSON.stringify({ ok: false, status: 500, text: "" });
-};
-
-window.setDetectedToken = function(tok) {
-    if (tok && tok.includes(":") && !tok.includes("YOUR_BOT_TOKEN")) {
-        activeToken = tok.trim();
-        document.getElementById("tokenInput").value = activeToken;
-    }
-};
-
-// =========================================================
-// 4. COMPLETE PYTHON TELEBOT / PYROGRAM BRIDGE (WITH get_file & download_file)
-// =========================================================
-const PYTHON_UNIVERSAL_BRIDGE = `
+<!-- =========================================================
+     PURE PYTHON BRIDGE SCRIPT (NO JS STRING ESCAPING ISSUES)
+     ========================================================= -->
+<script type="text/python" id="pyBridgeSource">
 import sys
 import os
 import types
@@ -971,6 +403,22 @@ _callback_handlers = []
 _next_step_handlers = {}
 _default_parse_mode = None
 
+# Pre-populated in-memory file cache (populated by JS before handler runs)
+_py_file_info_cache = {}
+_py_file_bytes_cache = {}
+
+def _register_pre_downloaded_file(file_id, file_path, file_size, b64_data):
+    _py_file_info_cache[str(file_id)] = {
+        "file_id": str(file_id),
+        "file_unique_id": str(file_id),
+        "file_size": int(file_size or 0),
+        "file_path": str(file_path)
+    }
+    if b64_data:
+        raw = base64.b64decode(str(b64_data))
+        _py_file_bytes_cache[str(file_path)] = raw
+        _py_file_bytes_cache[str(file_id)] = raw
+
 def _to_clean_dict(obj):
     if obj is None:
         return None
@@ -981,7 +429,7 @@ def _to_clean_dict(obj):
     if hasattr(obj, "to_json"):
         try:
             return json.loads(obj.to_json())
-        except:
+        except Exception:
             pass
     return None
 
@@ -1284,21 +732,31 @@ class TeleBotShim:
                     return MessageObj(data["result"], self)
                 return DictObj(data["result"])
             return data.get("result", True)
-        except:
-            return MessageObj({"message_id": 1, "chat": {"id": payload.get("chat_id", 0)}}, self)
+        except Exception:
+            return MessageObj({"message_id": int(time.time()), "chat": {"id": payload.get("chat_id", 0)}}, self)
 
-    # CRITICAL FIX: get_file & download_file for Tunnelconfigbot.py & file bots!
     def get_file(self, file_id):
-        res_str = js.syncGetFile(str(file_id))
-        data = json.loads(res_str)
-        if data.get("ok") and isinstance(data.get("result"), dict):
-            return FileObj(data["result"])
-        return FileObj({"file_id": file_id, "file_path": ""})
+        fid = str(file_id)
+        if fid in _py_file_info_cache:
+            return FileObj(_py_file_info_cache[fid])
+        res_str = js.syncGetFile(fid)
+        try:
+            data = json.loads(res_str)
+            if data.get("ok") and isinstance(data.get("result"), dict):
+                return FileObj(data["result"])
+        except Exception:
+            pass
+        return FileObj({"file_id": fid, "file_path": fid})
 
     def download_file(self, file_path):
-        b64 = str(js.syncDownloadFileBase64(str(file_path)))
+        fp = str(file_path)
+        if fp in _py_file_bytes_cache:
+            return _py_file_bytes_cache[fp]
+        b64 = str(js.syncDownloadFileBase64(fp))
         if b64:
-            return base64.b64decode(b64)
+            raw = base64.b64decode(b64)
+            _py_file_bytes_cache[fp] = raw
+            return raw
         return b""
 
     def get_file_url(self, file_id):
@@ -1447,19 +905,20 @@ class TeleBotShim:
         if rm:
             opts["reply_markup"] = rm
 
-        # Support tuple ("filename.txt", data)
         if isinstance(data, tuple) and len(data) >= 2:
             visible_file_name = visible_file_name or str(data[0])
             data = data[1]
 
-        # If data is a Telegram file_id or HTTP URL
-        if isinstance(data, str) and not os.path.exists(data) and len(data) < 250 and "\n" not in data:
+        # Check if data is a Telegram file_id or HTTP URL
+        is_multiline = isinstance(data, str) and (chr(10) in data or chr(13) in data)
+        if isinstance(data, str) and not os.path.exists(data) and len(data) < 250 and not is_multiline:
             opts[field_type] = data
             method_map = {"document": "sendDocument", "photo": "sendPhoto", "video": "sendVideo", "audio": "sendAudio", "voice": "sendVoice"}
             return self._call_api(method_map.get(field_type, "sendDocument"), opts)
 
         raw_bytes = b""
-        fname = visible_file_name or getattr(data, "name", None) or f"Decrypted_Config.{'txt' if field_type=='document' else 'jpg'}"
+        ext = "txt" if field_type == "document" else "jpg"
+        fname = visible_file_name or getattr(data, "name", None) or f"Decrypted_Config.{ext}"
         if isinstance(data, str) and os.path.exists(data):
             fname = visible_file_name or os.path.basename(data)
             with open(data, "rb") as f:
@@ -1470,7 +929,7 @@ class TeleBotShim:
         elif hasattr(data, "read"):
             try:
                 data.seek(0)
-            except:
+            except Exception:
                 pass
             val = data.read()
             raw_bytes = val.encode("utf-8") if isinstance(val, str) else val
@@ -1538,7 +997,6 @@ class TeleBotShim:
     def polling(self, *args, **kwargs):
         print("✅ TeleBot polling() active on DarkX Engine.")
 
-    # Catch-all for any other TeleBot method so it never throws AttributeError
     def __getattr__(self, name):
         def dynamic_method(*args, **kwargs):
             parts = name.split("_")
@@ -1577,7 +1035,6 @@ sys.modules["telebot.types"] = types_mod
 sys.modules["telebot.util"] = telebot_mod.util
 sys.modules["telebot.apihelper"] = telebot_mod.apihelper
 
-# Register requests module shim
 req_mod = types.ModuleType("requests")
 class ReqResponse:
     def __init__(self, status_code, text):
@@ -1615,7 +1072,6 @@ sys.modules["requests"] = req_mod
 async def _dispatch_telegram_update(raw_update_json):
     upd = json.loads(raw_update_json)
 
-    # 1. Handle Inline Button Callback Query
     if "callback_query" in upd:
         call = CallbackQueryObj(upd["callback_query"], _global_bot)
         for ch in _callback_handlers:
@@ -1631,12 +1087,11 @@ async def _dispatch_telegram_update(raw_update_json):
                     if hasattr(res, "__await__"):
                         await res
                 except Exception:
-                    print("⚠️ Callback Exception:\\n" + traceback.format_exc())
+                    print("⚠️ Callback Exception:\n" + traceback.format_exc())
                 sys.stdout.flush()
                 break
         return
 
-    # 2. Handle Standard Message
     msg_data = upd.get("message") or upd.get("edited_message") or upd.get("channel_post")
     if not msg_data:
         return
@@ -1651,7 +1106,7 @@ async def _dispatch_telegram_update(raw_update_json):
             if hasattr(res, "__await__"):
                 await res
         except Exception:
-            print("⚠️ Next Step Exception:\\n" + traceback.format_exc())
+            print("⚠️ Next Step Exception:\n" + traceback.format_exc())
         sys.stdout.flush()
         return
 
@@ -1664,7 +1119,6 @@ async def _dispatch_telegram_update(raw_update_json):
                 if msg.content_type not in ctypes and "any" not in ctypes:
                     continue
             else:
-                # In pyTelegramBotAPI, default content_types is ['text'] unless specified
                 if msg.content_type != "text" and h.get("commands"):
                     continue
 
@@ -1694,11 +1148,622 @@ async def _dispatch_telegram_update(raw_update_json):
                 if hasattr(res, "__await__"):
                     await res
             except Exception:
-                print(f"⚠️ Handler Error in {h['fn'].__name__}:\\n" + traceback.format_exc())
+                print(f"⚠️ Handler Error in {h['fn'].__name__}:\n" + traceback.format_exc())
             sys.stdout.flush()
             break
-`;
+</script>
 
+<script>
+// =========================================================
+// 1. PERMANENT DEVICE DATABASE (IndexedDB + LocalStorage)
+// =========================================================
+const DB_NAME = "DarkXBotHostingDeviceDB_v3";
+const DB_STORE = "bot_workspace";
+const STATS_KEY = "darkx_bot_uptime_stats_v3";
+
+let dbInstance = null;
+let pyodideInstance = null;
+let pyodideLoadingPromise = null;
+let isBotRunning = false;
+let pollOffset = 0;
+let activeToken = "";
+let activeLang = "python";
+let wakeLockObj = null;
+let audioKeepAliveCtx = null;
+let workerHeartbeat = null;
+let sessionStartTimestamp = 0;
+
+const virtualFiles = new Map();
+const tgFileBytesCache = new Map();
+const tgFileIdMap = new Map();
+
+let botStats = JSON.parse(localStorage.getItem(STATS_KEY) || "null") || {
+    firstHostedAt: Date.now(),
+    totalRunSeconds: 0,
+    totalOffSeconds: 0,
+    lastTickAt: Date.now(),
+    wasRunning: false,
+    processedMessages: 0,
+    botUsername: "Not Connected",
+    botId: "N/A"
+};
+
+(function reconcileOfflineGap() {
+    const now = Date.now();
+    const gapSec = Math.max(0, Math.floor((now - (botStats.lastTickAt || now)) / 1000));
+    if (gapSec > 2) {
+        botStats.totalOffSeconds = (botStats.totalOffSeconds || 0) + gapSec;
+    }
+    botStats.lastTickAt = now;
+    localStorage.setItem(STATS_KEY, JSON.stringify(botStats));
+})();
+
+function formatDaysHoursMins(totalSecs) {
+    totalSecs = Math.max(0, Math.floor(totalSecs || 0));
+    const days = Math.floor(totalSecs / 86400);
+    const hours = Math.floor((totalSecs % 86400) / 3600);
+    const mins = Math.floor((totalSecs % 3600) / 60);
+    const secs = totalSecs % 60;
+    return `${days} Din, ${hours}h ${mins}m ${secs}s`;
+}
+
+function formatHMS(totalSecs) {
+    totalSecs = Math.max(0, Math.floor(totalSecs || 0));
+    const h = String(Math.floor(totalSecs / 3600)).padStart(2, "0");
+    const m = String(Math.floor((totalSecs % 3600) / 60)).padStart(2, "0");
+    const s = String(totalSecs % 60).padStart(2, "0");
+    return `${h}:${m}:${s}`;
+}
+
+setInterval(() => {
+    const now = Date.now();
+    const delta = Math.max(1, Math.min(5, Math.round((now - (botStats.lastTickAt || now)) / 1000)));
+    botStats.lastTickAt = now;
+
+    if (isBotRunning) {
+        botStats.totalRunSeconds = (botStats.totalRunSeconds || 0) + delta;
+    } else {
+        botStats.totalOffSeconds = (botStats.totalOffSeconds || 0) + delta;
+    }
+
+    localStorage.setItem(STATS_KEY, JSON.stringify(botStats));
+
+    document.getElementById("totalRunDisplay").innerText = formatDaysHoursMins(botStats.totalRunSeconds);
+    document.getElementById("totalOffDisplay").innerText = formatDaysHoursMins(botStats.totalOffSeconds);
+    document.getElementById("firstHostedDisplay").innerText = "First Hosted: " + new Date(botStats.firstHostedAt).toLocaleDateString();
+    document.getElementById("lastSeenDisplay").innerText = isBotRunning ? "Status: Currently Running 🟢" : "Status: Currently Paused 🔴";
+    document.getElementById("msgCountLabel").innerText = botStats.processedMessages || 0;
+
+    if (isBotRunning && sessionStartTimestamp > 0) {
+        const sesSecs = Math.floor((now - sessionStartTimestamp) / 1000);
+        document.getElementById("currentSessionDisplay").innerText = formatHMS(sesSecs);
+    } else {
+        document.getElementById("currentSessionDisplay").innerText = "00:00:00";
+    }
+}, 1000);
+
+function resetUptimeStats() {
+    botStats.firstHostedAt = Date.now();
+    botStats.totalRunSeconds = 0;
+    botStats.totalOffSeconds = 0;
+    botStats.lastTickAt = Date.now();
+    botStats.processedMessages = 0;
+    sessionStartTimestamp = isBotRunning ? Date.now() : 0;
+    localStorage.setItem(STATS_KEY, JSON.stringify(botStats));
+    logTerm("🔄 Uptime & Offline counters reset to 0.");
+}
+
+function openDeviceIndexedDB() {
+    return new Promise((resolve) => {
+        try {
+            const req = indexedDB.open(DB_NAME, 1);
+            req.onupgradeneeded = (e) => {
+                const db = e.target.result;
+                if (!db.objectStoreNames.contains(DB_STORE)) {
+                    db.createObjectStore(DB_STORE);
+                }
+            };
+            req.onsuccess = (e) => {
+                dbInstance = e.target.result;
+                resolve(dbInstance);
+            };
+            req.onerror = () => resolve(null);
+        } catch (e) {
+            resolve(null);
+        }
+    });
+}
+
+async function dbSaveKey(key, val) {
+    try {
+        localStorage.setItem("darkx_db_" + key, typeof val === "string" ? val : JSON.stringify(val));
+    } catch (e) {}
+    if (!dbInstance) await openDeviceIndexedDB();
+    if (!dbInstance) return;
+    return new Promise((resolve) => {
+        try {
+            const tx = dbInstance.transaction(DB_STORE, "readwrite");
+            tx.objectStore(DB_STORE).put(val, key);
+            tx.oncomplete = () => resolve(true);
+            tx.onerror = () => resolve(false);
+        } catch (e) { resolve(false); }
+    });
+}
+
+async function dbLoadKey(key) {
+    if (!dbInstance) await openDeviceIndexedDB();
+    if (dbInstance) {
+        const val = await new Promise((resolve) => {
+            try {
+                const tx = dbInstance.transaction(DB_STORE, "readonly");
+                const req = tx.objectStore(DB_STORE).get(key);
+                req.onsuccess = () => resolve(req.result);
+                req.onerror = () => resolve(undefined);
+            } catch (e) { resolve(undefined); }
+        });
+        if (val !== undefined) return val;
+    }
+    const ls = localStorage.getItem("darkx_db_" + key);
+    if (ls !== null) {
+        try { return JSON.parse(ls); } catch (e) { return ls; }
+    }
+    return undefined;
+}
+
+async function saveAllToDeviceDB(showLog = false) {
+    const code = document.getElementById("codeEditor").value;
+    const reqs = document.getElementById("reqEditor").value;
+    const lang = document.getElementById("langSelect").value;
+    const tok = document.getElementById("tokenInput").value.trim();
+    const autoRes = document.getElementById("autoResumeToggle").checked;
+
+    const filesObj = {};
+    virtualFiles.forEach((b64, name) => { filesObj[name] = b64; });
+
+    await dbSaveKey("code", code);
+    await dbSaveKey("reqs", reqs);
+    await dbSaveKey("lang", lang);
+    await dbSaveKey("token", tok);
+    await dbSaveKey("autoResume", autoRes);
+    await dbSaveKey("files", filesObj);
+
+    const dbBadge = document.getElementById("dbStateDisplay");
+    dbBadge.innerText = "● Saved (" + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ")";
+    if (showLog) logTerm("💾 Code, Requirements, Token, and Files saved to Device Database.");
+}
+
+async function clearDeviceDB() {
+    if (!confirm("Clear saved bot code and files from device database?")) return;
+    localStorage.clear();
+    if (dbInstance) {
+        const tx = dbInstance.transaction(DB_STORE, "readwrite");
+        tx.objectStore(DB_STORE).clear();
+    }
+    virtualFiles.clear();
+    renderFileList();
+    logTerm("🗑️ Device Database cleared.");
+}
+
+// =========================================================
+// 2. LOGGING, TEMPLATES & FILE UPLOAD HANDLERS
+// =========================================================
+const DEFAULT_TEMPLATES = {
+    python: `import telebot
+from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
+from io import BytesIO
+
+TOKEN = "YOUR_BOT_TOKEN_HERE"
+bot = telebot.TeleBot(TOKEN, parse_mode="HTML")
+
+@bot.message_handler(commands=['start', 'help'])
+def start_cmd(message):
+    markup = InlineKeyboardMarkup(row_width=2)
+    markup.add(
+        InlineKeyboardButton("⚡ Generate Config", callback_data="gen_cfg"),
+        InlineKeyboardButton("ℹ️ My Info", callback_data="my_info")
+    )
+    bot.reply_to(
+        message,
+        f"🔥 <b>Welcome {message.from_user.first_name}!</b>\\n\\n"
+        f"✅ Your Python Bot is Live with <b>Device DB & File Decryption Support</b>.",
+        reply_markup=markup
+    )
+
+@bot.message_handler(content_types=['document'])
+def handle_doc(message):
+    file_info = bot.get_file(message.document.file_id)
+    raw_bytes = bot.download_file(file_info.file_path)
+    bot.reply_to(message, f"✅ <b>File Downloaded & Processed!</b>\\nName: <code>{message.document.file_name}</code>\\nSize: <code>{len(raw_bytes)} bytes</code>")
+
+bot.infinity_polling()`,
+    javascript: `const TelegramBot = require('node-telegram-bot-api');
+const token = 'YOUR_BOT_TOKEN_HERE';
+const bot = new TelegramBot(token, { polling: true });
+
+bot.onText(/\\/start/, (msg) => {
+    bot.sendMessage(msg.chat.id, "🔥 *Node.js Bot is Live on DarkX Cloud!*", { parse_mode: "Markdown" });
+});`,
+    php: `<?php
+$BOT_TOKEN = "YOUR_BOT_TOKEN_HERE";
+sendMessage($chat_id, "🔥 <b>PHP Bot is Live on DarkX Cloud!</b>", "HTML");
+?>`,
+    json: `{
+  "/start": "🔥 *JSON Bot is Live!*\\nSend /help or any keyword.",
+  "/help": "📌 Available commands: /start, /help, /ping",
+  "ping": "🏓 Pong! Bot is working fast."
+}`
+};
+
+function logTerm(text) {
+    const box = document.getElementById("terminalBox");
+    const t = new Date().toLocaleTimeString();
+    box.textContent += `\n[${t}] ${text}`;
+    if (box.textContent.length > 25000) {
+        box.textContent = box.textContent.slice(-20000);
+    }
+    box.scrollTop = box.scrollHeight;
+    try { localStorage.setItem("darkx_saved_logs", box.textContent); } catch (e) {}
+}
+
+function clearTerminal() {
+    document.getElementById("terminalBox").textContent = "[*] Console cleared.";
+    localStorage.setItem("darkx_saved_logs", "[*] Console cleared.");
+}
+
+function autoExtractToken(code) {
+    const match = code.match(/\b(\d{8,11}:[A-Za-z0-9_-]{33,36})\b/);
+    if (match && match[1]) {
+        document.getElementById("tokenInput").value = match[1];
+        activeToken = match[1];
+        logTerm(`🔑 Auto-detected Bot Token: ${match[1].slice(0, 12)}...`);
+    }
+}
+
+function uint8ToBase64(uint8) {
+    let binary = "";
+    const chunkSize = 0x8000;
+    for (let i = 0; i < uint8.length; i += chunkSize) {
+        binary += String.fromCharCode.apply(null, uint8.subarray(i, i + chunkSize));
+    }
+    return btoa(binary);
+}
+
+function base64ToUint8(b64) {
+    const bin = atob(b64);
+    const arr = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+    return arr;
+}
+
+function handleCodeUpload(input) {
+    if (!input.files || !input.files[0]) return;
+    const f = input.files[0];
+    const ext = f.name.split('.').pop().toLowerCase();
+    if (ext === 'js') document.getElementById("langSelect").value = "javascript";
+    else if (ext === 'php') document.getElementById("langSelect").value = "php";
+    else if (ext === 'json') document.getElementById("langSelect").value = "json";
+    else document.getElementById("langSelect").value = "python";
+
+    activeLang = document.getElementById("langSelect").value;
+
+    f.text().then(async (content) => {
+        document.getElementById("codeEditor").value = content;
+        logTerm(`📄 Loaded '${f.name}' (${content.length} bytes) & saved to Device DB.`);
+        autoExtractToken(content);
+        await saveAllToDeviceDB();
+    });
+}
+
+function handleDataUpload(input) {
+    if (!input.files) return;
+    Array.from(input.files).forEach(file => {
+        if (file.name.toLowerCase() === "requirements.txt") {
+            file.text().then(async (txt) => {
+                document.getElementById("reqEditor").value = txt;
+                logTerm(`📦 Loaded requirements.txt into Requirements Box.`);
+                await saveAllToDeviceDB();
+            });
+        }
+        const reader = new FileReader();
+        reader.onload = async () => {
+            const uint8 = new Uint8Array(reader.result);
+            const b64 = uint8ToBase64(uint8);
+            virtualFiles.set(file.name, b64);
+            if (pyodideInstance) {
+                try { pyodideInstance.FS.writeFile(file.name, uint8); } catch (e) {}
+            }
+            renderFileList();
+            await saveAllToDeviceDB();
+            logTerm(`📁 Saved file '${file.name}' (${uint8.length} bytes) to Device DB.`);
+        };
+        reader.readAsArrayBuffer(file);
+    });
+}
+
+function renderFileList() {
+    const box = document.getElementById("fileListBox");
+    box.innerHTML = `<div class="file-item"><span>📄 main.${activeLang === 'python' ? 'py' : activeLang}</span><span>Saved in DB</span></div>`;
+    virtualFiles.forEach((b64, key) => {
+        const size = Math.round((b64.length * 3) / 4);
+        const d = document.createElement("div");
+        d.className = "file-item";
+        d.innerHTML = `<span>📁 ${key}</span><span>${size} B</span>`;
+        box.appendChild(d);
+    });
+}
+
+function switchLanguageTemplate() {
+    activeLang = document.getElementById("langSelect").value;
+    const editor = document.getElementById("codeEditor");
+    if (!editor.value.trim()) {
+        editor.value = DEFAULT_TEMPLATES[activeLang];
+    }
+    saveAllToDeviceDB();
+}
+
+function loadDemoTemplate() {
+    activeLang = document.getElementById("langSelect").value;
+    document.getElementById("codeEditor").value = DEFAULT_TEMPLATES[activeLang];
+    saveAllToDeviceDB();
+    logTerm(`📝 Loaded demo template.`);
+}
+
+// =========================================================
+// 3. TELEGRAM API & PRE-CACHED BINARY FILE DOWNLOADER
+// =========================================================
+async function tgApiAsync(token, method, payload = {}) {
+    const r = await fetch(`https://api.telegram.org/bot${token}/${method}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+    });
+    const data = await r.json();
+    if (!data.ok && payload.parse_mode && data.description && data.description.includes("parse entities")) {
+        const retryPayload = { ...payload };
+        delete retryPayload.parse_mode;
+        const r2 = await fetch(`https://api.telegram.org/bot${token}/${method}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(retryPayload)
+        });
+        return await r2.json();
+    }
+    return data;
+}
+
+async function preDownloadTelegramFile(fileId) {
+    if (!activeToken || !fileId) return null;
+    try {
+        const gf = await tgApiAsync(activeToken, "getFile", { file_id: fileId });
+        if (!gf.ok || !gf.result || !gf.result.file_path) return null;
+
+        const filePath = gf.result.file_path;
+        const fileSize = gf.result.file_size || 0;
+        tgFileIdMap.set(fileId, { file_path: filePath, file_size: fileSize });
+
+        let b64 = tgFileBytesCache.get(filePath) || "";
+
+        if (!b64) {
+            const rawUrl = `https://api.telegram.org/file/bot${activeToken}/${filePath}`;
+            const proxyUrls = [
+                `https://corsproxy.io/?${encodeURIComponent(rawUrl)}`,
+                `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(rawUrl)}`,
+                `https://api.allorigins.win/raw?url=${encodeURIComponent(rawUrl)}`,
+                rawUrl
+            ];
+
+            for (const u of proxyUrls) {
+                try {
+                    const resp = await fetch(u);
+                    if (resp.ok) {
+                        const buf = await resp.arrayBuffer();
+                        const uint8 = new Uint8Array(buf);
+                        if (uint8.length > 0) {
+                            b64 = uint8ToBase64(uint8);
+                            tgFileBytesCache.set(filePath, b64);
+                            logTerm(`📥 Downloaded file '${filePath.split('/').pop()}' (${uint8.length} bytes) into memory.`);
+                            break;
+                        }
+                    }
+                } catch (e) {}
+            }
+
+            // Fallback via allorigins JSON wrapper if binary proxies were rate-limited
+            if (!b64) {
+                try {
+                    const jResp = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(rawUrl)}`);
+                    if (jResp.ok) {
+                        const jData = await jResp.json();
+                        if (jData && jData.contents) {
+                            const str = jData.contents;
+                            if (str.startsWith("data:") && str.includes(";base64,")) {
+                                b64 = str.split(";base64,")[1];
+                            } else {
+                                const enc = new TextEncoder().encode(str);
+                                b64 = uint8ToBase64(enc);
+                            }
+                            tgFileBytesCache.set(filePath, b64);
+                            logTerm(`📥 Downloaded file '${filePath.split('/').pop()}' via fallback relay.`);
+                        }
+                    }
+                } catch (e) {}
+            }
+        }
+
+        // Inject directly into Python memory cache so bot.get_file() & bot.download_file() work instantaneously!
+        if (pyodideInstance) {
+            pyodideInstance.globals.set("_tmp_fid", String(fileId));
+            pyodideInstance.globals.set("_tmp_fpath", String(filePath));
+            pyodideInstance.globals.set("_tmp_fsize", Number(fileSize));
+            pyodideInstance.globals.set("_tmp_fb64", String(b64));
+            await pyodideInstance.runPythonAsync(`_register_pre_downloaded_file(_tmp_fid, _tmp_fpath, _tmp_fsize, _tmp_fb64)`);
+        }
+        return filePath;
+    } catch (e) {
+        logTerm(`⚠️ File Pre-Fetch Note: ${e.message}`);
+    }
+    return null;
+}
+
+window.syncGetFile = function(fileId) {
+    if (tgFileIdMap.has(fileId)) {
+        const info = tgFileIdMap.get(fileId);
+        return JSON.stringify({ ok: true, result: { file_id: fileId, file_unique_id: fileId, file_size: info.file_size, file_path: info.file_path } });
+    }
+    return window.syncTgCall("getFile", JSON.stringify({ file_id: fileId }));
+};
+
+window.syncDownloadFileBase64 = function(filePath) {
+    if (tgFileBytesCache.has(filePath)) {
+        return tgFileBytesCache.get(filePath);
+    }
+    const rawUrl = `https://api.telegram.org/file/bot${activeToken}/${filePath}`;
+    const proxyUrls = [
+        `https://corsproxy.io/?${encodeURIComponent(rawUrl)}`,
+        `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(rawUrl)}`,
+        `https://api.allorigins.win/raw?url=${encodeURIComponent(rawUrl)}`,
+        rawUrl
+    ];
+    for (const u of proxyUrls) {
+        try {
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", u, false);
+            xhr.overrideMimeType("text/plain; charset=x-user-defined");
+            xhr.send(null);
+            if (xhr.status >= 200 && xhr.status < 300 && xhr.responseText.length > 0) {
+                const rawText = xhr.responseText;
+                const bytes = new Uint8Array(rawText.length);
+                for (let i = 0; i < rawText.length; i++) {
+                    bytes[i] = rawText.charCodeAt(i) & 0xff;
+                }
+                const b64 = uint8ToBase64(bytes);
+                tgFileBytesCache.set(filePath, b64);
+                return b64;
+            }
+        } catch (e) {}
+    }
+    return "";
+};
+
+window.syncTgCall = function(method, payloadJson) {
+    if (!activeToken) return JSON.stringify({ ok: false, description: "No token" });
+    let payload = {};
+    try { payload = JSON.parse(payloadJson); } catch (e) {}
+
+    try {
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", `https://api.telegram.org/bot${activeToken}/${method}`, false);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.send(JSON.stringify(payload));
+        let resp = JSON.parse(xhr.responseText);
+
+        if (!resp.ok && payload.parse_mode && resp.description && resp.description.includes("parse entities")) {
+            delete payload.parse_mode;
+            const xhr2 = new XMLHttpRequest();
+            xhr2.open("POST", `https://api.telegram.org/bot${activeToken}/${method}`, false);
+            xhr2.setRequestHeader("Content-Type", "application/json");
+            xhr2.send(JSON.stringify(payload));
+            resp = JSON.parse(xhr2.responseText);
+        }
+
+        if (resp.ok) {
+            logTerm(`📤 Telegram API [${method}] -> Success`);
+        } else {
+            logTerm(`⚠️ Telegram API [${method}]: ${resp.description}`);
+        }
+        return JSON.stringify(resp);
+    } catch (err) {
+        tgApiAsync(activeToken, method, payload);
+        return JSON.stringify({
+            ok: true,
+            result: { message_id: Math.floor(Date.now() / 1000), chat: { id: payload.chat_id || 0 }, text: payload.text || "" }
+        });
+    }
+};
+
+window.sendTgMultipartBase64 = async function(fieldType, filename, b64Data, optionsJson) {
+    if (!activeToken) return;
+    try {
+        const opts = JSON.parse(optionsJson || "{}");
+        const byteArray = base64ToUint8(b64Data);
+        const blob = new Blob([byteArray], { type: "application/octet-stream" });
+
+        const buildForm = (includeParseMode) => {
+            const form = new FormData();
+            form.append("chat_id", opts.chat_id);
+            form.append(fieldType, blob, filename || "result.txt");
+            if (opts.caption) form.append("caption", opts.caption);
+            if (includeParseMode && opts.parse_mode) form.append("parse_mode", opts.parse_mode);
+            if (opts.reply_to_message_id) form.append("reply_to_message_id", opts.reply_to_message_id);
+            if (opts.reply_markup) form.append("reply_markup", JSON.stringify(opts.reply_markup));
+            return form;
+        };
+
+        const methodMap = { document: "sendDocument", photo: "sendPhoto", video: "sendVideo", audio: "sendAudio", voice: "sendVoice" };
+        const apiMethod = methodMap[fieldType] || "sendDocument";
+
+        let r = await fetch(`https://api.telegram.org/bot${activeToken}/${apiMethod}`, {
+            method: "POST",
+            body: buildForm(true)
+        });
+        let res = await r.json();
+
+        if (!res.ok && opts.parse_mode && res.description && res.description.includes("parse entities")) {
+            r = await fetch(`https://api.telegram.org/bot${activeToken}/${apiMethod}`, {
+                method: "POST",
+                body: buildForm(false)
+            });
+            res = await r.json();
+        }
+
+        if (res.ok) {
+            logTerm(`📎 Sent ${fieldType} '${filename}' (${byteArray.length} B) to ${opts.chat_id}`);
+        } else {
+            logTerm(`⚠️ File Send Error: ${res.description}`);
+        }
+    } catch (e) {
+        logTerm(`❌ Multipart Error: ${e.message}`);
+    }
+};
+
+window.syncHttpFetch = function(method, url, headersJson, bodyStr) {
+    const tryUrls = [
+        url,
+        `https://corsproxy.io/?${encodeURIComponent(url)}`,
+        `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+        `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`
+    ];
+    for (const u of tryUrls) {
+        try {
+            const xhr = new XMLHttpRequest();
+            xhr.open(method || "GET", u, false);
+            if (headersJson) {
+                const hdrs = JSON.parse(headersJson);
+                Object.keys(hdrs).forEach(k => {
+                    if (k.toLowerCase() !== "user-agent" && k.toLowerCase() !== "host") {
+                        try { xhr.setRequestHeader(k, hdrs[k]); } catch (e) {}
+                    }
+                });
+            }
+            xhr.send(bodyStr || null);
+            if (xhr.status >= 200 && xhr.status < 500) {
+                return JSON.stringify({ ok: true, status: xhr.status, text: xhr.responseText });
+            }
+        } catch (e) {}
+    }
+    return JSON.stringify({ ok: false, status: 500, text: "" });
+};
+
+window.setDetectedToken = function(tok) {
+    if (tok && tok.includes(":") && !tok.includes("YOUR_BOT_TOKEN")) {
+        activeToken = tok.trim();
+        document.getElementById("tokenInput").value = activeToken;
+    }
+};
+
+// =========================================================
+// 4. PYTHON ENGINE & REQUIREMENTS INSTALLER
+// =========================================================
 async function ensurePythonEngine() {
     if (pyodideInstance) return pyodideInstance;
     if (pyodideLoadingPromise) return await pyodideLoadingPromise;
@@ -1729,44 +1794,71 @@ async function ensurePythonEngine() {
     return await pyodideLoadingPromise;
 }
 
-// Auto-install required crypto/decryption packages if present in code
-async function autoLoadCodePackages(py, code) {
-    const pkgList = [];
-    if (/\bCrypto\b|\bpycryptodome\b/.test(code)) pkgList.push("pycryptodome");
-    if (/\bcryptography\b/.test(code)) pkgList.push("cryptography");
-    if (/\blz4\b/.test(code)) pkgList.push("lz4");
-    if (/\bbs4\b|\bBeautifulSoup\b/.test(code)) pkgList.push("beautifulsoup4");
+const BUILTIN_SHIMMED_PKGS = new Set([
+    "telebot", "pytelegrambotapi", "pyrogram", "tgcrypto", "requests",
+    "urllib", "json", "base64", "re", "html", "io", "datetime", "os", "sys", "time"
+]);
 
-    if (pkgList.length > 0) {
-        logTerm(`📦 Loading required decryption packages: ${pkgList.join(", ")}...`);
-        try {
-            await py.loadPackage(pkgList);
-            logTerm(`✅ Loaded packages: ${pkgList.join(", ")}`);
-        } catch (e) {
-            logTerm(`⚠️ Package Note: ${e.message}`);
+async function installRequirementsAndPackages(py, reqText, code) {
+    const requested = new Set();
+
+    // Parse lines from Requirements textarea
+    (reqText || "").split(/\r?\n/).forEach(line => {
+        const clean = line.split("#")[0].trim().split(/[=<>~!\s]/)[0].trim();
+        if (clean) requested.add(clean);
+    });
+
+    // Auto-detect crypto packages if imported in code
+    if (/\bCrypto\b|\bpycryptodome\b/.test(code)) requested.add("pycryptodome");
+    if (/\bcryptography\b/.test(code)) requested.add("cryptography");
+    if (/\bbs4\b|\bBeautifulSoup\b/.test(code)) requested.add("beautifulsoup4");
+
+    const toInstall = [];
+    for (const pkg of requested) {
+        if (BUILTIN_SHIMMED_PKGS.has(pkg.toLowerCase())) {
+            logTerm(`📦 Requirement '${pkg}' -> Built-in Native Engine Ready.`);
+        } else {
+            toInstall.push(pkg);
+        }
+    }
+
+    if (toInstall.length > 0) {
+        logTerm(`⏳ Installing extra packages: ${toInstall.join(", ")}...`);
+        for (const pkg of toInstall) {
+            try {
+                await py.loadPackage(pkg);
+                logTerm(`✅ Loaded package: ${pkg}`);
+            } catch (e) {
+                try {
+                    await py.loadPackage("micropip");
+                    const micropip = py.pyimport("micropip");
+                    await micropip.install(pkg);
+                    logTerm(`✅ Installed via micropip: ${pkg}`);
+                } catch (e2) {
+                    logTerm(`ℹ️ Note on '${pkg}': ${e2.message}`);
+                }
+            }
         }
     }
 }
 
 // =========================================================
-// 5. BACKGROUND KEEP-ALIVE (WEB WORKER + SILENT AUDIO + WAKELOCK)
+// 5. BACKGROUND KEEP-ALIVE
 // =========================================================
 async function enableBackgroundKeepAlive() {
-    // 1. Screen WakeLock
     try {
         if ("wakeLock" in navigator && !wakeLockObj) {
             wakeLockObj = await navigator.wakeLock.request("screen");
         }
     } catch (e) {}
 
-    // 2. Silent Audio Oscillator (prevents mobile Chrome from freezing background tab)
     try {
         if (!audioKeepAliveCtx) {
             const AudioCtx = window.AudioContext || window.webkitAudioContext;
             audioKeepAliveCtx = new AudioCtx();
             const osc = audioKeepAliveCtx.createOscillator();
             const gain = audioKeepAliveCtx.createGain();
-            gain.gain.value = 0.0001; // Completely silent
+            gain.gain.value = 0.0001;
             osc.connect(gain);
             gain.connect(audioKeepAliveCtx.destination);
             osc.start();
@@ -1775,7 +1867,6 @@ async function enableBackgroundKeepAlive() {
         }
     } catch (e) {}
 
-    // 3. Web Worker Background Heartbeat
     if (!workerHeartbeat) {
         try {
             const blob = new Blob([`setInterval(() => postMessage("tick"), 2000);`], { type: "application/javascript" });
@@ -1791,6 +1882,7 @@ async function startUniversalBot(isAutoResume = false) {
     if (isBotRunning) return;
 
     const code = document.getElementById("codeEditor").value;
+    const reqText = document.getElementById("reqEditor").value;
     activeLang = document.getElementById("langSelect").value;
     autoExtractToken(code);
     activeToken = document.getElementById("tokenInput").value.trim();
@@ -1826,16 +1918,22 @@ async function startUniversalBot(isAutoResume = false) {
     try {
         if (activeLang === "python") {
             const py = await ensurePythonEngine();
-            await autoLoadCodePackages(py, code);
+            await installRequirementsAndPackages(py, reqText, code);
+
             virtualFiles.forEach((b64, name) => {
                 try { py.FS.writeFile(name, base64ToUint8(b64)); } catch (e) {}
             });
-            await py.runPythonAsync(PYTHON_UNIVERSAL_BRIDGE);
-            logTerm("🚀 Executing your Python bot handlers & file decrypter logic...");
+
+            const bridgeCode = document.getElementById("pyBridgeSource").textContent;
+            await py.runPythonAsync(bridgeCode);
+            logTerm("✅ TeleBot & File Decryption Bridge Initialized (0 Errors).");
+
+            logTerm("🚀 Loading your custom bot code...");
             await py.runPythonAsync(code);
+            logTerm("✅ Custom Bot Handlers Registered Successfully!");
         }
     } catch (err) {
-        logTerm(`⚠️ Python Init Error: ${err.message}`);
+        logTerm(`⚠️ Bot Code Error: ${err.message}`);
     }
 
     await tgApiAsync(activeToken, "deleteWebhook", { drop_pending_updates: false });
@@ -1900,7 +1998,6 @@ async function pollLoop() {
                         const sender = msgObj.from ? (msgObj.from.username ? `@${msgObj.from.username}` : msgObj.from.first_name) : "User";
                         logTerm(`📩 Message [${msgObj.chat.id}] ${sender}: ${msgObj.text || (msgObj.document ? `[File: ${msgObj.document.file_name}]` : "[Media]")}`);
 
-                        // Pre-download incoming document/file into cache so bot.get_file() & bot.download_file() work 100%!
                         if (msgObj.document && msgObj.document.file_id) {
                             await preDownloadTelegramFile(msgObj.document.file_id);
                         } else if (msgObj.photo && msgObj.photo.length > 0) {
@@ -1913,6 +2010,13 @@ async function pollLoop() {
                     } else if (upd.callback_query) {
                         const sender = upd.callback_query.from ? (upd.callback_query.from.username || upd.callback_query.from.first_name) : "User";
                         logTerm(`🔘 Button Click by ${sender}: ${upd.callback_query.data}`);
+                        const cbMsg = upd.callback_query.message;
+                        if (cbMsg && cbMsg.document && cbMsg.document.file_id) {
+                            await preDownloadTelegramFile(cbMsg.document.file_id);
+                        }
+                        if (cbMsg && cbMsg.reply_to_message && cbMsg.reply_to_message.document && cbMsg.reply_to_message.document.file_id) {
+                            await preDownloadTelegramFile(cbMsg.reply_to_message.document.file_id);
+                        }
                     }
 
                     if (activeLang === "python" && pyodideInstance) {
@@ -1928,7 +2032,7 @@ async function pollLoop() {
 }
 
 // =========================================================
-// 7. RESTORE EVERYTHING FROM DEVICE DB & AUTO-START ON PAGE LOAD
+// 7. RESTORE EVERYTHING FROM DEVICE DB & AUTO-START
 // =========================================================
 window.addEventListener("DOMContentLoaded", async () => {
     const savedLogs = localStorage.getItem("darkx_saved_logs");
@@ -1942,6 +2046,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     const savedLang = (await dbLoadKey("lang")) || "python";
     const savedCode = await dbLoadKey("code");
+    const savedReqs = await dbLoadKey("reqs");
     const savedTok = await dbLoadKey("token");
     const savedAutoResume = await dbLoadKey("autoResume");
     const savedFiles = await dbLoadKey("files");
@@ -1949,6 +2054,10 @@ window.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("langSelect").value = savedLang;
     activeLang = savedLang;
     document.getElementById("codeEditor").value = savedCode || DEFAULT_TEMPLATES[savedLang];
+
+    if (savedReqs !== undefined) {
+        document.getElementById("reqEditor").value = savedReqs;
+    }
 
     if (savedTok) {
         document.getElementById("tokenInput").value = savedTok;
@@ -1970,7 +2079,6 @@ window.addEventListener("DOMContentLoaded", async () => {
         document.getElementById("botUserLabel").innerText = `Bot: ${botStats.botUsername} (ID: ${botStats.botId})`;
     }
 
-    // Load Python 3.11 Engine and Auto-Start Bot if token & code are already saved in Device DB!
     await ensurePythonEngine();
 
     if (document.getElementById("autoResumeToggle").checked && activeToken && activeToken !== "YOUR_BOT_TOKEN_HERE") {
