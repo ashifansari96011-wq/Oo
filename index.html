@@ -4,917 +4,280 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DARK RIZZY X PREDICTION</title>
-
     <style>
-        :root { 
-            --glass: rgba(0, 255, 255, 0.08);
-            --border: rgba(0, 255, 255, 0.35);
-            --neon-cyan: #00ffff;
-            --neon-violet: #8a2be2;
-            --cyber-lime: #ccff00;
-            --deep-dark: #0b0c1e;
-            --electric-pink: #ff10f0;
-            --gold: #ffd700;
-        }
-
-        html, body {
-            min-height: 100%;
-            margin: 0;
-            font-family: 'Segoe UI', system-ui, sans-serif;
-
-            /* YOUR IMAGE BACKGROUND */
-            background:
-                linear-gradient(
-                    rgba(5, 8, 20, 0.38),
-                    rgba(5, 8, 20, 0.48)
-                ),
-                url("https://i.imghos.co/IIGySwhh.jpg")
-                center center / cover fixed no-repeat;
-
-            color: #e0f0ff;
-            overflow-x: hidden;
-            user-select: none;
-        }
-
-        /* Background stays fixed */
-        body::before {
-            content: "";
-            position: fixed;
-            inset: 0;
-            z-index: -1;
-            background:
-                linear-gradient(
-                    rgba(5, 8, 20, 0.18),
-                    rgba(5, 8, 20, 0.25)
-                ),
-                url("https://i.imghos.co/IIGySwhh.jpg")
-                center center / cover no-repeat;
-            pointer-events: none;
-        }
-
-        /* --- Intro Screen --- */
-        #introScreen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-
-            /* SAME IMAGE ON INTRO */
-            background:
-                linear-gradient(
-                    rgba(5, 8, 20, 0.35),
-                    rgba(5, 8, 20, 0.45)
-                ),
-                url("https://i.imghos.co/IIGySwhh.jpg")
-                center center / cover no-repeat;
-
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
-            transition: opacity 0.8s ease-out;
-        }
-
-        .intro-line {
-            font-size: clamp(20px, 6vw, 40px);
-            font-weight: 800;
-            letter-spacing: 3px;
-            white-space: nowrap;
-            text-transform: uppercase;
-            border-right: 4px solid var(--neon-cyan);
-            padding-right: 12px;
-            animation:
-                typing 2s steps(25),
-                blink 0.5s step-end infinite;
-            overflow: hidden;
-            text-shadow:
-                0 0 20px var(--neon-violet),
-                0 0 40px var(--neon-cyan);
-            color: #ffffff;
-        }
-
-        .intro-line span {
-            color: var(--neon-cyan);
-            text-shadow: 0 0 15px var(--neon-cyan);
-        }
-
-        @keyframes typing {
-            from { width: 0 }
-            to { width: 100% }
-        }
-
-        @keyframes blink {
-            from, to { border-color: transparent }
-            50% { border-color: var(--neon-cyan) }
-        }
-
-        .app-frame {
-            max-width: 480px;
-            margin: auto;
-            padding: 15px;
-        }
-
-        .glass-card {
-            background: rgba(10, 20, 30, 0.58);
-            backdrop-filter: blur(16px) saturate(180%);
-            -webkit-backdrop-filter: blur(16px) saturate(180%);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow:
-                0 10px 35px -5px rgba(0, 255, 255, 0.3),
-                inset 0 0 25px rgba(0, 255, 255, 0.04);
-        }
-
-        .header {
-            text-align: center;
-            border-bottom: 2px solid var(--neon-cyan);
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-
-        .header span:first-child {
-            color: #ffffff;
-            font-weight: 800;
-            letter-spacing: 2px;
-        }
-
-        .header span:last-child {
-            color: var(--neon-cyan);
-            font-weight: 400;
-        }
-
-        .pred-val {
-            font-size: 75px;
-            font-weight: 900;
-            text-shadow:
-                0 0 25px var(--neon-violet),
-                0 0 45px var(--neon-cyan);
-            margin: 10px 0;
-            color: #fff;
-        }
-
-        .timer-display {
-            font-size: 26px;
-            color: var(--cyber-lime);
-            font-weight: bold;
-            text-shadow: 0 0 10px #ccff00;
-        }
-
-        .status-info {
-            display: flex;
-            justify-content: space-between;
-            font-size: 11px;
-            color: var(--neon-cyan);
-            margin-bottom: 10px;
-            letter-spacing: 0.5px;
-        }
-
-        .strat-mode {
-            font-size: 10px;
-            background: rgba(138, 43, 226, 0.25);
-            padding: 4px 14px;
-            border-radius: 30px;
-            color: var(--cyber-lime);
-            border: 1px solid var(--neon-cyan);
-            margin-bottom: 12px;
-            display: inline-block;
-            font-weight: 600;
-            backdrop-filter: blur(4px);
-        }
-
-        .lvl-badge {
-            background: rgba(0, 255, 255, 0.1);
-            border: 1px solid var(--neon-cyan);
-            padding: 8px;
-            border-radius: 40px;
-            font-weight: bold;
-            margin: 15px 0;
-            font-size: 13px;
-            color: #fff;
-            box-shadow: 0 0 8px var(--neon-cyan);
-        }
-
-        .num-row {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-        }
-
-        .num-circle {
-            width: 50px;
-            height: 50px;
-            line-height: 50px;
-            border: 2px solid var(--cyber-lime);
-            border-radius: 50%;
-            font-weight: 900;
-            background: rgba(0,0,0,0.5);
-            color: var(--cyber-lime);
-            font-size: 22px;
-            box-shadow: 0 0 15px var(--cyber-lime);
-        }
-
-        .btn-clear {
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(90deg, #ff2a5e, #b030b0);
-            border: none;
-            border-radius: 40px;
-            color: white;
-            font-weight: 800;
-            cursor: pointer;
-            box-shadow: 0 0 15px rgba(255, 42, 94, 0.6);
-            text-transform: uppercase;
-            font-size: 11px;
-            margin-top: 10px;
-        }
-
-        .btn-clear:hover {
-            background: linear-gradient(90deg, #ff1a4f, #9f1f9f);
-        }
-
-        .btn-copy {
-            width: 100%;
-            padding: 13px;
-            background: linear-gradient(90deg, #00c6ff, #0072ff);
-            border: 1px solid var(--neon-cyan);
-            border-radius: 40px;
-            color: white;
-            font-weight: 900;
-            cursor: pointer;
-            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
-            text-transform: uppercase;
-            font-size: 12px;
-            margin-top: 18px;
-            letter-spacing: 1px;
-            transition: 0.2s;
-        }
-
-        .btn-copy:active {
-            transform: scale(0.97);
-        }
-
-        .cyber-input {
-            width: 100%;
-            box-sizing: border-box;
-            padding: 12px 15px;
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px solid var(--neon-cyan);
-            border-radius: 30px;
-            color: #fff;
-            font-weight: bold;
-            text-align: center;
-            outline: none;
-            margin-bottom: 12px;
-            font-size: 13px;
-            box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.2);
-        }
-
-        .history-wrap {
-            max-height: 400px;
-            overflow-y: auto;
-            border-radius: 16px;
-            padding-right: 5px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 11px;
-        }
-
-        th {
-            color: var(--neon-cyan);
-            padding: 10px 4px;
-            border-bottom: 1px solid var(--neon-violet);
-        }
-
-        td {
-            padding: 8px 4px;
-            border-bottom: 1px solid rgba(0, 255, 255, 0.1);
-            text-align: center;
-        }
-
-        .win {
-            color: #ccff00;
-            font-weight: bold;
-            text-shadow: 0 0 5px lime;
-        }
-
-        .jackpot {
-            color: var(--gold);
-            font-weight: 900;
-            text-shadow: 0 0 10px #ffd700, 0 0 20px #ff8c00;
-            letter-spacing: 0.5px;
-        }
-
-        .loss {
-            color: #ff10f0;
-            font-weight: bold;
-            text-shadow: 0 0 5px magenta;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        #pID {
-            color: rgba(200, 230, 255, 0.7);
-            font-size: 12px;
-        }
-
-        .key-box {
-            background: rgba(0, 255, 255, 0.1);
-            border: 1px dashed var(--cyber-lime);
-            padding: 12px;
-            border-radius: 15px;
-            margin: 12px 0;
-            font-size: 16px;
-            font-weight: 900;
-            color: var(--cyber-lime);
-            letter-spacing: 1.5px;
-            word-break: break-all;
-        }
-
-        /* Mobile background */
-        @media (max-width: 600px) {
-            html, body {
-                background-attachment: scroll;
-            }
-
-            body::before {
-                position: fixed;
-                background-attachment: scroll;
-            }
-
-            #introScreen {
-                background-attachment: scroll;
-            }
-        }
+        :root{--glass:rgba(0,255,255,0.08);--border:rgba(0,255,255,0.35);--neon-cyan:#00ffff;--neon-violet:#8a2be2;--cyber-lime:#ccff00;--deep-dark:#0b0c1e;--electric-pink:#ff10f0;--gold:#ffd700;}
+        html,body{min-height:100%;margin:0;font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(rgba(5,8,20,0.38),rgba(5,8,20,0.48)),url("https://i.imghos.co/IIGySwhh.jpg") center center / cover fixed no-repeat;color:#e0f0ff;overflow-x:hidden;user-select:none;-webkit-user-select:none;}
+        body::before{content:"";position:fixed;inset:0;z-index:-1;background:linear-gradient(rgba(5,8,20,0.18),rgba(5,8,20,0.25)),url("https://i.imghos.co/IIGySwhh.jpg") center center / cover no-repeat;pointer-events:none;}
+        #introScreen{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(rgba(5,8,20,0.35),rgba(5,8,20,0.45)),url("https://i.imghos.co/IIGySwhh.jpg") center center / cover no-repeat;display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:10000;transition:opacity 0.8s ease-out;}
+        .intro-line{font-size:clamp(20px,6vw,40px);font-weight:800;letter-spacing:3px;white-space:nowrap;text-transform:uppercase;border-right:4px solid var(--neon-cyan);padding-right:12px;animation:typing 2s steps(25),blink 0.5s step-end infinite;overflow:hidden;text-shadow:0 0 20px var(--neon-violet),0 0 40px var(--neon-cyan);color:#ffffff;}
+        .intro-line span{color:var(--neon-cyan);text-shadow:0 0 15px var(--neon-cyan);}
+        @keyframes typing{from{width:0}to{width:100%}}
+        @keyframes blink{from,to{border-color:transparent}50%{border-color:var(--neon-cyan)}}
+        .app-frame{max-width:480px;margin:auto;padding:15px;}
+        .glass-card{background:rgba(10,20,30,0.58);backdrop-filter:blur(16px) saturate(180%);-webkit-backdrop-filter:blur(16px) saturate(180%);border:1px solid var(--border);border-radius:24px;padding:20px;margin-bottom:20px;box-shadow:0 10px 35px -5px rgba(0,255,255,0.3),inset 0 0 25px rgba(0,255,255,0.04);}
+        .header{text-align:center;border-bottom:2px solid var(--neon-cyan);padding-bottom:10px;margin-bottom:20px;}
+        .header span:first-child{color:#ffffff;font-weight:800;letter-spacing:2px;}
+        .header span:last-child{color:var(--neon-cyan);font-weight:400;}
+        .pred-val{font-size:75px;font-weight:900;text-shadow:0 0 25px var(--neon-violet),0 0 45px var(--neon-cyan);margin:10px 0;color:#fff;}
+        .timer-display{font-size:26px;color:var(--cyber-lime);font-weight:bold;text-shadow:0 0 10px #ccff00;}
+        .status-info{display:flex;justify-content:space-between;font-size:11px;color:var(--neon-cyan);margin-bottom:10px;letter-spacing:0.5px;}
+        .strat-mode{font-size:10px;background:rgba(138,43,226,0.25);padding:4px 14px;border-radius:30px;color:var(--cyber-lime);border:1px solid var(--neon-cyan);margin-bottom:12px;display:inline-block;font-weight:600;backdrop-filter:blur(4px);}
+        .lvl-badge{background:rgba(0,255,255,0.1);border:1px solid var(--neon-cyan);padding:8px;border-radius:40px;font-weight:bold;margin:15px 0;font-size:13px;color:#fff;box-shadow:0 0 8px var(--neon-cyan);}
+        .num-row{display:flex;justify-content:center;gap:30px;}
+        .num-circle{width:50px;height:50px;line-height:50px;border:2px solid var(--cyber-lime);border-radius:50%;font-weight:900;background:rgba(0,0,0,0.5);color:var(--cyber-lime);font-size:22px;box-shadow:0 0 15px var(--cyber-lime);}
+        .btn-clear{width:100%;padding:12px;background:linear-gradient(90deg,#ff2a5e,#b030b0);border:none;border-radius:40px;color:white;font-weight:800;cursor:pointer;box-shadow:0 0 15px rgba(255,42,94,0.6);text-transform:uppercase;font-size:11px;margin-top:10px;}
+        .btn-clear:hover{background:linear-gradient(90deg,#ff1a4f,#9f1f9f);}
+        .btn-copy{width:100%;padding:13px;background:linear-gradient(90deg,#00c6ff,#0072ff);border:1px solid var(--neon-cyan);border-radius:40px;color:white;font-weight:900;cursor:pointer;box-shadow:0 0 15px rgba(0,255,255,0.5);text-transform:uppercase;font-size:12px;margin-top:18px;letter-spacing:1px;transition:0.2s;}
+        .btn-copy:active{transform:scale(0.97);}
+        .cyber-input,.cyber-select{width:100%;box-sizing:border-box;padding:12px 15px;background:rgba(5,12,25,0.85);border:1px solid var(--neon-cyan);border-radius:30px;color:#fff;font-weight:bold;text-align:center;outline:none;margin-bottom:12px;font-size:13px;box-shadow:inset 0 0 10px rgba(0,255,255,0.2);}
+        .cyber-select option{background:#0b0c1e;color:var(--neon-cyan);}
+        .history-wrap{max-height:400px;overflow-y:auto;border-radius:16px;padding-right:5px;}
+        table{width:100%;border-collapse:collapse;font-size:11px;}
+        th{color:var(--neon-cyan);padding:10px 4px;border-bottom:1px solid var(--neon-violet);}
+        td{padding:8px 4px;border-bottom:1px solid rgba(0,255,255,0.1);text-align:center;}
+        .win{color:#ccff00;font-weight:bold;text-shadow:0 0 5px lime;}
+        .jackpot{color:var(--gold);font-weight:900;text-shadow:0 0 10px #ffd700,0 0 20px #ff8c00;letter-spacing:0.5px;}
+        .loss{color:#ff10f0;font-weight:bold;text-shadow:0 0 5px magenta;}
+        .hidden{display:none!important;}
+        #pID{color:rgba(200,230,255,0.7);font-size:12px;}
+        .key-box{background:rgba(0,255,255,0.1);border:1px dashed var(--cyber-lime);padding:12px;border-radius:15px;margin:12px 0;font-size:14px;font-weight:900;color:var(--cyber-lime);letter-spacing:1px;word-break:break-all;}
+        @media(max-width:600px){html,body,body::before,#introScreen{background-attachment:scroll;}}
     </style>
 </head>
-
-<body>
-
-    <div id="introScreen">
-        <div class="intro-line"><span>DARK RIZZY X</span> PREDICTION</div>
-        <p style="color: var(--neon-violet); letter-spacing: 3px; margin-top: 22px; font-size: 11px;">
-            ⚡ TG:- @RANGDARBHAI01 ⚡
-        </p>
-    </div>
-
-    <div id="mainWrapper" class="hidden">
-
-        <div class="app-frame">
-
-            <div class="header">
-                <span style="font-size: 22px; font-weight: 800;">
-                    DARK RIZZY X
-                </span>
-                <span style="font-size: 20px; color: var(--neon-cyan);">
-                    PREDICTION
-                </span>
-            </div>
-
-            <!-- LOGIN SECTION -->
-            <div id="authSection" class="glass-card" style="text-align: center;">
-                <div class="strat-mode">🔐 VIP ACCESS LOGIN</div>
-                <p style="font-size: 11px; color: var(--neon-cyan); margin-bottom: 15px;">
-                    ENTER VIP KEY OR ADMIN KEY
-                </p>
-                <input type="text" id="accessKeyInput" class="cyber-input" placeholder="DARK-RIZZY-XXX">
-                <button class="btn-copy" style="margin-top: 5px;" onclick="verifyAccess()">⚡ UNLOCK ENGINE ⚡</button>
-                <p id="loginMsg" style="font-size: 11px; color: #ff10f0; margin-top: 10px; font-weight: bold;"></p>
-                <div style="margin-top: 12px; font-size: 11px; color: var(--cyber-lime);">
-                    ⚡ TG:- @RANGDARBHAI01 ⚡
-                </div>
-            </div>
-
-            <!-- ADMIN PANEL SECTION -->
-            <div id="adminPanel" class="glass-card hidden" style="text-align: center;">
-                <div class="strat-mode" style="color: var(--gold); border-color: var(--gold);">👑 ADMIN PANEL - KEY GENERATOR</div>
-                <div id="generatedKeyDisplay" class="key-box">DARK-RIZZY-XXX</div>
-                <div style="display: flex; gap: 10px;">
-                    <button class="btn-copy" style="margin-top: 5px;" onclick="generateNewKey()">🎲 GENERATE KEY</button>
-                    <button class="btn-copy" style="margin-top: 5px; background: linear-gradient(90deg, #ff8c00, #ffd700); color: #000;" onclick="copyGenKey()">📋 COPY KEY</button>
-                </div>
-            </div>
-
-            <!-- MAIN HACK SECTION -->
-            <div id="hackSection" class="hidden">
-
-                <div class="status-info">
-                    <span>📡 SERVER: CYBERLINK</span>
-                    <span id="pingVal">PING: 12MS</span>
-                </div>
-
-                <div class="glass-card" style="text-align: center;">
-
-                    <div id="stratDisplay" class="strat-mode">
-                        MODE: DARK RIZZY X VIP MODE
-                    </div>
-
-                    <div id="timer" class="timer-display">
-                        00:60
-                    </div>
-
-                    <div id="pID" style="margin-bottom: 6px;">
-                        PERIOD: ---
-                    </div>
-
-                    <div id="pRes" class="pred-val">
-                        INIT
-                    </div>
-
-                    <div id="mLevel" class="lvl-badge">
-                        MARTINGALE: LEVEL 2 (1X)
-                    </div>
-
-                    <div style="font-size: 11px; color: var(--cyber-lime); margin-bottom: 5px;">
-                        ✦ OPPOSITE NUMBERS ✦
-                    </div>
-
-                    <div class="num-row" id="numRow">
-                        <div class="num-circle">?</div>
-                        <div class="num-circle">?</div>
-                    </div>
-
-                    <button id="copyPredBtn" class="btn-copy" onclick="copyPrediction()">
-                        📋 COPY PREDICTION
-                    </button>
-
-                </div>
-
-                <div class="glass-card">
-
-                    <div style="
-                        font-size: 12px;
-                        color: var(--neon-cyan);
-                        margin-bottom: 12px;
-                        display: flex;
-                        justify-content: space-between;
-                        align-items: center;
-                    ">
-                        <span>📊 NEURAL HISTORY (MAX 100)</span>
-
-                        <button
-                            class="btn-clear"
-                            style="width: auto; padding: 8px 16px; margin-top: 0;"
-                            onclick="clearHistory()"
-                        >
-                            🗑️ CLEAR LOG
-                        </button>
-                    </div>
-
-                    <div class="history-wrap">
-
-                        <table>
-
-                            <thead>
-                                <tr>
-                                    <th>PERIOD</th>
-                                    <th>PRED</th>
-                                    <th>RESULT</th>
-                                    <th>STATUS</th>
-                                </tr>
-                            </thead>
-
-                            <tbody id="logs"></tbody>
-
-                        </table>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
+<body oncontextmenu="return false;" onselectstart="return false;" ondragstart="return false;">
+<div id="_0xRoot"></div>
 <script>
+(function(){
+    const _0xPayload = "PGdivBpZD0iaW50cm9TY3JlZW4iPjxkXYgY2xhc3M9ImludHJvLWxpbmUiPjxzcGFuPkRBUksgUklaWlkgWDwvc3Bhbj4gUFJFRElDVElPTjwvZGl2PjxwIHN0eWxlPSJjb2xvcjogdmFyKC0tbmVvbi12aW9sZXQpOyBsZXR0ZXItc3BhY2luZzogM3B4OyBtYXJnaW4tdG9wOiAyMnB4OyBmb250LXNpemU6IDExcHg7Ij7imqEgVEc6LSBAUkFOR0RBUkJIQUkwMSDimqE8L3A+PC9kaXY+";
+    document.getElementById('_0xRoot').innerHTML = decodeURIComponent(escape(window.atob("PGRpdiBpZD0iaW50cm9TY3JlZW4iPjxkaXYgY2xhc3M9ImludHJvLWxpbmUiPjxzcGFuPkRBUksgUklaWlkgWDwvc3Bhbj4gUFJFRElDVElPTjwvZGl2PjxwIHN0eWxlPSJjb2xvcjogdmFyKC0tbmVvbi12aW9sZXQpOyBsZXR0ZXItc3BhY2luZzogM3B4OyBtYXJnaW4tdG9wOiAyMnB4OyBmb250LXNpemU6IDExcHg7Ij7imqEgVEc6LSBAUkFOR0RBUkJIQUkwMSDimqE8L3A+PC9kaXY+PGRpdiBpZD0ibWFpbldyYXBwZXIiIGNsYXNzPSJoaWRkZW4iPjxkaXYgY2xhc3M9ImFwcC1mcmFtZSI+PGRpdiBjbGFzcz0iaGVhZGVyIj48c3BhbiBzdHlsZT0iZm9udC1zaXplOiAyMnB4OyBmb250LXdlaWdodDogODAwOyI+REFSSyBSSVpaWSBYPC9zcGFuPiA8c3BhbiBzdHlsZT0iZm9udC1zaXplOiAyMHB4OyBjb2xvcjogdmFyKC0tbmVvbi1jeWFuKTsiPlBSRURJQ1RJT048L3NwYW4+PC9kaXY+PGRpdiBpZD0iYXV0aFNlY3Rpb24iIGNsYXNzPSJnbGFzcy1jYXJkIiBzdHlsZT0idGV4dC1hbGlnbjogY2VudGVyOyI+PGRpdiBjbGFzcz0ic3RyYXQtbW9kZSI+8J+UkCBWSVAgQUNDVVNT LOGINPC9kaXY+PHAgc3R5bGU9ImZvbnQtc2l6ZTogMTFweDsgY29sb3I6IHZhcigtLW5lb24tY3lhbik7IG1hcmdpbi1ib3R0b206IDE1cHg7Ij5FTlRFUiBWSVAgS0VZIE9SIEFETUlOIEtFWTwvcD48aW5wdXQgdHlwZT0idGV4dCIgaWQ9ImFjY2Vzc0tleUlucHV0IiBjbGFzcz0iY3liZXItaW5wdXQiIHBsYWNlaG9sZGVyPSJEQVJLLVJJa1pZLVhYWCI+PGJ1dHRvbiBjbGFzcz0iYnRuLWNvcHkiIHN0eWxlPSJtYXJnaW4tdG9wOiA1cHg7IiBvbmNsaWNrPSJ3aW5kb3cuXzB4VmVyaWZ5KCkiPuKaoSBVTkxPQ0sgRU5HSU5FIOKaoTwvYnV0dG9uPjxwIGlkPSJsb2dpbk1zZyIgc3R5bGU9ImZvbnQtc2l6ZTogMTFweDsgY29sb3I6ICNmZjEwZjA7IG1hcmdpbi10b3A6IDEwcHg7IGZvbnQtd2VpZ2h0OiBib2xkOyI+PC9wPjxkaXYgc3R5bGU9Im1hcmdpbi10b3A6IDEycHg7IGZvbnQtc2l6ZTogMTFweDsgY29sb3I6IHZhcigtLWN5YmVyLWxpbWUpOyI+4pqhIFRHOi0gQFJBTkdEQVJCSEFJMDgg4pqhPC9kaXY+PC9kaXY+PGRpdiBpZD0iYWRtaW5QYW5lbCIgY2xhc3M9ImdsYXNzLWNhcmQgaGlkZGVuIiBzdHlsZT0idGV4dC1hbGlnbjogY2VudGVyOyI+PGRpdiBjbGFzcz0ic3RyYXQtbW9kZSIgc3R5bGU9ImNvbG9yOiB2YXIoLS1nb2xkKTsgYm9yZGVyLWNvbG9yOiB2YXIoLS1nb2xkKTsiPvCfkZEgQURNSU4gUEFORUwgLSBLRVkgR0VORVJBVE9SPC9kaXY+PHNlbGVjdCBpZD0ia2V5RHVyVHlwZSIgY2xhc3M9ImN5YmVyLXNlbGVjdCIgb25jaGFuZ2U9IndpbmRvdy5fMHhUb2dnbGVDdXN0b20oKSI+PG9wdGlvbiB2YWx1ZT0iUEVSTSI+4p2+77iPIFBFUk1BTkVOVCBLRVk8L29wdGlvbj48b3B0aW9uIHZhbHVlPSJDVVNUT00iPuKame+4jyBDVVNUT00gVE1FIE9QVElPTjwvb3B0aW9uPjxvcHRpb24gdmFsdWU9IjFIIj7im7HvuI8gMSBIT1VSIEtFWTwvb3B0aW9uPjxvcHRpb24gdmFsdWU9IjI0SCI+4pux77iPIDEgREFZICgyNCBIUyk8L29wdGlvbj48b3B0aW9uIHZhbHVlPSI3RCI+8J+ThSA3IERBWVMgVklQPC9vcHRpb24+PG9wdGlvbiB2YWx1ZT0iMzBEIj7wn5OFIDMwIERBWVMgVklQPC9vcHRpb24+PC9zZWxlY3Q+PGRpdiBpZD0iY3VzdG9tRHVyQm94IiBjbGFzcz0iaGlkZGVuIiBzdHlsZT0iZGlzcGxheTogZmxleDsgZ2FwOiA4cHg7IG1hcmdpbi1ib3R0b206IDEwcHg7Ij48aW5wdXQgdHlwZT0ibnVtYmVyIiBpZD0iY3VzdG9tVmFsIiBjbGFzcz0iY3liZXItaW5wdXQiIHBsYWNlaG9sZGVyPSJFbnRlciBUaW1lIiBtaW49IjEiIHZhbHVlPSIxIiBzdHlsZT0ibWFyZ2luLWJvdHRvbTogMDsgZmxleDogMTsiPjxzZWxlY3QgaWQ9ImN1c3RvbVVuaXQiIGNsYXNzPSJjeWJlci1zZWxlY3QiIHN0eWxlPSJtYXJnaW4tYm90dG9tOiAwOyBmxlleDogMTsiPjxvcHRpb24gdmFsdWU9Ik0iPk1JTlVURVM8L29wdGlvbj48b3B0aW9uIHZhbHVlPSJIIj5IT1VSUzwvb3B0aW9uPjxvcHRpb24gdmFsdWU9IkQiIHNlbGVjdGVkPkRBWVM8L29wdGlvbj48L3NlbGVjdD48L2Rpdj48ZGl2IGlkPSJnZW5lcmF0ZWRLZXlEaXNwbGF5IiBjbGFzcz0ia2V5LWJveCI+REFSSy1SSVpaWS1YWFg8L2Rpdj48ZGl2IGlkPSJrZXlFeHBJbmZvIiBzdHlsZT0iZm9udC1zaXplOiAxMHB4OyBjb2xvcjogdmFyKC0tZ29sZCk7IG1hcmdpbi1ib3R0b206IDhweDsiPlZBTElESVRZOiAtLS08L2Rpdj48ZGl2IHN0eWxlPSJkaXNwbGF5OiBmbGV4OyBnYXA6IDEwcHg7Ij48YnV0dG9uIGNsYXNzPSJidG4tY29weSIgc3R5bGU9Im1hcmdpbi10b3A6IDVweDsiIG9uY2xpY2s9IndpbmRvdy5fMHhHZW5LZXkoKSI+8J+OsiBHRU5FUkFURSBLRVk8L2J1dHRvbj48YnV0dG9uIGNsYXNzPSJidG4tY29weSIgc3R5bGU9Im1hcmdpbi10b3A6IDVweDsgYmFja2dyb3VuZDogbGluZWFyLWdyYWRpZW50KDkwZGVnLCAjZmY4YzAwLCAjZmZkNzAwKTsgY29sb3I6ICMwMDA7IiBvbmNsaWNrPSJ3aW5kb3cuXzB4Q29weUtleSgpIj7wn5OLIENPUFkgS0VZPC9idXR0b24+PC9kaXY+PC9kaXY+PGRpdiBpZD0iaGFja1NlY3Rpb24iIGNsYXNzPSJoaWRkZW4iPjxkaXYgY2xhc3M9InN0YXR1cy1pbmZvIj48c3Bhbj7wn5📡IFNFUlZFUjogQ1lCRVJMSU5LPC9zcGFuPjxzcGFuIGlkPSJrZXlUaW1lTGVmdCIgc3R5bGU9ImNvbG9yOiB2YXIoLS1nb2xkKTsiPuKbsiBWSVA6IEFDVElWRTwvc3Bhbj48c3BhbiBpZD0icGluZ1ZhbCI+UElORzogMTJNUzwvc3Bhbj48L2Rpdj48ZGl2IGNsYXNzPSJnbGFzcy1jYXJkIiBzdHlsZT0idGV4dC1hbGlnbjogY2VudGVyOyI+PGRpdiBpZD0ic3RyYXREaXNwbGF5IiBjbGFzcz0ic3RyYXQtbW9kZSI+TU9ERTogREFSSyBSSVpaWSBYIFZJUCBNT0RFPC9kaXY+PGRpdiBpZD0idGltZXIiIGNsYXNzPSJ0aW1lci1kaXNwbGF5Ij4wMDozMDwvZGl2PjxkaXYgaWQ9InBJRCIgc3R5bGU9Im1hcmdpbi1ib3R0b206IDZweDsiPlBFUklPRDogLS0tPC9kaXY+PGRpdiBpZD0icFJlcyIgY2xhc3M9InByZWQtdmFsIj5JTklUPC9kaXY+PGRpdiBpZD0ibUxldmVsIiBjbGFzcz0ibHZsLWJhZGdlIj5NQVJUSU5HQUxFOiBMRVZFTCAyICgxWCk8L2Rpdj48ZGl2IHN0eWxlPSJmb250LXNpemU6IDExcHg7IGNvbG9yOiB2YXIoLS1jeWJlci1saW1lKTsgbWFyZ2luLWJvdHRvbTogNXB4OyI+4pymIE9QUE9TSVRFIE5VTUJFUlMg4pymPC9kaXY+PGRpdiBjbGFzcz0ibnVtLXJvdyIgaWQ9Im51bVJvdyI+PGRpdiBjbGFzcz0ibnVtLWNpcmNsZSI+PzwvZGl2PjxkaXYgY2xhc3M9Im51bS1jaXJjbGUiPj88L2Rpdj48L2Rpdj48YnV0dG9uIGlkPSJjb3B5UHJlZEJ0biIgY2xhc3M9ImJ0bi1jb3B5IiBvbmNsaWNrPSJ3aW5kb3cuXzB4Q29weVByZWQoKSI+8J+TiyBDT1BZIFBSRURJQ1RJT048L2J1dHRvbj48L2Rpdj48ZGl2IGNsYXNzPSJnbGFzcy1jYXJkIj48ZGl2IHN0eWxlPSJmb250LXNpemU6IDEycHg7IGNvbG9yOiB2YXIoLS1uZW9uLWN5YW4pOyBtYXJnaW4tYm90dG9tOiAxMnB4OyBkaXNwbGF5OiBmbGV4OyBqdXN0aWZ5LWNvbnRlbnQ6IHNwYWNlLWJldHdlZW47IGFsaWduLWl0ZW1zOiBjZW50ZXI7Ij48c3Bhbj7wn5📊IE5FVVJBTCBISVNUT1JZIChNQVggMTAwKTwvc3Bhbj48YnV0dG9uIGNsYXNzPSJidG4tY2xlYXIiIHN0eWxlPSJ3aWR0aDogYXV0bzsgcGFkZGluZzogOHB4IDE2cHg7IG1hcmdpbi10b3A6IDA7IiBvbmNsaWNrPSJ3aW5kb3cuXzB4Q2xlYXIoKSI+8J+Xke+4jyBDTEVBUiBMT0c8L2J1dHRvbj48L2Rpdj48ZGl2IGNsYXNzPSJoaXN0b3J5LXdyYXAiPjx0YWJsZT48dGhlYWQ+PHRyPjx0aD5QRVJJT0Q8L3RoPjx0aD5QUkVEPC90aD48dGg+UkVTVUxUPC90aD48dGg+U1RBVFVTPC90aD48L3RyPjwvdGhlYWQ+PHRib2R5IGlkPSJsb2dzIj48L3Rib2R5PjwvdGFibGU+PC9kaXY+PC9kaXY+PC9kaXY+PC9kaXY+PC9kaXY+".replace("QFJBTkdEQVJCSEFJMDgg", "QFJBTkdEQVJCSEFJMDEg").replace("QUNDVVNT LOGIN", "QUNDRVNT LOGIN").replace("REFSSy1SSWtaWS1YWFg", "REFSSy1SSVpaWS1YWFg").replace("fxlle", "fle"))));
 
-    const API =
-        "https://draw.ar-lottery01.com/WinGo/WinGo_30S/GetHistoryIssuePage.json";
+    document.addEventListener('keydown',function(_0xe){
+        if(_0xe.keyCode===123||(_0xe.ctrlKey&&_0xe.shiftKey&&(_0xe.keyCode===73||_0xe.keyCode===74||_0xe.keyCode===67))||(_0xe.ctrlKey&&(_0xe.keyCode===85||_0xe.keyCode===83))){
+            _0xe.preventDefault();return false;
+        }
+    });
+    setInterval(function(){(function(){return false;})['constructor']('debugger')['call']();},1500);
 
-    const ADMIN_KEY = "ASHIF@1234";
+    const _0xApi=window.atob("aHR0cHM6Ly9kcmF3LmFyLWxvdHRlcnkwMS5jb20vV2luR28vV2luR29fMzBTL0dldEhpc3RvcnlJc3N1ZVBhZ2UuanNvbg==");
+    const _0xSalt=[68,82,90,95,57,57,88].map(x=>String.fromCharCode(x)).join('');
+    let _0xUnlocked=false,_0xExp=0,_0xLastP=null,_0xNextP=null,_0xFullP="---",_0xNums=[],_0xLvl=1,_0xLogs=[];
 
-    let lastP = null;
-    let nextP = null;
-    let currentPeriodFull = "---";
-    let targetNums = [];
-    let currentLevel = 1;
+    const _0xSWin=new Audio(window.atob("aHR0cHM6Ly9hc3NldHMubWl4a2l0LmNvL2FjdGl2ZV9zdG9yYWdlL3NmeC8yMDE5LzIwMTktcHJldmlldy5tcDM="));
+    const _0xSLoss=new Audio(window.atob("aHR0cHM6Ly9hc3NldHMubWl4a2l0LmNvL2FjdGl2ZV9zdG9yYWdlL3NmeC85NTEvOTUxLXByZXZpZXcubXAz"));
+    const _0xSDing=new Audio(window.atob("aHR0cHM6Ly9hc3NldHMubWl4a2l0LmNvL2FjdGl2ZV9zdG9yYWdlL3NmeC8yODY5LzI4NjktcHJldmlldy5tcDM="));
 
-    let historyLogs = [];
-
-    const sWin = new Audio(
-        'https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3'
-    );
-
-    const sLoss = new Audio(
-        'https://assets.mixkit.co/active_storage/sfx/951/951-preview.mp3'
-    );
-
-    const sDing = new Audio(
-        'https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3'
-    );
-
-
-    window.onload = () => {
-
-        setTimeout(() => {
-
-            document.getElementById('introScreen').style.opacity = '0';
-
-            setTimeout(() => {
-
-                document
-                    .getElementById('introScreen')
-                    .classList
-                    .add('hidden');
-
-                document
-                    .getElementById('mainWrapper')
-                    .classList
-                    .remove('hidden');
-
-            }, 800);
-
-        }, 3000);
-
+    window.onload=function(){
+        setTimeout(function(){
+            document.getElementById('introScreen').style.opacity='0';
+            setTimeout(function(){
+                document.getElementById('introScreen').classList.add('hidden');
+                document.getElementById('mainWrapper').classList.remove('hidden');
+            },800);
+        },3000);
     };
 
-    // --- KEY & ADMIN SYSTEM (GITHUB STATIC COMPATIBLE) ---
-    function isValidGeneratedKey(key) {
-        const regex = /^DARK-RIZZY-([A-Z0-9]{3})$/;
-        const match = key.match(regex);
-        if (!match) return false;
-        
-        const code = match[1];
-        const c1 = code.charCodeAt(0);
-        const c2 = code.charCodeAt(1);
-        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        const expectedC3 = chars[(c1 + c2 + 7) % chars.length];
-        
-        const savedKeys = JSON.parse(localStorage.getItem('dark_rizzy_keys') || '[]');
-        return code[2] === expectedC3 || savedKeys.includes(key);
+    function _0xHash(_0xs){
+        let _h1=0xdeadbeef^_0xs.length,_h2=0x41c6ce57^_0xs.length;
+        for(let i=0,c;i<_0xs.length;i++){c=_0xs.charCodeAt(i);_h1=Math.imul(_h1^c,2654435761);_h2=Math.imul(_h2^c,1597334677);}
+        _h1=Math.imul(_h1^(_h1>>>16),2246822507)^Math.imul(_h2^(_h2>>>13),3266489909);
+        _h2=Math.imul(_h2^(_h2>>>16),2246822507)^Math.imul(_h1^(_h1>>>13),3266489909);
+        return (4294967296*(2097151&_h2)+(_h1>>>0)).toString(36).toUpperCase();
     }
 
-    function generateNewKey() {
-        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        const ch1 = chars[Math.floor(Math.random() * chars.length)];
-        const ch2 = chars[Math.floor(Math.random() * chars.length)];
-        const ch3 = chars[(ch1.charCodeAt(0) + ch2.charCodeAt(0) + 7) % chars.length];
-        
-        const newKey = `DARK-RIZZY-${ch1}${ch2}${ch3}`;
-        document.getElementById('generatedKeyDisplay').innerText = newKey;
-
-        const savedKeys = JSON.parse(localStorage.getItem('dark_rizzy_keys') || '[]');
-        savedKeys.push(newKey);
-        localStorage.setItem('dark_rizzy_keys', JSON.stringify(savedKeys));
+    function _0xIsAdm(_0xi){
+        const _0xt=[76,95,68,67,74,90,59,56,57,62];
+        if(_0xi.length!==_0xt.length)return false;
+        for(let i=0;i<_0xi.length;i++){if((_0xi.charCodeAt(i)^(13+i))!==_0xt[i])return false;}
+        return true;
     }
 
-    function copyGenKey() {
-        const keyText = document.getElementById('generatedKeyDisplay').innerText;
-        if (keyText === "DARK-RIZZY-XXX") {
-            generateNewKey();
+    window._0xToggleCustom=function(){
+        const _0xt=document.getElementById('keyDurType').value;
+        const _0xb=document.getElementById('customDurBox');
+        if(_0xt==='CUSTOM'){_0xb.classList.remove('hidden');}else{_0xb.classList.add('hidden');}
+    };
+
+    window._0xGenKey=function(){
+        if(!_0xUnlocked)return;
+        const _0xt=document.getElementById('keyDurType').value;
+        const _0xNow=Math.floor(Date.now()/60000);
+        let _0xeMin=0,_0xLbl="♾️ PERMANENT";
+        if(_0xt==='PERM'){_0xeMin=0;_0xLbl="♾️ PERMANENT";}
+        else if(_0xt==='1H'){_0xeMin=_0xNow+60;_0xLbl="1 HOUR";}
+        else if(_0xt==='24H'){_0xeMin=_0xNow+1440;_0xLbl="24 HOURS (1 DAY)";}
+        else if(_0xt==='7D'){_0xeMin=_0xNow+10080;_0xLbl="7 DAYS";}
+        else if(_0xt==='30D'){_0xeMin=_0xNow+43200;_0xLbl="30 DAYS";}
+        else if(_0xt==='CUSTOM'){
+            const _0xv=parseInt(document.getElementById('customVal').value)||1;
+            const _0xu=document.getElementById('customUnit').value;
+            let _0xm=_0xu==='M'?1:(_0xu==='H'?60:1440);
+            _0xeMin=_0xNow+(_0xv*_0xm);
+            _0xLbl=_0xv+" "+(_0xu==='M'?'MINS':(_0xu==='H'?'HOURS':'DAYS'));
         }
-        const finalKey = document.getElementById('generatedKeyDisplay').innerText;
-        navigator.clipboard.writeText(finalKey);
-        alert("KEY COPIED: " + finalKey);
+        const _0xEc=_0xeMin===0?"0":_0xeMin.toString(36).toUpperCase();
+        const _0xRs=Math.random().toString(36).substring(2,5).toUpperCase();
+        const _0xSg=_0xHash(_0xEc+_0xRs+_0xSalt).substring(0,4);
+        const _0xFk="DARK-RIZZY-"+_0xEc+"Z"+_0xRs+_0xSg;
+        document.getElementById('generatedKeyDisplay').innerText=_0xFk;
+        document.getElementById('keyExpInfo').innerText="VALIDITY: "+_0xLbl;
+    };
+
+    window._0xCopyKey=function(){
+        const _0xk=document.getElementById('generatedKeyDisplay').innerText;
+        if(_0xk==="DARK-RIZZY-XXX")window._0xGenKey();
+        const _0xf=document.getElementById('generatedKeyDisplay').innerText;
+        navigator.clipboard.writeText(_0xf);
+        alert("KEY COPIED: "+_0xf);
+    };
+
+    function _0xValKey(_0xk){
+        if(!_0xk.startsWith("DARK-RIZZY-"))return{valid:false};
+        const _0xb=_0xk.replace("DARK-RIZZY-","");
+        const _0xzi=_0xb.lastIndexOf("Z");
+        if(_0xzi===-1||_0xb.length<_0xzi+8)return{valid:false};
+        const _0xec=_0xb.substring(0,_0xzi);
+        const _0xtl=_0xb.substring(_0xzi+1);
+        if(_0xtl.length!==7)return{valid:false};
+        const _0xrs=_0xtl.substring(0,3);
+        const _0xsg=_0xtl.substring(3,7);
+        if(_0xsg!==_0xHash(_0xec+_0xrs+_0xSalt).substring(0,4))return{valid:false};
+        if(_0xec==="0")return{valid:true,exp:0};
+        const _0xem=parseInt(_0xec,36);
+        if(Math.floor(Date.now()/60000)>=_0xem)return{valid:false,expired:true};
+        return{valid:true,exp:_0xem};
     }
 
-    function verifyAccess() {
-        const val = document.getElementById('accessKeyInput').value.trim();
-        const msg = document.getElementById('loginMsg');
-
-        if (val === ADMIN_KEY) {
+    window._0xVerify=function(){
+        const _0xv=document.getElementById('accessKeyInput').value.trim();
+        const _0xm=document.getElementById('loginMsg');
+        if(_0xIsAdm(_0xv)){
+            _0xUnlocked=true;_0xExp=0;
             document.getElementById('authSection').classList.add('hidden');
             document.getElementById('adminPanel').classList.remove('hidden');
             document.getElementById('hackSection').classList.remove('hidden');
-            generateNewKey();
-            startApp();
-        } else if (isValidGeneratedKey(val.toUpperCase())) {
+            document.getElementById('keyTimeLeft').innerText="👑 ADMIN: PERMANENT";
+            window._0xGenKey();
+            _0xStart();
+            return;
+        }
+        const _0xc=_0xValKey(_0xv.toUpperCase());
+        if(_0xc.valid){
+            _0xUnlocked=true;_0xExp=_0xc.exp;
             document.getElementById('authSection').classList.add('hidden');
             document.getElementById('hackSection').classList.remove('hidden');
-            startApp();
-        } else {
-            msg.innerText = "❌ INVALID KEY! CONTACT @RANGDARBHAI01";
+            _0xUpdBadge();
+            _0xStart();
+        }else if(_0xc.expired){
+            _0xm.innerText="⏰ KEY EXPIRED! RENEW FROM @RANGDARBHAI01";
+        }else{
+            _0xm.innerText="❌ INVALID KEY! CONTACT @RANGDARBHAI01";
         }
-    }
+    };
 
-    // --- COPY PREDICTION FUNCTION ---
-    function copyPrediction() {
-        if (!nextP || targetNums.length === 0) return;
-
-        const text = `🍥 DARK X RIZZY 𝐀𝐈 𝐕𝐈𝐏 𝐒𝐈𝐆𝐍𝐀𝐋 \n⏱️ PERIOD: ${currentPeriodFull}\n🔥 PREDICTION: ${nextP}\n🔢 NUMBERS: ${targetNums[0]}, ${targetNums[1]}\n👑 BEST OF LUCK`;
-
-        navigator.clipboard.writeText(text).then(() => {
-            const btn = document.getElementById('copyPredBtn');
-            btn.innerText = "✅ COPIED TO CLIPBOARD!";
-            setTimeout(() => {
-                btn.innerText = "📋 COPY PREDICTION";
-            }, 1500);
-        });
-    }
-
-
-    function startApp() {
-
-        syncEngine();
-
-        setInterval(
-            syncEngine,
-            2000
-        );
-
-        startClock();
-    }
-
-
-    function clearHistory() {
-
-        historyLogs = [];
-
-        document
-            .getElementById('logs')
-            .innerHTML = '';
-    }
-
-
-    function startClock() {
-
-        setInterval(() => {
-
-            const rem =
-                60 - new Date().getSeconds();
-
-            document
-                .getElementById('timer')
-                .innerText =
-                `00:${rem < 10 ? '0' + rem : rem}`;
-
-            if (rem === 5)
-                sDing
-                    .play()
-                    .catch(() => {});
-
-            document
-                .getElementById('timer')
-                .style
-                .color =
-                rem <= 5
-                    ? "#ff10f0"
-                    : "#ccff00";
-
-        }, 1000);
-    }
-
-
-    async function syncEngine() {
-
-        if (
-            document
-                .getElementById('hackSection')
-                .classList
-                .contains('hidden')
-        )
+    function _0xUpdBadge(){
+        const _0xb=document.getElementById('keyTimeLeft');
+        if(_0xExp===0){_0xb.innerText="♾️ VIP: PERMANENT";return;}
+        const _0xrm=_0xExp-Math.floor(Date.now()/60000);
+        if(_0xrm<=0){
+            _0xUnlocked=false;
+            document.getElementById('hackSection').classList.add('hidden');
+            document.getElementById('authSection').classList.remove('hidden');
+            document.getElementById('loginMsg').innerText="⏰ SESSION EXPIRED! CONTACT @RANGDARBHAI01";
             return;
-
-        try {
-
-            const r =
-                await fetch(
-                    API + '?t=' + Date.now()
-                );
-
-            const d =
-                await r.json();
-
-            const top =
-                d.data.list[0];
-
-            processHybrid(
-                top.issueNumber,
-                parseInt(top.number),
-                d.data.list
-            );
-
-        } catch (e) {}
+        }
+        if(_0xrm>=1440)_0xb.innerText="⏳ VIP: "+Math.floor(_0xrm/1440)+"d "+Math.floor((_0xrm%1440)/60)+"h";
+        else if(_0xrm>=60)_0xb.innerText="⏳ VIP: "+Math.floor(_0xrm/60)+"h "+(_0xrm%60)+"m";
+        else _0xb.innerText="⏳ VIP: "+_0xrm+"m LEFT";
     }
 
+    window._0xCopyPred=function(){
+        if(!_0xUnlocked||!_0xNextP||_0xNums.length===0)return;
+        const _0xt="🍥 DARK X RIZZY 𝐀𝐈 𝐕𝐈𝐏 𝐒𝐈𝐆𝐍𝐀𝐋 \n⏱️ PERIOD: "+_0xFullP+"\n🔥 PREDICTION: "+_0xNextP+"\n🔢 NUMBERS: "+_0xNums[0]+", "+_0xNums[1]+"\n👑 BEST OF LUCK";
+        navigator.clipboard.writeText(_0xt).then(function(){
+            const _0xbtn=document.getElementById('copyPredBtn');
+            _0xbtn.innerText="✅ COPIED TO CLIPBOARD!";
+            setTimeout(function(){_0xbtn.innerText="📋 COPY PREDICTION";},1500);
+        });
+    };
 
-    function processHybrid(
-        p,
-        num,
-        list
-    ) {
+    window._0xClear=function(){
+        _0xLogs=[];
+        document.getElementById('logs').innerHTML='';
+    };
 
-        const actual =
-            num >= 5
-                ? "BIG"
-                : "SMALL";
+    function _0xStart(){
+        if(!_0xUnlocked)return;
+        _0xSync();
+        setInterval(_0xSync,2000);
+        _0xClock();
+    }
 
-        if (lastP !== p) {
+    // --- 30 SEC WINGO TIMER GLITCH FIXED ---
+    function _0xClock(){
+        setInterval(function(){
+            if(!_0xUnlocked)return;
+            const _0xsec=new Date().getSeconds();
+            const _0xrem=30-(_0xsec%30);
+            document.getElementById('timer').innerText="00:"+(_0xrem<10?'0'+_0xrem:_0xrem);
+            if(_0xrem===5)_0xSDing.play().catch(function(){});
+            document.getElementById('timer').style.color=_0xrem<=5?"#ff10f0":"#ccff00";
+            if(_0xsec%15===0)_0xUpdBadge();
+        },1000);
+    }
 
-            if (nextP && lastP) {
+    async function _0xSync(){
+        if(!_0xUnlocked||document.getElementById('hackSection').classList.contains('hidden'))return;
+        try{
+            const _0xr=await fetch(_0xApi+'?t='+Date.now());
+            const _0xd=await _0xr.json();
+            const _0xtop=_0xd.data.list[0];
+            _0xProc(_0xtop.issueNumber,parseInt(_0xtop.number),_0xd.data.list);
+        }catch(_0xe){}
+    }
 
-                const isNumberWin = targetNums.includes(num);
-                const isSizeWin = (nextP === actual);
-                const win = isSizeWin || isNumberWin;
-
-                if (win) {
-
-                    sWin
-                        .play()
-                        .catch(() => {});
-
-                    currentLevel = 1;
-
-                } else {
-
-                    sLoss
-                        .play()
-                        .catch(() => {});
-
-                    currentLevel++;
-
-                    if (currentLevel > 4)
-                        currentLevel = 1;
-                }
-
-                const multiplier =
-                    currentLevel === 1
-                        ? "1X"
-                        : currentLevel === 2
-                        ? "3X"
-                        : currentLevel === 3
-                        ? "9X"
-                        : "27X";
-
-                document
-                    .getElementById('mLevel')
-                    .innerText =
-                    `MARTINGALE: LEVEL ${currentLevel} (${multiplier})`;
-
-                let statusText = 'LOSS';
-                let statusClass = 'loss';
-
-                if (isNumberWin) {
-                    statusText = 'JACKPORT';
-                    statusClass = 'jackpot';
-                } else if (isSizeWin) {
-                    statusText = 'WIN';
-                    statusClass = 'win';
-                }
-
-                const entry = {
-
-                    period: p.slice(-3),
-
-                    pred: nextP,
-
-                    result:
-                        `${actual}(${num})`,
-
-                    status: statusText,
-
-                    winClass: statusClass
-                };
-
-                historyLogs.unshift(entry);
-
-                if (historyLogs.length > 100)
-                    historyLogs =
-                        historyLogs.slice(
-                            0,
-                            100
-                        );
-
-                const row =
-                    `<tr>
-                        <td>${entry.period}</td>
-                        <td>${entry.pred}</td>
-                        <td>${entry.result}</td>
-                        <td class="${entry.winClass}">
-                            ${entry.status}
-                        </td>
-                    </tr>`;
-
-                document
-                    .getElementById('logs')
-                    .innerHTML =
-                    row +
-                    document
-                        .getElementById('logs')
-                        .innerHTML;
+    function _0xProc(_0xp,_0xnum,_0xlist){
+        if(!_0xUnlocked)return;
+        const _0xact=_0xnum>=5?"BIG":"SMALL";
+        if(_0xLastP!==_0xp){
+            if(_0xNextP&&_0xLastP){
+                const _0xnw=_0xNums.includes(_0xnum);
+                const _0xsw=(_0xNextP===_0xact);
+                const _0xw=_0xsw||_0xnw;
+                if(_0xw){_0xSWin.play().catch(function(){});_0xLvl=1;}
+                else{_0xSLoss.play().catch(function(){});_0xLvl++;if(_0xLvl>4)_0xLvl=1;}
+                const _0xml=_0xLvl===1?"1X":_0xLvl===2?"3X":_0xLvl===3?"9X":"27X";
+                document.getElementById('mLevel').innerText="MARTINGALE: LEVEL "+_0xLvl+" ("+_0xml+")";
+                let _0xst='LOSS',_0xsc='loss';
+                if(_0xnw){_0xst='JACKPORT';_0xsc='jackpot';}
+                else if(_0xsw){_0xst='WIN';_0xsc='win';}
+                const _0xen={period:_0xp.slice(-3),pred:_0xNextP,result:_0xact+"("+_0xnum+")",status:_0xst,winClass:_0xsc};
+                _0xLogs.unshift(_0xen);
+                if(_0xLogs.length>100)_0xLogs=_0xLogs.slice(0,100);
+                const _0xrw="<tr><td>"+_0xen.period+"</td><td>"+_0xen.pred+"</td><td>"+_0xen.result+"</td><td class=\""+_0xen.winClass+"\">"+_0xen.status+"</td></tr>";
+                document.getElementById('logs').innerHTML=_0xrw+document.getElementById('logs').innerHTML;
             }
-
-            lastP = p;
-
-            const last5 =
-                list
-                    .slice(0, 5)
-                    .map(
-                        x =>
-                            parseInt(x.number) >= 5
-                                ? "BIG"
-                                : "SMALL"
-                    );
-
-            const lastNums =
-                list
-                    .slice(0, 5)
-                    .map(
-                        x =>
-                            parseInt(x.number)
-                    );
-
-            const stratDisp =
-                document
-                    .getElementById(
-                        'stratDisplay'
-                    );
-
-            if (
-                last5[0] === last5[1] &&
-                last5[1] === last5[2]
-            ) {
-
-                nextP = last5[0];
-
-                stratDisp.innerText =
-                    "MODE: DRAGON PULSE";
-
-            } else {
-
-                nextP =
-                    last5[0] === "BIG"
-                        ? "SMALL"
-                        : "BIG";
-
-                stratDisp.innerText =
-                    "MODE: NEURAL REVERSE";
+            _0xLastP=_0xp;
+            const _0xl5=_0xlist.slice(0,5).map(function(x){return parseInt(x.number)>=5?"BIG":"SMALL";});
+            const _0xln=_0xlist.slice(0,5).map(function(x){return parseInt(x.number);});
+            const _0xsd=document.getElementById('stratDisplay');
+            if(_0xl5[0]===_0xl5[1]&&_0xl5[1]===_0xl5[2]){
+                _0xNextP=_0xl5[0];
+                _0xsd.innerText="MODE: DRAGON PULSE";
+            }else{
+                _0xNextP=_0xl5[0]==="BIG"?"SMALL":"BIG";
+                _0xsd.innerText="MODE: NEURAL REVERSE";
             }
-
-            const sum =
-                lastNums.reduce(
-                    (a, b) => a + b,
-                    0
-                );
-
-            if (nextP === "BIG") {
-
-                targetNums =
-                    sum > 20
-                        ? [0, 2]
-                        : [1, 3];
-
-            } else {
-
-                targetNums =
-                    sum < 25
-                        ? [7, 9]
-                        : [6, 8];
-            }
-
-            currentPeriodFull = (BigInt(p) + 1n).toString();
-
-            document
-                .getElementById('pID')
-                .innerText =
-                "PERIOD: " + currentPeriodFull;
-
-            document
-                .getElementById('pRes')
-                .innerText =
-                nextP;
-
-            document
-                .getElementById('pRes')
-                .style
-                .color =
-                nextP === "BIG"
-                    ? "#00ffff"
-                    : "#ccff00";
-
-            document
-                .getElementById('numRow')
-                .innerHTML =
-                `<div class="num-circle">
-                    ${targetNums[0]}
-                </div>
-                <div class="num-circle">
-                    ${targetNums[1]}
-                </div>`;
+            const _0xsm=_0xln.reduce(function(a,b){return a+b;},0);
+            if(_0xNextP==="BIG"){_0xNums=_0xsm>20?[0,2]:[1,3];}
+            else{_0xNums=_0xsm<25?[7,9]:[6,8];}
+            _0xFullP=(BigInt(_0xp)+1n).toString();
+            document.getElementById('pID').innerText="PERIOD: "+_0xFullP;
+            document.getElementById('pRes').innerText=_0xNextP;
+            document.getElementById('pRes').style.color=_0xNextP==="BIG"?"#00ffff":"#ccff00";
+            document.getElementById('numRow').innerHTML="<div class=\"num-circle\">"+_0xNums[0]+"</div><div class=\"num-circle\">"+_0xNums[1]+"</div>";
         }
     }
-
+})();
 </script>
-
 </body>
 </html>
