@@ -45,236 +45,354 @@
     </style>
 </head>
 <body oncontextmenu="return false;" onselectstart="return false;" ondragstart="return false;">
-<div id="_0xRoot"></div>
+
+    <div id="introScreen">
+        <div class="intro-line"><span>DARK RIZZY X</span> PREDICTION</div>
+        <p style="color: var(--neon-violet); letter-spacing: 3px; margin-top: 22px; font-size: 11px;">
+            ⚡ TG:- @RANGDARBHAI01 ⚡
+        </p>
+    </div>
+
+    <div id="mainWrapper" class="hidden">
+        <div class="app-frame">
+
+            <div class="header">
+                <span style="font-size: 22px; font-weight: 800;">DARK RIZZY X</span>
+                <span style="font-size: 20px; color: var(--neon-cyan);">PREDICTION</span>
+            </div>
+
+            <!-- LOGIN SECTION -->
+            <div id="authSection" class="glass-card" style="text-align: center;">
+                <div class="strat-mode">🔐 VIP ACCESS LOGIN</div>
+                <p style="font-size: 11px; color: var(--neon-cyan); margin-bottom: 15px;">
+                    ENTER VIP KEY OR ADMIN KEY
+                </p>
+                <input type="text" id="accessKeyInput" class="cyber-input" placeholder="DARK-RIZZY-XXX">
+                <button class="btn-copy" style="margin-top: 5px;" onclick="window._0xV()">⚡ UNLOCK ENGINE ⚡</button>
+                <p id="loginMsg" style="font-size: 11px; color: #ff10f0; margin-top: 10px; font-weight: bold;"></p>
+                <div style="margin-top: 12px; font-size: 11px; color: var(--cyber-lime);">
+                    ⚡ TG:- @RANGDARBHAI01 ⚡
+                </div>
+            </div>
+
+            <!-- ADMIN PANEL SECTION -->
+            <div id="adminPanel" class="glass-card hidden" style="text-align: center;">
+                <div class="strat-mode" style="color: var(--gold); border-color: var(--gold);">👑 ADMIN PANEL - KEY GENERATOR</div>
+                
+                <select id="keyDurType" class="cyber-select" onchange="window._0xTC()">
+                    <option value="PERM">♾️ PERMANENT KEY</option>
+                    <option value="CUSTOM">⚙️ CUSTOM TIME OPTION</option>
+                    <option value="1H">⏱️ 1 HOUR KEY</option>
+                    <option value="24H">⏱️ 1 DAY (24 HOURS)</option>
+                    <option value="7D">📅 7 DAYS VIP</option>
+                    <option value="30D">📅 30 DAYS VIP</option>
+                </select>
+
+                <div id="customDurBox" class="hidden" style="display: flex; gap: 8px; margin-bottom: 10px;">
+                    <input type="number" id="customVal" class="cyber-input" placeholder="Enter Time" min="1" value="1" style="margin-bottom: 0; flex: 1;">
+                    <select id="customUnit" class="cyber-select" style="margin-bottom: 0; flex: 1;">
+                        <option value="M">MINUTES</option>
+                        <option value="H">HOURS</option>
+                        <option value="D" selected>DAYS</option>
+                    </select>
+                </div>
+
+                <div id="generatedKeyDisplay" class="key-box">DARK-RIZZY-XXX</div>
+                <div id="keyExpInfo" style="font-size: 10px; color: var(--gold); margin-bottom: 8px;">VALIDITY: ---</div>
+
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn-copy" style="margin-top: 5px;" onclick="window._0xGK()">🎲 GENERATE KEY</button>
+                    <button class="btn-copy" style="margin-top: 5px; background: linear-gradient(90deg, #ff8c00, #ffd700); color: #000;" onclick="window._0xCK()">📋 COPY KEY</button>
+                </div>
+            </div>
+
+            <!-- MAIN HACK SECTION -->
+            <div id="hackSection" class="hidden">
+                <div class="status-info">
+                    <span>📡 SERVER: CYBERLINK</span>
+                    <span id="keyTimeLeft" style="color: var(--gold);">⏳ VIP: ACTIVE</span>
+                    <span id="pingVal">PING: 12MS</span>
+                </div>
+
+                <div class="glass-card" style="text-align: center;">
+                    <div id="stratDisplay" class="strat-mode">MODE: DARK RIZZY X VIP MODE</div>
+                    <div id="timer" class="timer-display">00:30</div>
+                    <div id="pID" style="margin-bottom: 6px;">PERIOD: ---</div>
+                    <div id="pRes" class="pred-val">INIT</div>
+                    <div id="mLevel" class="lvl-badge">MARTINGALE: LEVEL 2 (1X)</div>
+
+                    <div style="font-size: 11px; color: var(--cyber-lime); margin-bottom: 5px;">
+                        ✦ OPPOSITE NUMBERS ✦
+                    </div>
+
+                    <div class="num-row" id="numRow">
+                        <div class="num-circle">?</div>
+                        <div class="num-circle">?</div>
+                    </div>
+
+                    <button id="copyPredBtn" class="btn-copy" onclick="window._0xCP()">
+                        📋 COPY PREDICTION
+                    </button>
+                </div>
+
+                <div class="glass-card">
+                    <div style="font-size: 12px; color: var(--neon-cyan); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+                        <span>📊 NEURAL HISTORY (MAX 100)</span>
+                        <button class="btn-clear" style="width: auto; padding: 8px 16px; margin-top: 0;" onclick="window._0xCL()">
+                            🗑️ CLEAR LOG
+                        </button>
+                    </div>
+
+                    <div class="history-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>PERIOD</th>
+                                    <th>PRED</th>
+                                    <th>RESULT</th>
+                                    <th>STATUS</th>
+                                </tr>
+                            </thead>
+                            <tbody id="logs"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
 <script>
 (function(){
-    const _0xPayload = "PGdivBpZD0iaW50cm9TY3JlZW4iPjxkXYgY2xhc3M9ImludHJvLWxpbmUiPjxzcGFuPkRBUksgUklaWlkgWDwvc3Bhbj4gUFJFRElDVElPTjwvZGl2PjxwIHN0eWxlPSJjb2xvcjogdmFyKC0tbmVvbi12aW9sZXQpOyBsZXR0ZXItc3BhY2luZzogM3B4OyBtYXJnaW4tdG9wOiAyMnB4OyBmb250LXNpemU6IDExcHg7Ij7imqEgVEc6LSBAUkFOR0RBUkJIQUkwMSDimqE8L3A+PC9kaXY+";
-    document.getElementById('_0xRoot').innerHTML = decodeURIComponent(escape(window.atob("PGRpdiBpZD0iaW50cm9TY3JlZW4iPjxkaXYgY2xhc3M9ImludHJvLWxpbmUiPjxzcGFuPkRBUksgUklaWlkgWDwvc3Bhbj4gUFJFRElDVElPTjwvZGl2PjxwIHN0eWxlPSJjb2xvcjogdmFyKC0tbmVvbi12aW9sZXQpOyBsZXR0ZXItc3BhY2luZzogM3B4OyBtYXJnaW4tdG9wOiAyMnB4OyBmb250LXNpemU6IDExcHg7Ij7imqEgVEc6LSBAUkFOR0RBUkJIQUkwMSDimqE8L3A+PC9kaXY+PGRpdiBpZD0ibWFpbldyYXBwZXIiIGNsYXNzPSJoaWRkZW4iPjxkaXYgY2xhc3M9ImFwcC1mcmFtZSI+PGRpdiBjbGFzcz0iaGVhZGVyIj48c3BhbiBzdHlsZT0iZm9udC1zaXplOiAyMnB4OyBmb250LXdlaWdodDogODAwOyI+REFSSyBSSVpaWSBYPC9zcGFuPiA8c3BhbiBzdHlsZT0iZm9udC1zaXplOiAyMHB4OyBjb2xvcjogdmFyKC0tbmVvbi1jeWFuKTsiPlBSRURJQ1RJT048L3NwYW4+PC9kaXY+PGRpdiBpZD0iYXV0aFNlY3Rpb24iIGNsYXNzPSJnbGFzcy1jYXJkIiBzdHlsZT0idGV4dC1hbGlnbjogY2VudGVyOyI+PGRpdiBjbGFzcz0ic3RyYXQtbW9kZSI+8J+UkCBWSVAgQUNDVVNT LOGINPC9kaXY+PHAgc3R5bGU9ImZvbnQtc2l6ZTogMTFweDsgY29sb3I6IHZhcigtLW5lb24tY3lhbik7IG1hcmdpbi1ib3R0b206IDE1cHg7Ij5FTlRFUiBWSVAgS0VZIE9SIEFETUlOIEtFWTwvcD48aW5wdXQgdHlwZT0idGV4dCIgaWQ9ImFjY2Vzc0tleUlucHV0IiBjbGFzcz0iY3liZXItaW5wdXQiIHBsYWNlaG9sZGVyPSJEQVJLLVJJa1pZLVhYWCI+PGJ1dHRvbiBjbGFzcz0iYnRuLWNvcHkiIHN0eWxlPSJtYXJnaW4tdG9wOiA1cHg7IiBvbmNsaWNrPSJ3aW5kb3cuXzB4VmVyaWZ5KCkiPuKaoSBVTkxPQ0sgRU5HSU5FIOKaoTwvYnV0dG9uPjxwIGlkPSJsb2dpbk1zZyIgc3R5bGU9ImZvbnQtc2l6ZTogMTFweDsgY29sb3I6ICNmZjEwZjA7IG1hcmdpbi10b3A6IDEwcHg7IGZvbnQtd2VpZ2h0OiBib2xkOyI+PC9wPjxkaXYgc3R5bGU9Im1hcmdpbi10b3A6IDEycHg7IGZvbnQtc2l6ZTogMTFweDsgY29sb3I6IHZhcigtLWN5YmVyLWxpbWUpOyI+4pqhIFRHOi0gQFJBTkdEQVJCSEFJMDgg4pqhPC9kaXY+PC9kaXY+PGRpdiBpZD0iYWRtaW5QYW5lbCIgY2xhc3M9ImdsYXNzLWNhcmQgaGlkZGVuIiBzdHlsZT0idGV4dC1hbGlnbjogY2VudGVyOyI+PGRpdiBjbGFzcz0ic3RyYXQtbW9kZSIgc3R5bGU9ImNvbG9yOiB2YXIoLS1nb2xkKTsgYm9yZGVyLWNvbG9yOiB2YXIoLS1nb2xkKTsiPvCfkZEgQURNSU4gUEFORUwgLSBLRVkgR0VORVJBVE9SPC9kaXY+PHNlbGVjdCBpZD0ia2V5RHVyVHlwZSIgY2xhc3M9ImN5YmVyLXNlbGVjdCIgb25jaGFuZ2U9IndpbmRvdy5fMHhUb2dnbGVDdXN0b20oKSI+PG9wdGlvbiB2YWx1ZT0iUEVSTSI+4p2+77iPIFBFUk1BTkVOVCBLRVk8L29wdGlvbj48b3B0aW9uIHZhbHVlPSJDVVNUT00iPuKame+4jyBDVVNUT00gVE1FIE9QVElPTjwvb3B0aW9uPjxvcHRpb24gdmFsdWU9IjFIIj7im7HvuI8gMSBIT1VSIEtFWTwvb3B0aW9uPjxvcHRpb24gdmFsdWU9IjI0SCI+4pux77iPIDEgREFZICgyNCBIUyk8L29wdGlvbj48b3B0aW9uIHZhbHVlPSI3RCI+8J+ThSA3IERBWVMgVklQPC9vcHRpb24+PG9wdGlvbiB2YWx1ZT0iMzBEIj7wn5OFIDMwIERBWVMgVklQPC9vcHRpb24+PC9zZWxlY3Q+PGRpdiBpZD0iY3VzdG9tRHVyQm94IiBjbGFzcz0iaGlkZGVuIiBzdHlsZT0iZGlzcGxheTogZmxleDsgZ2FwOiA4cHg7IG1hcmdpbi1ib3R0b206IDEwcHg7Ij48aW5wdXQgdHlwZT0ibnVtYmVyIiBpZD0iY3VzdG9tVmFsIiBjbGFzcz0iY3liZXItaW5wdXQiIHBsYWNlaG9sZGVyPSJFbnRlciBUaW1lIiBtaW49IjEiIHZhbHVlPSIxIiBzdHlsZT0ibWFyZ2luLWJvdHRvbTogMDsgZmxleDogMTsiPjxzZWxlY3QgaWQ9ImN1c3RvbVVuaXQiIGNsYXNzPSJjeWJlci1zZWxlY3QiIHN0eWxlPSJtYXJnaW4tYm90dG9tOiAwOyBmxlleDogMTsiPjxvcHRpb24gdmFsdWU9Ik0iPk1JTlVURVM8L29wdGlvbj48b3B0aW9uIHZhbHVlPSJIIj5IT1VSUzwvb3B0aW9uPjxvcHRpb24gdmFsdWU9IkQiIHNlbGVjdGVkPkRBWVM8L29wdGlvbj48L3NlbGVjdD48L2Rpdj48ZGl2IGlkPSJnZW5lcmF0ZWRLZXlEaXNwbGF5IiBjbGFzcz0ia2V5LWJveCI+REFSSy1SSVpaWS1YWFg8L2Rpdj48ZGl2IGlkPSJrZXlFeHBJbmZvIiBzdHlsZT0iZm9udC1zaXplOiAxMHB4OyBjb2xvcjogdmFyKC0tZ29sZCk7IG1hcmdpbi1ib3R0b206IDhweDsiPlZBTElESVRZOiAtLS08L2Rpdj48ZGl2IHN0eWxlPSJkaXNwbGF5OiBmbGV4OyBnYXA6IDEwcHg7Ij48YnV0dG9uIGNsYXNzPSJidG4tY29weSIgc3R5bGU9Im1hcmdpbi10b3A6IDVweDsiIG9uY2xpY2s9IndpbmRvdy5fMHhHZW5LZXkoKSI+8J+OsiBHRU5FUkFURSBLRVk8L2J1dHRvbj48YnV0dG9uIGNsYXNzPSJidG4tY29weSIgc3R5bGU9Im1hcmdpbi10b3A6IDVweDsgYmFja2dyb3VuZDogbGluZWFyLWdyYWRpZW50KDkwZGVnLCAjZmY4YzAwLCAjZmZkNzAwKTsgY29sb3I6ICMwMDA7IiBvbmNsaWNrPSJ3aW5kb3cuXzB4Q29weUtleSgpIj7wn5OLIENPUFkgS0VZPC9idXR0b24+PC9kaXY+PC9kaXY+PGRpdiBpZD0iaGFja1NlY3Rpb24iIGNsYXNzPSJoaWRkZW4iPjxkaXYgY2xhc3M9InN0YXR1cy1pbmZvIj48c3Bhbj7wn5📡IFNFUlZFUjogQ1lCRVJMSU5LPC9zcGFuPjxzcGFuIGlkPSJrZXlUaW1lTGVmdCIgc3R5bGU9ImNvbG9yOiB2YXIoLS1nb2xkKTsiPuKbsiBWSVA6IEFDVElWRTwvc3Bhbj48c3BhbiBpZD0icGluZ1ZhbCI+UElORzogMTJNUzwvc3Bhbj48L2Rpdj48ZGl2IGNsYXNzPSJnbGFzcy1jYXJkIiBzdHlsZT0idGV4dC1hbGlnbjogY2VudGVyOyI+PGRpdiBpZD0ic3RyYXREaXNwbGF5IiBjbGFzcz0ic3RyYXQtbW9kZSI+TU9ERTogREFSSyBSSVpaWSBYIFZJUCBNT0RFPC9kaXY+PGRpdiBpZD0idGltZXIiIGNsYXNzPSJ0aW1lci1kaXNwbGF5Ij4wMDozMDwvZGl2PjxkaXYgaWQ9InBJRCIgc3R5bGU9Im1hcmdpbi1ib3R0b206IDZweDsiPlBFUklPRDogLS0tPC9kaXY+PGRpdiBpZD0icFJlcyIgY2xhc3M9InByZWQtdmFsIj5JTklUPC9kaXY+PGRpdiBpZD0ibUxldmVsIiBjbGFzcz0ibHZsLWJhZGdlIj5NQVJUSU5HQUxFOiBMRVZFTCAyICgxWCk8L2Rpdj48ZGl2IHN0eWxlPSJmb250LXNpemU6IDExcHg7IGNvbG9yOiB2YXIoLS1jeWJlci1saW1lKTsgbWFyZ2luLWJvdHRvbTogNXB4OyI+4pymIE9QUE9TSVRFIE5VTUJFUlMg4pymPC9kaXY+PGRpdiBjbGFzcz0ibnVtLXJvdyIgaWQ9Im51bVJvdyI+PGRpdiBjbGFzcz0ibnVtLWNpcmNsZSI+PzwvZGl2PjxkaXYgY2xhc3M9Im51bS1jaXJjbGUiPj88L2Rpdj48L2Rpdj48YnV0dG9uIGlkPSJjb3B5UHJlZEJ0biIgY2xhc3M9ImJ0bi1jb3B5IiBvbmNsaWNrPSJ3aW5kb3cuXzB4Q29weVByZWQoKSI+8J+TiyBDT1BZIFBSRURJQ1RJT048L2J1dHRvbj48L2Rpdj48ZGl2IGNsYXNzPSJnbGFzcy1jYXJkIj48ZGl2IHN0eWxlPSJmb250LXNpemU6IDEycHg7IGNvbG9yOiB2YXIoLS1uZW9uLWN5YW4pOyBtYXJnaW4tYm90dG9tOiAxMnB4OyBkaXNwbGF5OiBmbGV4OyBqdXN0aWZ5LWNvbnRlbnQ6IHNwYWNlLWJldHdlZW47IGFsaWduLWl0ZW1zOiBjZW50ZXI7Ij48c3Bhbj7wn5📊IE5FVVJBTCBISVNUT1JZIChNQVggMTAwKTwvc3Bhbj48YnV0dG9uIGNsYXNzPSJidG4tY2xlYXIiIHN0eWxlPSJ3aWR0aDogYXV0bzsgcGFkZGluZzogOHB4IDE2cHg7IG1hcmdpbi10b3A6IDA7IiBvbmNsaWNrPSJ3aW5kb3cuXzB4Q2xlYXIoKSI+8J+Xke+4jyBDTEVBUiBMT0c8L2J1dHRvbj48L2Rpdj48ZGl2IGNsYXNzPSJoaXN0b3J5LXdyYXAiPjx0YWJsZT48dGhlYWQ+PHRyPjx0aD5QRVJJT0Q8L3RoPjx0aD5QUkVEPC90aD48dGg+UkVTVUxUPC90aD48dGg+U1RBVFVTPC90aD48L3RyPjwvdGhlYWQ+PHRib2R5IGlkPSJsb2dzIj48L3Rib2R5PjwvdGFibGU+PC9kaXY+PC9kaXY+PC9kaXY+PC9kaXY+PC9kaXY+".replace("QFJBTkdEQVJCSEFJMDgg", "QFJBTkdEQVJCSEFJMDEg").replace("QUNDVVNT LOGIN", "QUNDRVNT LOGIN").replace("REFSSy1SSWtaWS1YWFg", "REFSSy1SSVpaWS1YWFg").replace("fxlle", "fle"))));
+    const _0xD = [
+        "https://draw.ar-lottery01.com/WinGo/WinGo_30S/GetHistoryIssuePage.json",
+        "https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3",
+        "https://assets.mixkit.co/active_storage/sfx/951/951-preview.mp3",
+        "https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3",
+        "DARK-RIZZY-",
+        "JACKPORT"
+    ];
 
-    document.addEventListener('keydown',function(_0xe){
-        if(_0xe.keyCode===123||(_0xe.ctrlKey&&_0xe.shiftKey&&(_0xe.keyCode===73||_0xe.keyCode===74||_0xe.keyCode===67))||(_0xe.ctrlKey&&(_0xe.keyCode===85||_0xe.keyCode===83))){
-            _0xe.preventDefault();return false;
+    document.addEventListener('keydown',function(_e){
+        if(_e.keyCode===123||(_e.ctrlKey&&_e.shiftKey&&(_e.keyCode===73||_e.keyCode===74||_e.keyCode===67))||(_e.ctrlKey&&(_e.keyCode===85||_e.keyCode===83))){
+            _e.preventDefault();return false;
         }
     });
-    setInterval(function(){(function(){return false;})['constructor']('debugger')['call']();},1500);
 
-    const _0xApi=window.atob("aHR0cHM6Ly9kcmF3LmFyLWxvdHRlcnkwMS5jb20vV2luR28vV2luR29fMzBTL0dldEhpc3RvcnlJc3N1ZVBhZ2UuanNvbg==");
-    const _0xSalt=[68,82,90,95,57,57,88].map(x=>String.fromCharCode(x)).join('');
-    let _0xUnlocked=false,_0xExp=0,_0xLastP=null,_0xNextP=null,_0xFullP="---",_0xNums=[],_0xLvl=1,_0xLogs=[];
+    const _0xSalt = String.fromCharCode(68,82,90,95,57,57,88);
+    let _0xU=false, _0xE=0, _0xLP=null, _0xNP=null, _0xFP="---", _0xNM=[], _0xLV=1, _0xLG=[];
 
-    const _0xSWin=new Audio(window.atob("aHR0cHM6Ly9hc3NldHMubWl4a2l0LmNvL2FjdGl2ZV9zdG9yYWdlL3NmeC8yMDE5LzIwMTktcHJldmlldy5tcDM="));
-    const _0xSLoss=new Audio(window.atob("aHR0cHM6Ly9hc3NldHMubWl4a2l0LmNvL2FjdGl2ZV9zdG9yYWdlL3NmeC85NTEvOTUxLXByZXZpZXcubXAz"));
-    const _0xSDing=new Audio(window.atob("aHR0cHM6Ly9hc3NldHMubWl4a2l0LmNvL2FjdGl2ZV9zdG9yYWdlL3NmeC8yODY5LzI4NjktcHJldmlldy5tcDM="));
+    const _0xSW=new Audio(_0xD[1]), _0xSL=new Audio(_0xD[2]), _0xSD=new Audio(_0xD[3]);
 
-    window.onload=function(){
+    window.addEventListener('DOMContentLoaded', function(){
         setTimeout(function(){
-            document.getElementById('introScreen').style.opacity='0';
+            const _is = document.getElementById('introScreen');
+            if(_is) _is.style.opacity='0';
             setTimeout(function(){
-                document.getElementById('introScreen').classList.add('hidden');
+                if(_is) _is.classList.add('hidden');
                 document.getElementById('mainWrapper').classList.remove('hidden');
             },800);
-        },3000);
-    };
+        },2500);
+    });
 
-    function _0xHash(_0xs){
-        let _h1=0xdeadbeef^_0xs.length,_h2=0x41c6ce57^_0xs.length;
-        for(let i=0,c;i<_0xs.length;i++){c=_0xs.charCodeAt(i);_h1=Math.imul(_h1^c,2654435761);_h2=Math.imul(_h2^c,1597334677);}
-        _h1=Math.imul(_h1^(_h1>>>16),2246822507)^Math.imul(_h2^(_h2>>>13),3266489909);
-        _h2=Math.imul(_h2^(_h2>>>16),2246822507)^Math.imul(_h1^(_h1>>>13),3266489909);
-        return (4294967296*(2097151&_h2)+(_h1>>>0)).toString(36).toUpperCase();
+    function _0xH(_s){
+        let _1=0xdeadbeef^_s.length, _2=0x41c6ce57^_s.length;
+        for(let i=0,c;i<_s.length;i++){c=_s.charCodeAt(i);_1=Math.imul(_1^c,2654435761);_2=Math.imul(_2^c,1597334677);}
+        _1=Math.imul(_1^(_1>>>16),2246822507)^Math.imul(_2^(_2>>>13),3266489909);
+        _2=Math.imul(_2^(_2>>>16),2246822507)^Math.imul(_1^(_1>>>13),3266489909);
+        return (4294967296*(2097151&_2)+(_1>>>0)).toString(36).toUpperCase();
     }
 
-    function _0xIsAdm(_0xi){
-        const _0xt=[76,95,68,67,74,90,59,56,57,62];
-        if(_0xi.length!==_0xt.length)return false;
-        for(let i=0;i<_0xi.length;i++){if((_0xi.charCodeAt(i)^(13+i))!==_0xt[i])return false;}
-        return true;
+    // 100% EXACT ASCII MATCH FOR: ASHIF@1234 (A=65, S=83, H=72, I=73, F=70, @=64, 1=49, 2=50, 3=51, 4=52)
+    function _0xIA(_i){
+        const _k = String.fromCharCode(65, 83, 72, 73, 70, 64, 49, 50, 51, 52);
+        return _i.trim().toUpperCase() === _k;
     }
 
-    window._0xToggleCustom=function(){
-        const _0xt=document.getElementById('keyDurType').value;
-        const _0xb=document.getElementById('customDurBox');
-        if(_0xt==='CUSTOM'){_0xb.classList.remove('hidden');}else{_0xb.classList.add('hidden');}
+    window._0xTC=function(){
+        const _t=document.getElementById('keyDurType').value;
+        const _b=document.getElementById('customDurBox');
+        if(_t==='CUSTOM'){_b.classList.remove('hidden');}else{_b.classList.add('hidden');}
     };
 
-    window._0xGenKey=function(){
-        if(!_0xUnlocked)return;
-        const _0xt=document.getElementById('keyDurType').value;
-        const _0xNow=Math.floor(Date.now()/60000);
-        let _0xeMin=0,_0xLbl="♾️ PERMANENT";
-        if(_0xt==='PERM'){_0xeMin=0;_0xLbl="♾️ PERMANENT";}
-        else if(_0xt==='1H'){_0xeMin=_0xNow+60;_0xLbl="1 HOUR";}
-        else if(_0xt==='24H'){_0xeMin=_0xNow+1440;_0xLbl="24 HOURS (1 DAY)";}
-        else if(_0xt==='7D'){_0xeMin=_0xNow+10080;_0xLbl="7 DAYS";}
-        else if(_0xt==='30D'){_0xeMin=_0xNow+43200;_0xLbl="30 DAYS";}
-        else if(_0xt==='CUSTOM'){
-            const _0xv=parseInt(document.getElementById('customVal').value)||1;
-            const _0xu=document.getElementById('customUnit').value;
-            let _0xm=_0xu==='M'?1:(_0xu==='H'?60:1440);
-            _0xeMin=_0xNow+(_0xv*_0xm);
-            _0xLbl=_0xv+" "+(_0xu==='M'?'MINS':(_0xu==='H'?'HOURS':'DAYS'));
+    window._0xGK=function(){
+        if(!_0xU)return;
+        const _t=document.getElementById('keyDurType').value;
+        const _nw=Math.floor(Date.now()/60000);
+        let _em=0, _lb="♾️ PERMANENT";
+        if(_t==='PERM'){_em=0;_lb="♾️ PERMANENT";}
+        else if(_t==='1H'){_em=_nw+60;_lb="1 HOUR";}
+        else if(_t==='24H'){_em=_nw+1440;_lb="24 HOURS (1 DAY)";}
+        else if(_t==='7D'){_em=_nw+10080;_lb="7 DAYS";}
+        else if(_t==='30D'){_em=_nw+43200;_lb="30 DAYS";}
+        else if(_t==='CUSTOM'){
+            const _v=parseInt(document.getElementById('customVal').value)||1;
+            const _u=document.getElementById('customUnit').value;
+            let _m=_u==='M'?1:(_u==='H'?60:1440);
+            _em=_nw+(_v*_m);
+            _lb=_v+" "+(_u==='M'?'MINS':(_u==='H'?'HOURS':'DAYS'));
         }
-        const _0xEc=_0xeMin===0?"0":_0xeMin.toString(36).toUpperCase();
-        const _0xRs=Math.random().toString(36).substring(2,5).toUpperCase();
-        const _0xSg=_0xHash(_0xEc+_0xRs+_0xSalt).substring(0,4);
-        const _0xFk="DARK-RIZZY-"+_0xEc+"Z"+_0xRs+_0xSg;
-        document.getElementById('generatedKeyDisplay').innerText=_0xFk;
-        document.getElementById('keyExpInfo').innerText="VALIDITY: "+_0xLbl;
+        const _ec=_em===0?"0":_em.toString(36).toUpperCase();
+        const _rs=Math.random().toString(36).substring(2,5).toUpperCase();
+        const _sg=_0xH(_ec+_rs+_0xSalt).substring(0,4);
+        const _fk=_0xD[4]+_ec+"Z"+_rs+_sg;
+        document.getElementById('generatedKeyDisplay').innerText=_fk;
+        document.getElementById('keyExpInfo').innerText="VALIDITY: "+_lb;
     };
 
-    window._0xCopyKey=function(){
-        const _0xk=document.getElementById('generatedKeyDisplay').innerText;
-        if(_0xk==="DARK-RIZZY-XXX")window._0xGenKey();
-        const _0xf=document.getElementById('generatedKeyDisplay').innerText;
-        navigator.clipboard.writeText(_0xf);
-        alert("KEY COPIED: "+_0xf);
+    window._0xCK=function(){
+        const _k=document.getElementById('generatedKeyDisplay').innerText;
+        if(_k==="DARK-RIZZY-XXX")window._0xGK();
+        const _f=document.getElementById('generatedKeyDisplay').innerText;
+        navigator.clipboard.writeText(_f);
+        alert("KEY COPIED: "+_f);
     };
 
-    function _0xValKey(_0xk){
-        if(!_0xk.startsWith("DARK-RIZZY-"))return{valid:false};
-        const _0xb=_0xk.replace("DARK-RIZZY-","");
-        const _0xzi=_0xb.lastIndexOf("Z");
-        if(_0xzi===-1||_0xb.length<_0xzi+8)return{valid:false};
-        const _0xec=_0xb.substring(0,_0xzi);
-        const _0xtl=_0xb.substring(_0xzi+1);
-        if(_0xtl.length!==7)return{valid:false};
-        const _0xrs=_0xtl.substring(0,3);
-        const _0xsg=_0xtl.substring(3,7);
-        if(_0xsg!==_0xHash(_0xec+_0xrs+_0xSalt).substring(0,4))return{valid:false};
-        if(_0xec==="0")return{valid:true,exp:0};
-        const _0xem=parseInt(_0xec,36);
-        if(Math.floor(Date.now()/60000)>=_0xem)return{valid:false,expired:true};
-        return{valid:true,exp:_0xem};
+    function _0xVK(_k){
+        if(!_k.startsWith(_0xD[4]))return{valid:false};
+        const _b=_k.replace(_0xD[4],"");
+        const _zi=_b.lastIndexOf("Z");
+        if(_zi===-1||_b.length<_zi+8)return{valid:false};
+        const _ec=_b.substring(0,_zi);
+        const _tl=_b.substring(_zi+1);
+        if(_tl.length!==7)return{valid:false};
+        const _rs=_tl.substring(0,3);
+        const _sg=_tl.substring(3,7);
+        if(_sg!==_0xH(_ec+_rs+_0xSalt).substring(0,4))return{valid:false};
+        if(_ec==="0")return{valid:true,exp:0};
+        const _em=parseInt(_ec,36);
+        if(Math.floor(Date.now()/60000)>=_em)return{valid:false,expired:true};
+        return{valid:true,exp:_em};
     }
 
-    window._0xVerify=function(){
-        const _0xv=document.getElementById('accessKeyInput').value.trim();
-        const _0xm=document.getElementById('loginMsg');
-        if(_0xIsAdm(_0xv)){
-            _0xUnlocked=true;_0xExp=0;
+    window._0xV=function(){
+        const _v=document.getElementById('accessKeyInput').value.trim();
+        const _m=document.getElementById('loginMsg');
+        if(_0xIA(_v)){
+            _0xU=true;_0xE=0;
             document.getElementById('authSection').classList.add('hidden');
             document.getElementById('adminPanel').classList.remove('hidden');
             document.getElementById('hackSection').classList.remove('hidden');
             document.getElementById('keyTimeLeft').innerText="👑 ADMIN: PERMANENT";
-            window._0xGenKey();
-            _0xStart();
+            window._0xGK();
+            _0xST();
             return;
         }
-        const _0xc=_0xValKey(_0xv.toUpperCase());
-        if(_0xc.valid){
-            _0xUnlocked=true;_0xExp=_0xc.exp;
+        const _c=_0xVK(_v.toUpperCase());
+        if(_c.valid){
+            _0xU=true;_0xE=_c.exp;
             document.getElementById('authSection').classList.add('hidden');
             document.getElementById('hackSection').classList.remove('hidden');
-            _0xUpdBadge();
-            _0xStart();
-        }else if(_0xc.expired){
-            _0xm.innerText="⏰ KEY EXPIRED! RENEW FROM @RANGDARBHAI01";
+            _0xUB();
+            _0xST();
+        }else if(_c.expired){
+            _m.innerText="⏰ KEY EXPIRED! RENEW FROM @RANGDARBHAI01";
         }else{
-            _0xm.innerText="❌ INVALID KEY! CONTACT @RANGDARBHAI01";
+            _m.innerText="❌ INVALID KEY! CONTACT @RANGDARBHAI01";
         }
     };
 
-    function _0xUpdBadge(){
-        const _0xb=document.getElementById('keyTimeLeft');
-        if(_0xExp===0){_0xb.innerText="♾️ VIP: PERMANENT";return;}
-        const _0xrm=_0xExp-Math.floor(Date.now()/60000);
-        if(_0xrm<=0){
-            _0xUnlocked=false;
+    function _0xUB(){
+        const _b=document.getElementById('keyTimeLeft');
+        if(_0xE===0){_b.innerText="♾️ VIP: PERMANENT";return;}
+        const _rm=_0xE-Math.floor(Date.now()/60000);
+        if(_rm<=0){
+            _0xU=false;
             document.getElementById('hackSection').classList.add('hidden');
             document.getElementById('authSection').classList.remove('hidden');
             document.getElementById('loginMsg').innerText="⏰ SESSION EXPIRED! CONTACT @RANGDARBHAI01";
             return;
         }
-        if(_0xrm>=1440)_0xb.innerText="⏳ VIP: "+Math.floor(_0xrm/1440)+"d "+Math.floor((_0xrm%1440)/60)+"h";
-        else if(_0xrm>=60)_0xb.innerText="⏳ VIP: "+Math.floor(_0xrm/60)+"h "+(_0xrm%60)+"m";
-        else _0xb.innerText="⏳ VIP: "+_0xrm+"m LEFT";
+        if(_rm>=1440)_b.innerText="⏳ VIP: "+Math.floor(_rm/1440)+"d "+Math.floor((_rm%1440)/60)+"h";
+        else if(_rm>=60)_b.innerText="⏳ VIP: "+Math.floor(_rm/60)+"h "+(_rm%60)+"m";
+        else _b.innerText="⏳ VIP: "+_rm+"m LEFT";
     }
 
-    window._0xCopyPred=function(){
-        if(!_0xUnlocked||!_0xNextP||_0xNums.length===0)return;
-        const _0xt="🍥 DARK X RIZZY 𝐀𝐈 𝐕𝐈𝐏 𝐒𝐈𝐆𝐍𝐀𝐋 \n⏱️ PERIOD: "+_0xFullP+"\n🔥 PREDICTION: "+_0xNextP+"\n🔢 NUMBERS: "+_0xNums[0]+", "+_0xNums[1]+"\n👑 BEST OF LUCK";
-        navigator.clipboard.writeText(_0xt).then(function(){
-            const _0xbtn=document.getElementById('copyPredBtn');
-            _0xbtn.innerText="✅ COPIED TO CLIPBOARD!";
-            setTimeout(function(){_0xbtn.innerText="📋 COPY PREDICTION";},1500);
+    window._0xCP=function(){
+        if(!_0xU||!_0xNP||_0xNM.length===0)return;
+        const _t="🍥 DARK X RIZZY 𝐀𝐈 𝐕𝐈𝐏 𝐒𝐈𝐆𝐍𝐀𝐋 \n⏱️ PERIOD: "+_0xFP+"\n🔥 PREDICTION: "+_0xNP+"\n🔢 NUMBERS: "+_0xNM[0]+", "+_0xNM[1]+"\n👑 BEST OF LUCK";
+        navigator.clipboard.writeText(_t).then(function(){
+            const _btn=document.getElementById('copyPredBtn');
+            _btn.innerText="✅ COPIED TO CLIPBOARD!";
+            setTimeout(function(){_btn.innerText="📋 COPY PREDICTION";},1500);
         });
     };
 
-    window._0xClear=function(){
-        _0xLogs=[];
+    window._0xCL=function(){
+        _0xLG=[];
         document.getElementById('logs').innerHTML='';
     };
 
-    function _0xStart(){
-        if(!_0xUnlocked)return;
-        _0xSync();
-        setInterval(_0xSync,2000);
-        _0xClock();
+    function _0xST(){
+        if(!_0xU)return;
+        _0xSY();
+        setInterval(_0xSY,2000);
+        _0xCKL();
     }
 
-    // --- 30 SEC WINGO TIMER GLITCH FIXED ---
-    function _0xClock(){
+    // --- 30 SEC WINGO TIMER (FIXED) ---
+    function _0xCKL(){
         setInterval(function(){
-            if(!_0xUnlocked)return;
-            const _0xsec=new Date().getSeconds();
-            const _0xrem=30-(_0xsec%30);
-            document.getElementById('timer').innerText="00:"+(_0xrem<10?'0'+_0xrem:_0xrem);
-            if(_0xrem===5)_0xSDing.play().catch(function(){});
-            document.getElementById('timer').style.color=_0xrem<=5?"#ff10f0":"#ccff00";
-            if(_0xsec%15===0)_0xUpdBadge();
+            if(!_0xU)return;
+            const _s=new Date().getSeconds();
+            const _r=30-(_s%30);
+            document.getElementById('timer').innerText="00:"+(_r<10?'0'+_r:_r);
+            if(_r===5)_0xSD.play().catch(function(){});
+            document.getElementById('timer').style.color=_r<=5?"#ff10f0":"#ccff00";
+            if(_s%15===0)_0xUB();
         },1000);
     }
 
-    async function _0xSync(){
-        if(!_0xUnlocked||document.getElementById('hackSection').classList.contains('hidden'))return;
+    async function _0xSY(){
+        if(!_0xU||document.getElementById('hackSection').classList.contains('hidden'))return;
         try{
-            const _0xr=await fetch(_0xApi+'?t='+Date.now());
-            const _0xd=await _0xr.json();
-            const _0xtop=_0xd.data.list[0];
-            _0xProc(_0xtop.issueNumber,parseInt(_0xtop.number),_0xd.data.list);
-        }catch(_0xe){}
+            const _r=await fetch(_0xD[0]+'?t='+Date.now());
+            const _d=await _r.json();
+            const _tp=_d.data.list[0];
+            _0xPR(_tp.issueNumber,parseInt(_tp.number),_d.data.list);
+        }catch(_e){}
     }
 
-    function _0xProc(_0xp,_0xnum,_0xlist){
-        if(!_0xUnlocked)return;
-        const _0xact=_0xnum>=5?"BIG":"SMALL";
-        if(_0xLastP!==_0xp){
-            if(_0xNextP&&_0xLastP){
-                const _0xnw=_0xNums.includes(_0xnum);
-                const _0xsw=(_0xNextP===_0xact);
-                const _0xw=_0xsw||_0xnw;
-                if(_0xw){_0xSWin.play().catch(function(){});_0xLvl=1;}
-                else{_0xSLoss.play().catch(function(){});_0xLvl++;if(_0xLvl>4)_0xLvl=1;}
-                const _0xml=_0xLvl===1?"1X":_0xLvl===2?"3X":_0xLvl===3?"9X":"27X";
-                document.getElementById('mLevel').innerText="MARTINGALE: LEVEL "+_0xLvl+" ("+_0xml+")";
-                let _0xst='LOSS',_0xsc='loss';
-                if(_0xnw){_0xst='JACKPORT';_0xsc='jackpot';}
-                else if(_0xsw){_0xst='WIN';_0xsc='win';}
-                const _0xen={period:_0xp.slice(-3),pred:_0xNextP,result:_0xact+"("+_0xnum+")",status:_0xst,winClass:_0xsc};
-                _0xLogs.unshift(_0xen);
-                if(_0xLogs.length>100)_0xLogs=_0xLogs.slice(0,100);
-                const _0xrw="<tr><td>"+_0xen.period+"</td><td>"+_0xen.pred+"</td><td>"+_0xen.result+"</td><td class=\""+_0xen.winClass+"\">"+_0xen.status+"</td></tr>";
-                document.getElementById('logs').innerHTML=_0xrw+document.getElementById('logs').innerHTML;
+    function _0xPR(_p,_n,_l){
+        if(!_0xU)return;
+        const _ac=_n>=5?"BIG":"SMALL";
+        if(_0xLP!==_p){
+            if(_0xNP&&_0xLP){
+                const _nw=_0xNM.includes(_n);
+                const _sw=(_0xNP===_ac);
+                const _w=_sw||_nw;
+                if(_w){_0xSW.play().catch(function(){});_0xLV=1;}
+                else{_0xSL.play().catch(function(){});_0xLV++;if(_0xLV>4)_0xLV=1;}
+                const _ml=_0xLV===1?"1X":_0xLV===2?"3X":_0xLV===3?"9X":"27X";
+                document.getElementById('mLevel').innerText="MARTINGALE: LEVEL "+_0xLV+" ("+_ml+")";
+                let _st='LOSS',_sc='loss';
+                if(_nw){_st=_0xD[5];_sc='jackpot';}
+                else if(_sw){_st='WIN';_sc='win';}
+                const _en={period:_p.slice(-3),pred:_0xNP,result:_ac+"("+_n+")",status:_st,winClass:_sc};
+                _0xLG.unshift(_en);
+                if(_0xLG.length>100)_0xLG=_0xLG.slice(0,100);
+                const _rw="<tr><td>"+_en.period+"</td><td>"+_0xNP+"</td><td>"+_en.result+"</td><td class=\""+_en.winClass+"\">"+_en.status+"</td></tr>";
+                document.getElementById('logs').innerHTML=_rw+document.getElementById('logs').innerHTML;
             }
-            _0xLastP=_0xp;
-            const _0xl5=_0xlist.slice(0,5).map(function(x){return parseInt(x.number)>=5?"BIG":"SMALL";});
-            const _0xln=_0xlist.slice(0,5).map(function(x){return parseInt(x.number);});
-            const _0xsd=document.getElementById('stratDisplay');
-            if(_0xl5[0]===_0xl5[1]&&_0xl5[1]===_0xl5[2]){
-                _0xNextP=_0xl5[0];
-                _0xsd.innerText="MODE: DRAGON PULSE";
+            _0xLP=_p;
+            const _l5=_l.slice(0,5).map(function(x){return parseInt(x.number)>=5?"BIG":"SMALL";});
+            const _ln=_l.slice(0,5).map(function(x){return parseInt(x.number);});
+            const _sd=document.getElementById('stratDisplay');
+            if(_l5[0]===_l5[1]&&_l5[1]===_l5[2]){
+                _0xNP=_l5[0];
+                _sd.innerText="MODE: DRAGON PULSE";
             }else{
-                _0xNextP=_0xl5[0]==="BIG"?"SMALL":"BIG";
-                _0xsd.innerText="MODE: NEURAL REVERSE";
+                _0xNP=_l5[0]==="BIG"?"SMALL":"BIG";
+                _sd.innerText="MODE: NEURAL REVERSE";
             }
-            const _0xsm=_0xln.reduce(function(a,b){return a+b;},0);
-            if(_0xNextP==="BIG"){_0xNums=_0xsm>20?[0,2]:[1,3];}
-            else{_0xNums=_0xsm<25?[7,9]:[6,8];}
-            _0xFullP=(BigInt(_0xp)+1n).toString();
-            document.getElementById('pID').innerText="PERIOD: "+_0xFullP;
-            document.getElementById('pRes').innerText=_0xNextP;
-            document.getElementById('pRes').style.color=_0xNextP==="BIG"?"#00ffff":"#ccff00";
-            document.getElementById('numRow').innerHTML="<div class=\"num-circle\">"+_0xNums[0]+"</div><div class=\"num-circle\">"+_0xNums[1]+"</div>";
+            const _sm=_ln.reduce(function(a,b){return a+b;},0);
+            if(_0xNP==="BIG"){_0xNM=_sm>20?[0,2]:[1,3];}
+            else{_0xNM=_sm<25?[7,9]:[6,8];}
+            _0xFP=(BigInt(_p)+1n).toString();
+            document.getElementById('pID').innerText="PERIOD: "+_0xFP;
+            document.getElementById('pRes').innerText=_0xNP;
+            document.getElementById('pRes').style.color=_0xNP==="BIG"?"#00ffff":"#ccff00";
+            document.getElementById('numRow').innerHTML="<div class=\"num-circle\">"+_0xNM[0]+"</div><div class=\"num-circle\">"+_0xNM[1]+"</div>";
         }
     }
 })();
